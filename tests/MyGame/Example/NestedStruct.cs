@@ -5,16 +5,17 @@
 namespace MyGame.Example
 {
 
+using global::Unity.Collections;
 using global::System;
 using global::System.Collections.Generic;
-using global::Google.FlatBuffers;
+using global::Fivemid.FiveFlat;
 
-public struct NestedStruct : IFlatbufferObject
+public struct NestedStruct : IFlatBufferObject
 {
   private Struct __p;
-  public ByteBuffer ByteBuffer { get { return __p.bb; } }
-  public void __init(int _i, ByteBuffer _bb) { __p = new Struct(_i, _bb); }
-  public NestedStruct __assign(int _i, ByteBuffer _bb) { __init(_i, _bb); return this; }
+  public ref ByteBuffer ByteBuffer { get { return ref __p.bb; } }
+  public void __init(int _i, ref ByteBuffer _bb) { __p = new Struct(_i, ref _bb); }
+  public NestedStruct __assign(int _i, ref ByteBuffer _bb) { __init(_i, ref _bb); return this; }
 
   public int A(int j) { return __p.bb.GetInt(__p.bb_pos + 0 + j * 4); }
   public void MutateA(int j, int a) { __p.bb.PutInt(__p.bb_pos + 0 + j * 4, a); }
@@ -25,7 +26,7 @@ public struct NestedStruct : IFlatbufferObject
   public long D(int j) { return __p.bb.GetLong(__p.bb_pos + 16 + j * 8); }
   public void MutateD(int j, long d) { __p.bb.PutLong(__p.bb_pos + 16 + j * 8, d); }
 
-  public static Offset<MyGame.Example.NestedStruct> CreateNestedStruct(FlatBufferBuilder builder, int[] A, MyGame.Example.TestEnum B, MyGame.Example.TestEnum[] C, long[] D) {
+  public static Offset<MyGame.Example.NestedStruct> CreateNestedStruct(ref FlatBufferBuilder builder, int[] A, MyGame.Example.TestEnum B, MyGame.Example.TestEnum[] C, long[] D) {
     builder.Prep(8, 32);
     for (int _idx0 = 2; _idx0 > 0; _idx0--) {
       builder.PutLong(D[_idx0-1]);
@@ -54,13 +55,13 @@ public struct NestedStruct : IFlatbufferObject
     _o.D = new long[2];
     for (var _j = 0; _j < 2; ++_j) { _o.D[_j] = this.D(_j); }
   }
-  public static Offset<MyGame.Example.NestedStruct> Pack(FlatBufferBuilder builder, NestedStructT _o) {
+  public static Offset<MyGame.Example.NestedStruct> Pack(ref FlatBufferBuilder builder, NestedStructT _o) {
     if (_o == null) return default(Offset<MyGame.Example.NestedStruct>);
     var _a = _o.A;
     var _c = _o.C;
     var _d = _o.D;
     return CreateNestedStruct(
-      builder,
+      ref builder,
       _a,
       _o.B,
       _c,

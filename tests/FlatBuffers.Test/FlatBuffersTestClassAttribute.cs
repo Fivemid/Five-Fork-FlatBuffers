@@ -19,7 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Google.FlatBuffers.Test
+namespace Fivemid.FiveFlat.Tests.Exported
 {
     [AttributeUsage(AttributeTargets.Class)]
     public class FlatBuffersTestClassAttribute : Attribute

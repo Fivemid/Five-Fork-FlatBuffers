@@ -15,9 +15,9 @@
  */
 
 using System;
-using Google.FlatBuffers;
+using Unity.Collections;
 
-namespace Google.FlatBuffers.Test
+namespace Fivemid.FiveFlat.Tests.Exported
 {
     [FlatBuffersTestClass]
     public class FlatBuffersFuzzTests
@@ -33,94 +33,94 @@ namespace Google.FlatBuffers.Test
         [FlatBuffersTestMethod]
         public void TestNumbers()
         {
-            var builder = new FlatBufferBuilder(1);
-            Assert.ArrayEqual(new byte[] { 0 }, builder.DataBuffer.ToFullArray());
+            var builder = new FlatBufferBuilder(1, Allocator.Temp);
+            Assert.ArrayEqual(new byte[] { 0 }, builder._bb.ToFullArray());
             builder.AddBool(true);
-            Assert.ArrayEqual(new byte[] { 1 }, builder.DataBuffer.ToFullArray());
+            Assert.ArrayEqual(new byte[] { 1 }, builder._bb.ToFullArray());
             builder.AddSbyte(-127);
-            Assert.ArrayEqual(new byte[] { 129, 1 }, builder.DataBuffer.ToFullArray());
+            Assert.ArrayEqual(new byte[] { 129, 1 }, builder._bb.ToFullArray());
             builder.AddByte(255);
-            Assert.ArrayEqual(new byte[] { 0, 255, 129, 1 }, builder.DataBuffer.ToFullArray()); // First pad
+            Assert.ArrayEqual(new byte[] { 0, 255, 129, 1 }, builder._bb.ToFullArray()); // First pad
             builder.AddShort(-32222);
-            Assert.ArrayEqual(new byte[] { 0, 0, 0x22, 0x82, 0, 255, 129, 1 }, builder.DataBuffer.ToFullArray()); // Second pad
+            Assert.ArrayEqual(new byte[] { 0, 0, 0x22, 0x82, 0, 255, 129, 1 }, builder._bb.ToFullArray()); // Second pad
             builder.AddUshort(0xFEEE);
-            Assert.ArrayEqual(new byte[] { 0xEE, 0xFE, 0x22, 0x82, 0, 255, 129, 1 }, builder.DataBuffer.ToFullArray()); // no pad
+            Assert.ArrayEqual(new byte[] { 0xEE, 0xFE, 0x22, 0x82, 0, 255, 129, 1 }, builder._bb.ToFullArray()); // no pad
             builder.AddInt(-53687092);
-            Assert.ArrayEqual(new byte[] { 0, 0, 0, 0, 204, 204, 204, 252, 0xEE, 0xFE, 0x22, 0x82, 0, 255, 129, 1 }, builder.DataBuffer.ToFullArray()); // third pad
+            Assert.ArrayEqual(new byte[] { 0, 0, 0, 0, 204, 204, 204, 252, 0xEE, 0xFE, 0x22, 0x82, 0, 255, 129, 1 }, builder._bb.ToFullArray()); // third pad
             builder.AddUint(0x98765432);
-            Assert.ArrayEqual(new byte[] { 0x32, 0x54, 0x76, 0x98, 204, 204, 204, 252, 0xEE, 0xFE, 0x22, 0x82, 0, 255, 129, 1 }, builder.DataBuffer.ToFullArray()); // no pad
+            Assert.ArrayEqual(new byte[] { 0x32, 0x54, 0x76, 0x98, 204, 204, 204, 252, 0xEE, 0xFE, 0x22, 0x82, 0, 255, 129, 1 }, builder._bb.ToFullArray()); // no pad
         }
 
         [FlatBuffersTestMethod]
         public void TestNumbers64()
         {
-            var builder = new FlatBufferBuilder(1);
+            var builder = new FlatBufferBuilder(1, Allocator.Temp);
             builder.AddUlong(0x1122334455667788);
-            Assert.ArrayEqual(new byte[] { 0x88, 0x77, 0x66, 0x55, 0x44, 0x33, 0x22, 0x11 }, builder.DataBuffer.ToFullArray());
+            Assert.ArrayEqual(new byte[] { 0x88, 0x77, 0x66, 0x55, 0x44, 0x33, 0x22, 0x11 }, builder._bb.ToFullArray());
 
-            builder = new FlatBufferBuilder(1);
+            builder = new FlatBufferBuilder(1, Allocator.Temp);
             builder.AddLong(0x1122334455667788);
-            Assert.ArrayEqual(new byte[] { 0x88, 0x77, 0x66, 0x55, 0x44, 0x33, 0x22, 0x11 }, builder.DataBuffer.ToFullArray());
+            Assert.ArrayEqual(new byte[] { 0x88, 0x77, 0x66, 0x55, 0x44, 0x33, 0x22, 0x11 }, builder._bb.ToFullArray());
         }
 
         [FlatBuffersTestMethod]
         public void TestVector_1xUInt8()
         {
-            var builder = new FlatBufferBuilder(1);
+            var builder = new FlatBufferBuilder(1, Allocator.Temp);
             builder.StartVector(sizeof(byte), 1, 1);
-            Assert.ArrayEqual(new byte[] { 0, 0, 0, 0, 0, 0, 0, 0 }, builder.DataBuffer.ToFullArray());
+            Assert.ArrayEqual(new byte[] { 0, 0, 0, 0, 0, 0, 0, 0 }, builder._bb.ToFullArray());
             builder.AddByte(1);
-            Assert.ArrayEqual(new byte[] { 0, 0, 0, 0, 1, 0, 0, 0 }, builder.DataBuffer.ToFullArray());
+            Assert.ArrayEqual(new byte[] { 0, 0, 0, 0, 1, 0, 0, 0 }, builder._bb.ToFullArray());
             builder.EndVector();
-            Assert.ArrayEqual(new byte[] { 1, 0, 0, 0, 1, 0, 0, 0 }, builder.DataBuffer.ToFullArray());
+            Assert.ArrayEqual(new byte[] { 1, 0, 0, 0, 1, 0, 0, 0 }, builder._bb.ToFullArray());
         }
 
         [FlatBuffersTestMethod]
         public void TestVector_2xUint8()
         {
-            var builder = new FlatBufferBuilder(1);
+            var builder = new FlatBufferBuilder(1, Allocator.Temp);
             builder.StartVector(sizeof(byte), 2, 1);
-            Assert.ArrayEqual(new byte[] { 0, 0, 0, 0, 0, 0, 0, 0 }, builder.DataBuffer.ToFullArray());
+            Assert.ArrayEqual(new byte[] { 0, 0, 0, 0, 0, 0, 0, 0 }, builder._bb.ToFullArray());
             builder.AddByte(1);
-            Assert.ArrayEqual(new byte[] { 0, 0, 0, 0, 0, 1, 0, 0 }, builder.DataBuffer.ToFullArray());
+            Assert.ArrayEqual(new byte[] { 0, 0, 0, 0, 0, 1, 0, 0 }, builder._bb.ToFullArray());
             builder.AddByte(2);
-            Assert.ArrayEqual(new byte[] { 0, 0, 0, 0, 2, 1, 0, 0 }, builder.DataBuffer.ToFullArray());
+            Assert.ArrayEqual(new byte[] { 0, 0, 0, 0, 2, 1, 0, 0 }, builder._bb.ToFullArray());
             builder.EndVector();
-            Assert.ArrayEqual(new byte[] { 2, 0, 0, 0, 2, 1, 0, 0 }, builder.DataBuffer.ToFullArray());
+            Assert.ArrayEqual(new byte[] { 2, 0, 0, 0, 2, 1, 0, 0 }, builder._bb.ToFullArray());
         }
 
         [FlatBuffersTestMethod]
         public void TestVector_1xUInt16()
         {
-            var builder = new FlatBufferBuilder(1);
+            var builder = new FlatBufferBuilder(1, Allocator.Temp);
             builder.StartVector(sizeof(ushort), 1, 1);
-            Assert.ArrayEqual(new byte[] { 0, 0, 0, 0, 0, 0, 0, 0 }, builder.DataBuffer.ToFullArray());
+            Assert.ArrayEqual(new byte[] { 0, 0, 0, 0, 0, 0, 0, 0 }, builder._bb.ToFullArray());
             builder.AddUshort(1);
-            Assert.ArrayEqual(new byte[] { 0, 0, 0, 0, 1, 0, 0, 0 }, builder.DataBuffer.ToFullArray());
+            Assert.ArrayEqual(new byte[] { 0, 0, 0, 0, 1, 0, 0, 0 }, builder._bb.ToFullArray());
             builder.EndVector();
-            Assert.ArrayEqual(new byte[] { 1, 0, 0, 0, 1, 0, 0, 0 }, builder.DataBuffer.ToFullArray());
+            Assert.ArrayEqual(new byte[] { 1, 0, 0, 0, 1, 0, 0, 0 }, builder._bb.ToFullArray());
         }
 
         [FlatBuffersTestMethod]
         public void TestVector_2xUInt16()
         {
-            var builder = new FlatBufferBuilder(1);
+            var builder = new FlatBufferBuilder(1, Allocator.Temp);
             builder.StartVector(sizeof(ushort), 2, 1);
-            Assert.ArrayEqual(new byte[] { 0, 0, 0, 0, 0, 0, 0, 0 }, builder.DataBuffer.ToFullArray());
+            Assert.ArrayEqual(new byte[] { 0, 0, 0, 0, 0, 0, 0, 0 }, builder._bb.ToFullArray());
             builder.AddUshort(0xABCD);
-            Assert.ArrayEqual(new byte[] { 0, 0, 0, 0, 0, 0, 0xCD, 0xAB }, builder.DataBuffer.ToFullArray());
+            Assert.ArrayEqual(new byte[] { 0, 0, 0, 0, 0, 0, 0xCD, 0xAB }, builder._bb.ToFullArray());
             builder.AddUshort(0xDCBA);
-            Assert.ArrayEqual(new byte[] { 0, 0, 0, 0, 0xBA, 0xDC, 0xCD, 0xAB }, builder.DataBuffer.ToFullArray());
+            Assert.ArrayEqual(new byte[] { 0, 0, 0, 0, 0xBA, 0xDC, 0xCD, 0xAB }, builder._bb.ToFullArray());
             builder.EndVector();
-            Assert.ArrayEqual(new byte[] { 2, 0, 0, 0, 0xBA, 0xDC, 0xCD, 0xAB }, builder.DataBuffer.ToFullArray());
+            Assert.ArrayEqual(new byte[] { 2, 0, 0, 0, 0xBA, 0xDC, 0xCD, 0xAB }, builder._bb.ToFullArray());
         }
 
         [FlatBuffersTestMethod]
         public void TestCreateAsciiString()
         {
-            var builder = new FlatBufferBuilder(1);
+            var builder = new FlatBufferBuilder(1, Allocator.Temp);
             builder.CreateString("foo");
-            Assert.ArrayEqual(new byte[] { 3, 0, 0, 0, (byte)'f', (byte)'o', (byte)'o', 0 }, builder.DataBuffer.ToFullArray());
+            Assert.ArrayEqual(new byte[] { 3, 0, 0, 0, (byte)'f', (byte)'o', (byte)'o', 0 }, builder._bb.ToFullArray());
 
             builder.CreateString("moop");
             Assert.ArrayEqual(new byte[]
@@ -133,30 +133,19 @@ namespace Google.FlatBuffers.Test
                 0, 0, 0, 0, // zero terminator with 3 byte pad
                 3, 0, 0, 0,
                 (byte)'f', (byte)'o', (byte)'o', 0
-            }, builder.DataBuffer.ToFullArray());
-        }
-
-        [FlatBuffersTestMethod]
-        public void TestCreateSharedAsciiString()
-        {
-            var builder = new FlatBufferBuilder(1);
-            builder.CreateSharedString("foo");
-            Assert.ArrayEqual(new byte[] { 3, 0, 0, 0, (byte)'f', (byte)'o', (byte)'o', 0 }, builder.DataBuffer.ToFullArray());
-
-            builder.CreateSharedString("foo");
-            Assert.ArrayEqual(new byte[] { 3, 0, 0, 0, (byte)'f', (byte)'o', (byte)'o', 0 }, builder.DataBuffer.ToFullArray());
+            }, builder._bb.ToFullArray());
         }
 
         [FlatBuffersTestMethod]
         public void TestCreateArbitarytring()
         {
-            var builder = new FlatBufferBuilder(1);
+            var builder = new FlatBufferBuilder(1, Allocator.Temp);
             builder.CreateString("\x01\x02\x03");
             Assert.ArrayEqual(new byte[]
             {
                 3, 0, 0, 0,
                 0x01, 0x02, 0x03, 0
-            }, builder.DataBuffer.ToFullArray()); // No padding
+            }, builder._bb.ToFullArray()); // No padding
             builder.CreateString("\x04\x05\x06\x07");
             Assert.ArrayEqual(new byte[]
             {
@@ -168,30 +157,30 @@ namespace Google.FlatBuffers.Test
                 0, 0, 0, 0, // zero terminator with 3 byte pad
                 3, 0, 0, 0,
                 0x01, 0x02, 0x03, 0
-            }, builder.DataBuffer.ToFullArray()); // No padding
+            }, builder._bb.ToFullArray()); // No padding
         }
 
         [FlatBuffersTestMethod]
         public void TestEmptyVTable()
         {
-            var builder = new FlatBufferBuilder(1);
+            var builder = new FlatBufferBuilder(1, Allocator.Temp);
             builder.StartTable(0);
-            Assert.ArrayEqual(new byte[] { 0 }, builder.DataBuffer.ToFullArray());
+            Assert.ArrayEqual(new byte[] { 0 }, builder._bb.ToFullArray());
             builder.EndTable();
             Assert.ArrayEqual(new byte[]
             {
                 4, 0, 4, 0,
                 4, 0, 0, 0
             },
-                builder.DataBuffer.ToFullArray());
+                builder._bb.ToFullArray());
         }
 
         [FlatBuffersTestMethod]
         public void TestVTableWithOneBool()
         {
-            var builder = new FlatBufferBuilder(1);
+            var builder = new FlatBufferBuilder(1, Allocator.Temp);
             builder.StartTable(1);
-            Assert.ArrayEqual(new byte[] { 0 }, builder.DataBuffer.ToFullArray());
+            Assert.ArrayEqual(new byte[] { 0 }, builder._bb.ToFullArray());
             builder.AddBool(0, true, false);
             builder.EndTable();
             Assert.ArrayEqual(new byte[]
@@ -204,8 +193,8 @@ namespace Google.FlatBuffers.Test
                 0, 0, 0, // padding
                 1, // value 0
             },
-                builder.DataBuffer.ToFullArray());
-            var verifier = new Verifier(builder.DataBuffer);
+                builder._bb.ToFullArray());
+            var verifier = new Verifier(builder._bb);
             var offset = 8;
             // table must be ok
             Assert.IsTrue(verifier.VerifyTableStart((uint)offset));
@@ -222,9 +211,9 @@ namespace Google.FlatBuffers.Test
     [FlatBuffersTestMethod]
         public void TestVTableWithOneBool_DefaultValue()
         {
-            var builder = new FlatBufferBuilder(1);
+            var builder = new FlatBufferBuilder(1, Allocator.Temp);
             builder.StartTable(1);
-            Assert.ArrayEqual(new byte[] { 0 }, builder.DataBuffer.ToFullArray());
+            Assert.ArrayEqual(new byte[] { 0 }, builder._bb.ToFullArray());
             builder.AddBool(0, false, false);
             builder.EndTable();
             Assert.ArrayEqual(new byte[]
@@ -235,8 +224,8 @@ namespace Google.FlatBuffers.Test
                 // entry 0 is not stored (trimmed end of vtable)
                 4, 0, 0, 0, // int32 offset for start of vtable
             },
-                builder.DataBuffer.ToFullArray());
-            var verifier = new Verifier(builder.DataBuffer);
+                builder._bb.ToFullArray());
+            var verifier = new Verifier(builder._bb);
             var offset = 4;
             // table must be ok
             Assert.IsTrue(verifier.VerifyTableStart((uint)offset));
@@ -249,9 +238,9 @@ namespace Google.FlatBuffers.Test
         [FlatBuffersTestMethod]
         public void TestVTableWithOneInt16()
         {
-            var builder = new FlatBufferBuilder(1);
+            var builder = new FlatBufferBuilder(1, Allocator.Temp);
             builder.StartTable(1);
-            Assert.ArrayEqual(new byte[] { 0 }, builder.DataBuffer.ToFullArray());
+            Assert.ArrayEqual(new byte[] { 0 }, builder._bb.ToFullArray());
             builder.AddShort(0, 0x789A, 0);
             int offset = builder.EndTable();
             Assert.ArrayEqual(new byte[]
@@ -264,9 +253,9 @@ namespace Google.FlatBuffers.Test
                 0, 0, // padding
                 0x9A, 0x78, //value 0
             },
-                builder.DataBuffer.ToFullArray());
-            var verifier = new Verifier(builder.DataBuffer);
-            offset += builder.DataBuffer.Position;
+                builder._bb.ToFullArray());
+            var verifier = new Verifier(builder._bb);
+            offset += builder._bb.Position;
             // table must be ok
             Assert.IsTrue(verifier.VerifyTableStart((uint)offset));
             // First field must be ushort
@@ -282,9 +271,9 @@ namespace Google.FlatBuffers.Test
         [FlatBuffersTestMethod]
         public void TestVTableWithTwoInt16()
         {
-            var builder = new FlatBufferBuilder(1);
+            var builder = new FlatBufferBuilder(1, Allocator.Temp);
             builder.StartTable(2);
-            Assert.ArrayEqual(new byte[] { 0 }, builder.DataBuffer.ToFullArray());
+            Assert.ArrayEqual(new byte[] { 0 }, builder._bb.ToFullArray());
             builder.AddShort(0, 0x3456, 0);
             builder.AddShort(1, 0x789A, 0);
             int offset = builder.EndTable();
@@ -298,9 +287,9 @@ namespace Google.FlatBuffers.Test
                 0x9A, 0x78, // value 1
                 0x56, 0x34, // value 0
             },
-                builder.DataBuffer.ToFullArray());
-            var verifier = new Verifier(builder.DataBuffer);
-            offset += builder.DataBuffer.Position;
+                builder._bb.ToFullArray());
+            var verifier = new Verifier(builder._bb);
+            offset += builder._bb.Position;
             // table must be ok
             Assert.IsTrue(verifier.VerifyTableStart((uint)offset));
             // First field must be ushort
@@ -316,9 +305,9 @@ namespace Google.FlatBuffers.Test
         [FlatBuffersTestMethod]
         public void TestVTableWithInt16AndBool()
         {
-            var builder = new FlatBufferBuilder(1);
+            var builder = new FlatBufferBuilder(1, Allocator.Temp);
             builder.StartTable(2);
-            Assert.ArrayEqual(new byte[] { 0 }, builder.DataBuffer.ToFullArray());
+            Assert.ArrayEqual(new byte[] { 0 }, builder._bb.ToFullArray());
             builder.AddShort(0, 0x3456, 0);
             builder.AddBool(1, true, false);
             int offset = builder.EndTable();
@@ -332,9 +321,9 @@ namespace Google.FlatBuffers.Test
                 0, 1, // padding + value 1
                 0x56, 0x34, // value 0
             },
-                builder.DataBuffer.ToFullArray());
-            var verifier = new Verifier(builder.DataBuffer);
-            offset += builder.DataBuffer.Position;
+                builder._bb.ToFullArray());
+            var verifier = new Verifier(builder._bb);
+            offset += builder._bb.Position;
             // table must be ok
             Assert.IsTrue(verifier.VerifyTableStart((uint)offset));
             // First field must be ushort
@@ -350,7 +339,7 @@ namespace Google.FlatBuffers.Test
         [FlatBuffersTestMethod]
         public void TestVTableWithEmptyVector()
         {
-            var builder = new FlatBufferBuilder(1);
+            var builder = new FlatBufferBuilder(1, Allocator.Temp);
             builder.StartVector(sizeof(byte), 0, 1);
             var vecEnd = builder.EndVector();
 
@@ -371,8 +360,8 @@ namespace Google.FlatBuffers.Test
                 4, 0, 0, 0,
                 0, 0, 0, 0,
             },
-                builder.DataBuffer.ToFullArray());
-            var verifier = new Verifier(builder.DataBuffer);
+                builder._bb.ToFullArray());
+            var verifier = new Verifier(builder._bb);
             uint checkOffset = 20;
             // table must be ok
             Assert.IsTrue(verifier.VerifyTableStart(checkOffset));
@@ -383,7 +372,7 @@ namespace Google.FlatBuffers.Test
         [FlatBuffersTestMethod]
         public void TestVTableWithEmptyVectorAndScalars()
         {
-            var builder = new FlatBufferBuilder(1);
+            var builder = new FlatBufferBuilder(1, Allocator.Temp);
             builder.StartVector(sizeof(byte), 0, 1);
             var vecEnd = builder.EndVector();
 
@@ -404,8 +393,8 @@ namespace Google.FlatBuffers.Test
                 0, 0, 55, 0, // value 0
                 0, 0, 0, 0, // length of vector (not in sctruc)
             },
-                builder.DataBuffer.ToFullArray());
-            var verifier = new Verifier(builder.DataBuffer);
+                builder._bb.ToFullArray());
+            var verifier = new Verifier(builder._bb);
             uint checkOffset = 16;
             // table must be ok
             Assert.IsTrue(verifier.VerifyTableStart(checkOffset));
@@ -419,7 +408,7 @@ namespace Google.FlatBuffers.Test
         [FlatBuffersTestMethod]
         public void TestVTableWith_1xInt16_and_Vector_or_2xInt16()
         {
-            var builder = new FlatBufferBuilder(1);
+            var builder = new FlatBufferBuilder(1, Allocator.Temp);
             builder.StartVector(sizeof(short), 2, 1);
             builder.AddShort(0x1234);
             builder.AddShort(0x5678);
@@ -443,8 +432,8 @@ namespace Google.FlatBuffers.Test
                 0x78, 0x56,       // vector value 0
                 0x34, 0x12,       // vector value 1
             },
-                builder.DataBuffer.ToFullArray());
-            var verifier = new Verifier(builder.DataBuffer);
+                builder._bb.ToFullArray());
+            var verifier = new Verifier(builder._bb);
             uint checkOffset = 12;
             // table must be ok
             Assert.IsTrue(verifier.VerifyTableStart(checkOffset));
@@ -459,7 +448,7 @@ namespace Google.FlatBuffers.Test
         [FlatBuffersTestMethod]
         public void TestVTableWithAStruct_of_int8_int16_int32()
         {
-            var builder = new FlatBufferBuilder(1);
+            var builder = new FlatBufferBuilder(1, Allocator.Temp);
             builder.StartTable(1);
             builder.Prep(4+4+4, 0);
             builder.AddSbyte(55);
@@ -483,8 +472,8 @@ namespace Google.FlatBuffers.Test
                 0x00, 0x00, 0x34, 0x12, // struct value 1
                 0x00, 0x00, 0x00, 55, // struct value 0
             },
-                builder.DataBuffer.ToFullArray());
-            var verifier = new Verifier(builder.DataBuffer);
+                builder._bb.ToFullArray());
+            var verifier = new Verifier(builder._bb);
             uint checkOffset = 16;
             // table must be ok
             Assert.IsTrue(verifier.VerifyTableStart(checkOffset));
@@ -498,7 +487,7 @@ namespace Google.FlatBuffers.Test
         [FlatBuffersTestMethod]
         public void TestVTableWithAVectorOf_2xStructOf_2xInt8()
         {
-            var builder = new FlatBufferBuilder(1);
+            var builder = new FlatBufferBuilder(1, Allocator.Temp);
             builder.StartVector(sizeof(byte)*2, 2, 1);
             builder.AddByte(33);
             builder.AddByte(44);
@@ -526,8 +515,8 @@ namespace Google.FlatBuffers.Test
                 44, // vector 0, 1
                 33, // vector 0, 0
             },
-                builder.DataBuffer.ToFullArray());
-            var verifier = new Verifier(builder.DataBuffer);
+                builder._bb.ToFullArray());
+            var verifier = new Verifier(builder._bb);
             uint checkOffset = 16;
             // table must be ok
             Assert.IsTrue(verifier.VerifyTableStart(checkOffset));
@@ -538,7 +527,7 @@ namespace Google.FlatBuffers.Test
         [FlatBuffersTestMethod]
         public void TestVTableWithSomeElements()
         {
-            var builder = new FlatBufferBuilder(1);
+            var builder = new FlatBufferBuilder(1, Allocator.Temp);
             builder.StartTable(2);
             builder.AddByte(0, 33, 0);
             builder.AddShort(1, 66, 0);
@@ -560,15 +549,15 @@ namespace Google.FlatBuffers.Test
                 0, 33, // value 0
 
             };
-            Assert.ArrayEqual(padded, builder.DataBuffer.ToFullArray());
+            Assert.ArrayEqual(padded, builder._bb.ToFullArray());
 
             // no padding in sized array
             byte[] unpadded = new byte[padded.Length - 12];
             Buffer.BlockCopy(padded, 12, unpadded, 0, unpadded.Length);
-            Assert.ArrayEqual(unpadded, builder.DataBuffer.ToSizedArray());
+            Assert.ArrayEqual(unpadded, builder._bb.ToSizedArray());
 
-            var verifier = new Verifier(builder.DataBuffer);
-            uint checkOffset = builder.DataBuffer.GetUint(builder.DataBuffer.Position) + (uint)builder.DataBuffer.Position;
+            var verifier = new Verifier(builder._bb);
+            uint checkOffset = builder._bb.GetUint(builder._bb.Position) + (uint)builder._bb.Position;
             // table must be ok
             Assert.IsTrue(verifier.VerifyTableStart(checkOffset));
             // First field must be a struct with 12 bytes
@@ -580,7 +569,7 @@ namespace Google.FlatBuffers.Test
         [FlatBuffersTestMethod]
         public void TestVTableWithStrings()
         {
-            var builder = new FlatBufferBuilder(64);
+            var builder = new FlatBufferBuilder(64, Allocator.Temp);
             var str1 = builder.CreateString("foo");
             var str2 = builder.CreateString("foobar");
             builder.StartTable(2);
@@ -609,10 +598,10 @@ namespace Google.FlatBuffers.Test
                 3, 0, 0, 0, // length of string
                 102, 111, 111, 0 // "bar"
             };
-            Assert.ArrayEqual(padded, builder.DataBuffer.ToFullArray());
+            Assert.ArrayEqual(padded, builder._bb.ToFullArray());
 
-            var verifier = new Verifier(builder.DataBuffer);
-            uint checkOffset = builder.DataBuffer.GetUint(builder.DataBuffer.Position) + (uint)builder.DataBuffer.Position;
+            var verifier = new Verifier(builder._bb);
+            uint checkOffset = builder._bb.GetUint(builder._bb.Position) + (uint)builder._bb.Position;
             // table must be ok
             Assert.IsTrue(verifier.VerifyTableStart(checkOffset));
             // First field string check
@@ -624,7 +613,7 @@ namespace Google.FlatBuffers.Test
         [FlatBuffersTestMethod]
         public void TestVTableWithVectorOfStrings()
         {
-            var builder = new FlatBufferBuilder(64);
+            var builder = new FlatBufferBuilder(64, Allocator.Temp);
             var str1 = builder.CreateString("foo");
             var str2 = builder.CreateString("foobar");
             builder.StartVector(sizeof(int), 2, 1);
@@ -656,10 +645,10 @@ namespace Google.FlatBuffers.Test
                 3, 0, 0, 0, // length of string
                 102, 111, 111, 0 // "bar"
             };
-            Assert.ArrayEqual(padded, builder.DataBuffer.ToFullArray());
+            Assert.ArrayEqual(padded, builder._bb.ToFullArray());
 
-            var verifier = new Verifier(builder.DataBuffer);
-            uint checkOffset = builder.DataBuffer.GetUint(builder.DataBuffer.Position) + (uint)builder.DataBuffer.Position;
+            var verifier = new Verifier(builder._bb);
+            uint checkOffset = builder._bb.GetUint(builder._bb.Position) + (uint)builder._bb.Position;
             // table must be ok
             Assert.IsTrue(verifier.VerifyTableStart(checkOffset));
             // First field string check
@@ -669,7 +658,7 @@ namespace Google.FlatBuffers.Test
         [FlatBuffersTestMethod]
         public void TestTwoFinishTable()
         {
-            var builder = new FlatBufferBuilder(1);
+            var builder = new FlatBufferBuilder(1, Allocator.Temp);
             builder.StartTable(2);
             builder.AddByte(0, 33, 0);
             builder.AddByte(1, 44, 0);
@@ -714,11 +703,11 @@ namespace Google.FlatBuffers.Test
                 44, // value 1, 0
                 33,
             },
-                builder.DataBuffer.ToFullArray());
+                builder._bb.ToFullArray());
 
             // check obj1
-            var verifier = new Verifier(builder.DataBuffer);
-            uint checkOffset = builder.DataBuffer.GetUint(builder.DataBuffer.Position) + (uint)builder.DataBuffer.Position;
+            var verifier = new Verifier(builder._bb);
+            uint checkOffset = builder._bb.GetUint(builder._bb.Position) + (uint)builder._bb.Position;
             // table must be ok
             Assert.IsTrue(verifier.VerifyTableStart(checkOffset));
             // First field must be a struct with 12 bytes
@@ -747,7 +736,7 @@ namespace Google.FlatBuffers.Test
         [FlatBuffersTestMethod]
         public void TestBunchOfBools()
         {
-            var builder = new FlatBufferBuilder(1);
+            var builder = new FlatBufferBuilder(1, Allocator.Temp);
             builder.StartTable(8);
             for (var i = 0; i < 8; i++)
             {
@@ -784,15 +773,15 @@ namespace Google.FlatBuffers.Test
                 1, 1, 1, 1,
 
             };
-            Assert.ArrayEqual(padded, builder.DataBuffer.ToFullArray());
+            Assert.ArrayEqual(padded, builder._bb.ToFullArray());
 
             // no padding in sized array
             byte[] unpadded = new byte[padded.Length - 28];
             Buffer.BlockCopy(padded, 28, unpadded, 0, unpadded.Length);
-            Assert.ArrayEqual(unpadded, builder.DataBuffer.ToSizedArray());
+            Assert.ArrayEqual(unpadded, builder._bb.ToSizedArray());
 
-            var verifier = new Verifier(builder.DataBuffer);
-            uint checkOffset = builder.DataBuffer.GetUint(builder.DataBuffer.Position) + (uint)builder.DataBuffer.Position;
+            var verifier = new Verifier(builder._bb);
+            uint checkOffset = builder._bb.GetUint(builder._bb.Position) + (uint)builder._bb.Position;
             // table must be ok
             Assert.IsTrue(verifier.VerifyTableStart(checkOffset));
             for (var i = 0; i < 8; i++)
@@ -805,7 +794,7 @@ namespace Google.FlatBuffers.Test
         [FlatBuffersTestMethod]
         public void TestBunchOfBoolsSizePrefixed()
         {
-            var builder = new FlatBufferBuilder(1);
+            var builder = new FlatBufferBuilder(1, Allocator.Temp);
             builder.StartTable(8);
             for (var i = 0; i < 8; i++)
             {
@@ -842,18 +831,18 @@ namespace Google.FlatBuffers.Test
                 1, 1, 1, 1,
 
             };
-            Assert.ArrayEqual(padded, builder.DataBuffer.ToFullArray());
+            Assert.ArrayEqual(padded, builder._bb.ToFullArray());
 
             // no padding in sized array
             byte[] unpadded = new byte[padded.Length - 24];
             Buffer.BlockCopy(padded, 24, unpadded, 0, unpadded.Length);
-            Assert.ArrayEqual(unpadded, builder.DataBuffer.ToSizedArray());
+            Assert.ArrayEqual(unpadded, builder._bb.ToSizedArray());
         }
 
         [FlatBuffersTestMethod]
         public void TestWithFloat()
         {
-            var builder = new FlatBufferBuilder(1);
+            var builder = new FlatBufferBuilder(1, Allocator.Temp);
             builder.StartTable(1);
             builder.AddFloat(0, 1, 0);
             builder.EndTable();
@@ -869,8 +858,8 @@ namespace Google.FlatBuffers.Test
                 0, 0, 128, 63,  // value
 
             },
-                builder.DataBuffer.ToFullArray());
-            var verifier = new Verifier(builder.DataBuffer);
+                builder._bb.ToFullArray());
+            var verifier = new Verifier(builder._bb);
             uint checkOffset = 8;
             // table must be ok
             Assert.IsTrue(verifier.VerifyTableStart(checkOffset));
@@ -888,7 +877,7 @@ namespace Google.FlatBuffers.Test
 
             const int testValuesMax = 11;
 
-            var builder = new FlatBufferBuilder(1);
+            var builder = new FlatBufferBuilder(1, Allocator.Temp);
 
             var objects = new int[objectCount];
 
@@ -974,7 +963,7 @@ namespace Google.FlatBuffers.Test
             // Test all objects are readable and return expected values...
             for (var i = 0; i < objectCount; ++i)
             {
-                var table = new TestTable(builder.DataBuffer, builder.DataBuffer.Length - objects[i]);
+                var table = new TestTable(ref builder._bb, builder._bb.Length - objects[i]);
 
                 for (var j = 0; j < fieldCount; ++j)
                 {

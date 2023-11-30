@@ -5,6 +5,7 @@
 namespace MyGame.Example
 {
 
+using global::Unity.Collections;
 /// Composite components of Monster color.
 [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
 [System.FlagsAttribute]

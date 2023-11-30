@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-namespace Google.FlatBuffers
+namespace Fivemid.FiveFlat
 {
     /// <summary>
     /// Offset class for typesafe assignments.
@@ -42,6 +42,18 @@ namespace Google.FlatBuffers
         public int Value;
         public VectorOffset(int value)
         {
+            Value = value;
+        }
+    }
+
+    public struct UnionOffset<T> where T : struct
+    {
+        public T Type;
+        public int Value;
+
+        public UnionOffset(T type, int value)
+        {
+            Type = type;
             Value = value;
         }
     }

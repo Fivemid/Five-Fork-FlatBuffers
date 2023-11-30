@@ -5,33 +5,34 @@
 namespace NamespaceA.NamespaceB
 {
 
+using global::Unity.Collections;
 using global::System;
 using global::System.Collections.Generic;
-using global::Google.FlatBuffers;
+using global::Fivemid.FiveFlat;
 
-public struct ColorTestTable : IFlatbufferObject
+public struct ColorTestTable : IFlatBufferObject
 {
   private Table __p;
-  public ByteBuffer ByteBuffer { get { return __p.bb; } }
-  public static void ValidateVersion() { FlatBufferConstants.FLATBUFFERS_23_5_26(); }
-  public static ColorTestTable GetRootAsColorTestTable(ByteBuffer _bb) { return GetRootAsColorTestTable(_bb, new ColorTestTable()); }
-  public static ColorTestTable GetRootAsColorTestTable(ByteBuffer _bb, ColorTestTable obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, _bb)); }
-  public void __init(int _i, ByteBuffer _bb) { __p = new Table(_i, _bb); }
-  public ColorTestTable __assign(int _i, ByteBuffer _bb) { __init(_i, _bb); return this; }
+  public ref ByteBuffer ByteBuffer { get { return ref __p.bb; } }
+  public static void ValidateVersion() { FlatBufferConstants.FIVE_FLAT_23_11_29(); }
+  public static ColorTestTable GetRootAsColorTestTable(ref ByteBuffer _bb) { return GetRootAsColorTestTable(ref _bb, new ColorTestTable()); }
+  public static ColorTestTable GetRootAsColorTestTable(ref ByteBuffer _bb, ColorTestTable obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, ref _bb)); }
+  public void __init(int _i, ref ByteBuffer _bb) { __p = new Table(_i, ref _bb); }
+  public ColorTestTable __assign(int _i, ref ByteBuffer _bb) { __init(_i, ref _bb); return this; }
 
   public global::NamespaceB.Color Color { get { int o = __p.__offset(4); return o != 0 ? (global::NamespaceB.Color)__p.bb.GetSbyte(o + __p.bb_pos) : global::NamespaceB.Color.Blue; } }
   public bool MutateColor(global::NamespaceB.Color color) { int o = __p.__offset(4); if (o != 0) { __p.bb.PutSbyte(o + __p.bb_pos, (sbyte)color); return true; } else { return false; } }
 
-  public static Offset<global::NamespaceA.NamespaceB.ColorTestTable> CreateColorTestTable(FlatBufferBuilder builder,
+  public static Offset<global::NamespaceA.NamespaceB.ColorTestTable> CreateColorTestTable(ref FlatBufferBuilder builder,
       global::NamespaceB.Color color = global::NamespaceB.Color.Blue) {
     builder.StartTable(1);
-    ColorTestTable.AddColor(builder, color);
-    return ColorTestTable.EndColorTestTable(builder);
+    ColorTestTable.AddColor(ref builder, color);
+    return ColorTestTable.EndColorTestTable(ref builder);
   }
 
-  public static void StartColorTestTable(FlatBufferBuilder builder) { builder.StartTable(1); }
-  public static void AddColor(FlatBufferBuilder builder, global::NamespaceB.Color color) { builder.AddSbyte(0, (sbyte)color, 2); }
-  public static Offset<global::NamespaceA.NamespaceB.ColorTestTable> EndColorTestTable(FlatBufferBuilder builder) {
+  public static void StartColorTestTable(ref FlatBufferBuilder builder) { builder.StartTable(1); }
+  public static void AddColor(ref FlatBufferBuilder builder, global::NamespaceB.Color color) { builder.AddSbyte(0, (sbyte)color, 2); }
+  public static Offset<global::NamespaceA.NamespaceB.ColorTestTable> EndColorTestTable(ref FlatBufferBuilder builder) {
     int o = builder.EndTable();
     return new Offset<global::NamespaceA.NamespaceB.ColorTestTable>(o);
   }
@@ -43,10 +44,10 @@ public struct ColorTestTable : IFlatbufferObject
   public void UnPackTo(ColorTestTableT _o) {
     _o.Color = this.Color;
   }
-  public static Offset<global::NamespaceA.NamespaceB.ColorTestTable> Pack(FlatBufferBuilder builder, ColorTestTableT _o) {
+  public static Offset<global::NamespaceA.NamespaceB.ColorTestTable> Pack(ref FlatBufferBuilder builder, ColorTestTableT _o) {
     if (_o == null) return default(Offset<global::NamespaceA.NamespaceB.ColorTestTable>);
     return CreateColorTestTable(
-      builder,
+      ref builder,
       _o.Color);
   }
 }
@@ -64,7 +65,7 @@ public class ColorTestTableT
 
 static public class ColorTestTableVerify
 {
-  static public bool Verify(Google.FlatBuffers.Verifier verifier, uint tablePos)
+  static public bool Verify(Fivemid.FiveFlat.Verifier verifier, uint tablePos)
   {
     return verifier.VerifyTableStart(tablePos)
       && verifier.VerifyField(tablePos, 4 /*Color*/, 1 /*global::NamespaceB.Color*/, 1, false)

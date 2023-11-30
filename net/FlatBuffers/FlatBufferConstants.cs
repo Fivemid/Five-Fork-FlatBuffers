@@ -19,7 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Google.FlatBuffers
+namespace Fivemid.FiveFlat
 {
     public static class FlatBufferConstants
     {
@@ -32,6 +32,6 @@ namespace Google.FlatBuffers
         Changes to the C# implementation need to be sure to change
         the version here and in the code generator on every possible
         incompatible change */
-        public static void FLATBUFFERS_23_5_26() {}
+        public static void FIVE_FLAT_23_11_29() {}
     }
 }

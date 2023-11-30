@@ -5,16 +5,17 @@
 namespace MyGame.Example
 {
 
+using global::Unity.Collections;
 using global::System;
 using global::System.Collections.Generic;
-using global::Google.FlatBuffers;
+using global::Fivemid.FiveFlat;
 
-public struct Vec3 : IFlatbufferObject
+public struct Vec3 : IFlatBufferObject
 {
   private Struct __p;
-  public ByteBuffer ByteBuffer { get { return __p.bb; } }
-  public void __init(int _i, ByteBuffer _bb) { __p = new Struct(_i, _bb); }
-  public Vec3 __assign(int _i, ByteBuffer _bb) { __init(_i, _bb); return this; }
+  public ref ByteBuffer ByteBuffer { get { return ref __p.bb; } }
+  public void __init(int _i, ref ByteBuffer _bb) { __p = new Struct(_i, ref _bb); }
+  public Vec3 __assign(int _i, ref ByteBuffer _bb) { __init(_i, ref _bb); return this; }
 
   public float X { get { return __p.bb.GetFloat(__p.bb_pos + 0); } }
   public void MutateX(float x) { __p.bb.PutFloat(__p.bb_pos + 0, x); }
@@ -25,10 +26,10 @@ public struct Vec3 : IFlatbufferObject
   public double Test1 { get { return __p.bb.GetDouble(__p.bb_pos + 16); } }
   public void MutateTest1(double test1) { __p.bb.PutDouble(__p.bb_pos + 16, test1); }
   public MyGame.Example.Color Test2 { get { return (MyGame.Example.Color)__p.bb.Get(__p.bb_pos + 24); } }
-  public void MutateTest2(MyGame.Example.Color test2) { __p.bb.Put(__p.bb_pos + 24, (byte)test2); }
-  public MyGame.Example.Test Test3 { get { return (new MyGame.Example.Test()).__assign(__p.bb_pos + 26, __p.bb); } }
+  public void MutateTest2(MyGame.Example.Color test2) { __p.bb.PutByte(__p.bb_pos + 24, (byte)test2); }
+  public MyGame.Example.Test Test3 { get { return (new MyGame.Example.Test()).__assign(__p.bb_pos + 26, ref __p.bb); } }
 
-  public static Offset<MyGame.Example.Vec3> CreateVec3(FlatBufferBuilder builder, float X, float Y, float Z, double Test1, MyGame.Example.Color Test2, short test3_A, sbyte test3_B) {
+  public static Offset<MyGame.Example.Vec3> CreateVec3(ref FlatBufferBuilder builder, float X, float Y, float Z, double Test1, MyGame.Example.Color Test2, short test3_A, sbyte test3_B) {
     builder.Prep(8, 32);
     builder.Pad(2);
     builder.Prep(2, 4);
@@ -57,12 +58,12 @@ public struct Vec3 : IFlatbufferObject
     _o.Test2 = this.Test2;
     _o.Test3 = this.Test3.UnPack();
   }
-  public static Offset<MyGame.Example.Vec3> Pack(FlatBufferBuilder builder, Vec3T _o) {
+  public static Offset<MyGame.Example.Vec3> Pack(ref FlatBufferBuilder builder, Vec3T _o) {
     if (_o == null) return default(Offset<MyGame.Example.Vec3>);
     var _test3_a = _o.Test3.A;
     var _test3_b = _o.Test3.B;
     return CreateVec3(
-      builder,
+      ref builder,
       _o.X,
       _o.Y,
       _o.Z,

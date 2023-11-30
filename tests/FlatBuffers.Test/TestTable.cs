@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-namespace Google.FlatBuffers.Test
+namespace Fivemid.FiveFlat.Tests.Exported
 {
     /// <summary>
     /// A test Table object that gives easy access to the slot data
@@ -23,9 +23,9 @@ namespace Google.FlatBuffers.Test
     {
         Table t;
 
-        public TestTable(ByteBuffer bb, int pos)
+        public TestTable(ref ByteBuffer bb, int pos)
         {
-          t = new Table(pos, bb);
+          t = new Table(pos, ref bb);
         }
 
         public bool GetSlot(int slot, bool def)

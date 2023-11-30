@@ -17,23 +17,25 @@
 using System;
 using System.Text;
 using System.Runtime.InteropServices;
+using Unity.Collections;
+using Unity.Collections.LowLevel.Unsafe;
 
-namespace Google.FlatBuffers
+namespace Fivemid.FiveFlat
 {
     /// <summary>
     /// All tables in the generated code derive from this struct, and add their own accessors.
     /// </summary>
-    public struct Table
+    public readonly unsafe struct Table
     {
-        public int bb_pos { get; private set; }
-        public ByteBuffer bb { get; private set; }
+        public readonly int bb_pos;
+        private readonly ByteBuffer* _bb;
 
-        public ByteBuffer ByteBuffer { get { return bb; } }
+        public ref ByteBuffer bb { get { return ref *_bb; } }
 
         // Re-init the internal state with an external buffer {@code ByteBuffer} and an offset within.
-        public Table(int _i, ByteBuffer _bb) : this()
+        public Table(int _i, ref ByteBuffer _bb) : this()
         {
-            bb = _bb;
+            this._bb = (ByteBuffer*)UnsafeUtility.AddressOf(ref _bb);
             bb_pos = _i;
         }
 
@@ -45,10 +47,10 @@ namespace Google.FlatBuffers
             return vtableOffset < bb.GetShort(vtable) ? (int)bb.GetShort(vtable + vtableOffset) : 0;
         }
 
-        public static int __offset(int vtableOffset, int offset, ByteBuffer bb)
+        public static int __offset(int vtableOffset, int offset, ref ByteBuffer bb)
         {
             int vtable = bb.Length - offset;
-            return (int)bb.GetShort(vtable + vtableOffset - bb.GetInt(vtable)) + vtable;
+            return bb.GetShort(vtable + vtableOffset - bb.GetInt(vtable)) + vtable;
         }
 
         // Retrieve the relative offset stored at "offset"
@@ -57,13 +59,12 @@ namespace Google.FlatBuffers
             return offset + bb.GetInt(offset);
         }
 
-        public static int __indirect(int offset, ByteBuffer bb)
+        public static int __indirect(int offset, ref ByteBuffer bb)
         {
             return offset + bb.GetInt(offset);
         }
 
-        // Create a .NET String from UTF-8 data stored inside the flatbuffer.
-        public string __string(int offset)
+        public NativeArray<byte>? __string(int offset)
         {
             int stringOffset = bb.GetInt(offset);
             if (stringOffset == 0)
@@ -72,7 +73,7 @@ namespace Google.FlatBuffers
             offset += stringOffset;
             var len = bb.GetInt(offset);
             var startPos = offset + sizeof(int);
-            return bb.GetStringUTF8(startPos, len);
+            return bb.ToArray(startPos, len);
         }
 
         // Get the length of a vector whose offset is stored at "offset" in this object.
@@ -87,77 +88,14 @@ namespace Google.FlatBuffers
         public int __vector(int offset)
         {
             offset += bb_pos;
-            return offset + bb.GetInt(offset) + sizeof(int);  // data starts after the length
-        }
-
-#if ENABLE_SPAN_T && (UNSAFE_BYTEBUFFER || NETSTANDARD2_1)
-        // Get the data of a vector whoses offset is stored at "offset" in this object as an
-        // Spant&lt;byte&gt;. If the vector is not present in the ByteBuffer,
-        // then an empty span will be returned.
-        public Span<T> __vector_as_span<T>(int offset, int elementSize) where T : struct
-        {
-            if (!BitConverter.IsLittleEndian)
-            {
-               throw new NotSupportedException("Getting typed span on a Big Endian " +
-                                               "system is not support");
-            }
-
-            var o = this.__offset(offset);
-            if (0 == o)
-            {
-                return new Span<T>();
-            }
-
-            var pos = this.__vector(o);
-            var len = this.__vector_len(o);
-            return MemoryMarshal.Cast<byte, T>(bb.ToSpan(pos, len * elementSize));
-        }
-#else
-        // Get the data of a vector whoses offset is stored at "offset" in this object as an
-        // ArraySegment&lt;byte&gt;. If the vector is not present in the ByteBuffer,
-        // then a null value will be returned.
-        public ArraySegment<byte>? __vector_as_arraysegment(int offset)
-        {
-            var o = this.__offset(offset);
-            if (0 == o)
-            {
-                return null;
-            }
-
-            var pos = this.__vector(o);
-            var len = this.__vector_len(o);
-            return bb.ToArraySegment(pos, len);
-        }
-#endif
-
-        // Get the data of a vector whoses offset is stored at "offset" in this object as an
-        // T[]. If the vector is not present in the ByteBuffer, then a null value will be
-        // returned.
-        public T[] __vector_as_array<T>(int offset)
-            where T : struct
-        {
-            if(!BitConverter.IsLittleEndian)
-            {
-                throw new NotSupportedException("Getting typed arrays on a Big Endian " +
-                    "system is not support");
-            }
-
-            var o = this.__offset(offset);
-            if (0 == o)
-            {
-                return null;
-            }
-
-            var pos = this.__vector(o);
-            var len = this.__vector_len(o);
-            return bb.ToArray<T>(pos, len);
+            return offset + bb.GetInt(offset) + sizeof(int); // data starts after the length
         }
 
         // Initialize any Table-derived type to point to the union at the given offset.
-        public T __union<T>(int offset) where T : struct, IFlatbufferObject
+        public T __union<T>(int offset) where T : struct, IFlatBufferObject
         {
             T t = new T();
-            t.__init(__indirect(offset), bb);
+            t.__init(__indirect(offset), ref bb);
             return t;
         }
 
@@ -172,41 +110,6 @@ namespace Google.FlatBuffers
             }
 
             return true;
-        }
-
-        // Compare strings in the ByteBuffer.
-        public static int CompareStrings(int offset_1, int offset_2, ByteBuffer bb)
-        {
-            offset_1 += bb.GetInt(offset_1);
-            offset_2 += bb.GetInt(offset_2);
-            var len_1 = bb.GetInt(offset_1);
-            var len_2 = bb.GetInt(offset_2);
-            var startPos_1 = offset_1 + sizeof(int);
-            var startPos_2 = offset_2 + sizeof(int);
-            var len = Math.Min(len_1, len_2);
-            for(int i = 0; i < len; i++) {
-                byte b1 = bb.Get(i + startPos_1);
-                byte b2 = bb.Get(i + startPos_2);
-                if (b1 != b2)
-                    return b1 - b2;
-            }
-            return len_1 - len_2;
-        }
-
-        // Compare string from the ByteBuffer with the string object
-        public static int CompareStrings(int offset_1, byte[] key, ByteBuffer bb)
-        {
-            offset_1 += bb.GetInt(offset_1);
-            var len_1 = bb.GetInt(offset_1);
-            var len_2 = key.Length;
-            var startPos_1 = offset_1 + sizeof(int);
-            var len = Math.Min(len_1, len_2);
-            for (int i = 0; i < len; i++) {
-                byte b = bb.Get(i + startPos_1);
-                if (b != key[i])
-                    return b - key[i];
-            }
-            return len_1 - len_2;
         }
     }
 }

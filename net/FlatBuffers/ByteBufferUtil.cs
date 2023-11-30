@@ -16,7 +16,7 @@
 
 using System;
 
-namespace Google.FlatBuffers
+namespace Fivemid.FiveFlat
 {
 	/// <summary>
 	/// Class that collects utility functions around `ByteBuffer`.
@@ -24,13 +24,13 @@ namespace Google.FlatBuffers
 	public class ByteBufferUtil
 	{
 		// Extract the size prefix from a `ByteBuffer`.
-		public static int GetSizePrefix(ByteBuffer bb) {
+		public static int GetSizePrefix(ref ByteBuffer bb) {
 			return bb.GetInt(bb.Position);
 		}
 
 		// Create a duplicate of a size-prefixed `ByteBuffer` that has its position
 		// advanced just past the size prefix.
-		public static ByteBuffer RemoveSizePrefix(ByteBuffer bb) {
+		public static ByteBuffer RemoveSizePrefix(ref ByteBuffer bb) {
 			ByteBuffer s = bb.Duplicate();
 			s.Position += FlatBufferConstants.SizePrefixLength;
 			return s;

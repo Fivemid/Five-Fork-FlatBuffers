@@ -16,15 +16,16 @@
 
 using System;
 using System.Diagnostics;
+using Unity.Collections;
 
-namespace Google.FlatBuffers.Test
+namespace Fivemid.FiveFlat.Tests.Exported
 {
     [FlatBuffersTestClass]
     public class FlatBufferBuilderTests
     {
         private FlatBufferBuilder CreateBuffer(bool forceDefaults = true)
         {
-            var fbb = new FlatBufferBuilder(16) {ForceDefaults = forceDefaults};
+            var fbb = new FlatBufferBuilder(16, Allocator.Temp) {ForceDefaults = forceDefaults};
             fbb.StartTable(1);
             return fbb;
         }
@@ -469,271 +470,6 @@ namespace Google.FlatBuffers.Test
             Assert.AreEqual(sizeof(double), endOffset - storedOffset);
         }
 
-        [FlatBuffersTestMethod]
-        public void FlatBufferBuilder_Add_Array_Float()
-        {
-            var fbb = CreateBuffer(false);
-            var storedOffset = fbb.Offset;
-
-            const int len = 9;
-
-            // Construct the data array
-            var data = new float[len];
-            data[0] = 1.0079F;
-            data[1] = 4.0026F;
-            data[2] = 6.941F;
-            data[3] = 9.0122F;
-            data[4] = 10.811F;
-            data[5] = 12.0107F;
-            data[6] = 14.0067F;
-            data[7] = 15.9994F;
-            data[8] = 18.9984F;
-
-            fbb.Add(data);
-            var endOffset = fbb.Offset;
-            Assert.AreEqual(endOffset, storedOffset + sizeof(float) * data.Length);
-        }
-
-        [FlatBuffersTestMethod]
-        public void FlatBufferBuilder_Add_Array_Bool()
-        {
-            var fbb = CreateBuffer(false);
-            var storedOffset = fbb.Offset;
-
-            const int len = 9;
-
-            // Construct the data array
-            var data = new bool[len];
-            data[0] = true;
-            data[1] = true;
-            data[2] = false;
-            data[3] = true;
-            data[4] = false;
-            data[5] = true;
-            data[6] = true;
-            data[7] = true;
-            data[8] = false;
-
-            fbb.Add(data);
-            var endOffset = fbb.Offset;
-            Assert.AreEqual(endOffset, storedOffset + sizeof(bool) * data.Length);
-        }
-
-        [FlatBuffersTestMethod]
-        public void FlatBufferBuilder_Add_Array_Double()
-        {
-            var fbb = CreateBuffer(false);
-            var storedOffset = fbb.Offset;
-
-            const int len = 9;
-
-            // Construct the data array
-            var data = new double[len];
-            data[0] = 1.0079;
-            data[1] = 4.0026;
-            data[2] = 6.941;
-            data[3] = 9.0122;
-            data[4] = 10.811;
-            data[5] = 12.0107;
-            data[6] = 14.0067;
-            data[7] = 15.9994;
-            data[8] = 18.9984;
-
-            fbb.Add(data);
-            var endOffset = fbb.Offset;
-            Assert.AreEqual(endOffset, storedOffset + sizeof(double) * data.Length);
-        }
-
-        [FlatBuffersTestMethod]
-        public void FlatBufferBuilder_Add_Array_Null_Throws()
-        {
-            var fbb = CreateBuffer(false);
-
-            // Construct the data array
-            float[] data = null;
-
-            Assert.Throws<ArgumentNullException>(() => fbb.Add(data));
-        }
-        
-        [FlatBuffersTestMethod]
-        public unsafe void FlatBufferBuilder_Add_Array_UnsupportedType_Throws()
-        {
-            var fbb = CreateBuffer(false);
-                  
-            var storedOffset = fbb.Offset;
-
-            // Construct the data array
-            var data = new DummyStruct[10];
-            Assert.Throws<ArgumentException>(() => fbb.Add(data));
-        }
-
-        [FlatBuffersTestMethod]
-        public void FlatBufferBuilder_Add_Array_Empty_Noop()
-        {
-            var fbb = CreateBuffer(false);
-
-            var storedOffset = fbb.Offset;
-
-            // Construct an empty data array
-            float[] data = new float[0];
-            fbb.Add(data);
-
-            // Make sure the offset didn't change since nothing
-            // was really added
-            var endOffset = fbb.Offset;
-            Assert.AreEqual(endOffset, storedOffset);
-        }
-    
-        [FlatBuffersTestMethod]
-        public void FlatBufferBuilder_Add_ArraySegment_Default_Throws()
-        {
-#if NETCOREAPP
-      var fbb = CreateBuffer(false);
-
-            // Construct the data array
-            ArraySegment<float> data = default(ArraySegment<float>);
-
-            Assert.Throws<ArgumentNullException>(() => fbb.Add(data));
-#endif
-        }
-            
-        [FlatBuffersTestMethod]
-        public unsafe void FlatBufferBuilder_Add_ArraySegment_UnsupportedType_Throws()
-        {
-            var fbb = CreateBuffer(false);
-                  
-            var storedOffset = fbb.Offset;
-
-            // Construct the data array
-            var array = new DummyStruct[10];
-            var data = new ArraySegment<DummyStruct>(array);
-            Assert.Throws<ArgumentException>(() => fbb.Add(data));
-        }
-
-        [FlatBuffersTestMethod]
-        public void FlatBufferBuilder_Add_ArraySegment_Empty_Noop()
-        {
-            var fbb = CreateBuffer(false);
-                  
-            var storedOffset = fbb.Offset;
-
-            // Construct the data array
-            var array = new float[10];
-            var data = new ArraySegment<float>(array, 5, 0);
-            fbb.Add(data);
-
-            // Make sure the offset didn't change since nothing
-            // was really added
-            var endOffset = fbb.Offset;
-            Assert.AreEqual(endOffset, storedOffset);
-        }
-    
-        [FlatBuffersTestMethod]
-        public void FlatBufferBuilder_Add_IntPtr_Zero_Throws()
-        {
-            var fbb = CreateBuffer(false);
-
-            // Construct the data array
-            var data = IntPtr.Zero;
-            var length = 100;
-
-            Assert.Throws<ArgumentNullException>(() => fbb.Add<float>(data, length));
-        }
-            
-        [FlatBuffersTestMethod]
-        public unsafe void FlatBufferBuilder_Add_IntPtr_SizeNegative_Throws()
-        {
-            var fbb = CreateBuffer(false);
-
-            // Construct the data array
-            var array = new float[10];
-            fixed(float* ptr = array)
-            {
-                var data = (IntPtr)ptr;
-                var length = -1;
-                Assert.Throws<ArgumentOutOfRangeException>(() => fbb.Add<float>(data, length));
-            }
-        }
-
-        [FlatBuffersTestMethod]
-        public void FlatBufferBuilder_Add_IntPtr_Zero_Empty_Noop()
-        {
-            var fbb = CreateBuffer(false);
-
-            var storedOffset = fbb.Offset;
-
-            // Construct the data array
-            var data = IntPtr.Zero;
-            var length = 0;
-
-            fbb.Add<float>(data, length);
-
-            // make sure that a length of 0 doesn't throw also if ptr is Zero as well
-            // and that nothing was really added
-            var endOffset = fbb.Offset;
-            Assert.AreEqual(endOffset, storedOffset);
-        }
-
-        [FlatBuffersTestMethod]
-        public unsafe void FlatBufferBuilder_Add_IntPtr_Empty_Noop()
-        {
-            var fbb = CreateBuffer(false);
-                  
-            var storedOffset = fbb.Offset;
-
-            // Construct the data array
-            var array = new float[10];
-            fixed(float* ptr = array)
-            {
-                var data = (IntPtr)ptr;
-                var length = 0;
-                fbb.Add<float>(data, length);
-            }
-
-            // Make sure the offset didn't change since nothing
-            // was really added
-            var endOffset = fbb.Offset;
-            Assert.AreEqual(endOffset, storedOffset);
-        }
-    
-        [FlatBuffersTestMethod]
-        public unsafe void FlatBufferBuilder_Add_IntPtr_SizeInBytesNotMatchingDataType_Throws()
-        {
-            var fbb = CreateBuffer(false);
-                  
-            var storedOffset = fbb.Offset;
-
-            // Construct the data array
-            var array = new float[10];
-            fixed(float* ptr = array)
-            {
-                const int invalidBytes = 1;
-                var data = (IntPtr)ptr;
-                // add some invalid bytes to the length
-                var length = 2 * sizeof(float) + invalidBytes;
-            
-                Assert.Throws<ArgumentException>(() => fbb.Add<float>(data, length));
-            }
-        }
-    
-        [FlatBuffersTestMethod]
-        public unsafe void FlatBufferBuilder_Add_IntPtr_UnsupportedType_Throws()
-        {
-            var fbb = CreateBuffer(false);
-                  
-            var storedOffset = fbb.Offset;
-
-            // Construct the data array
-            var array = new DummyStruct[10];
-            fixed(DummyStruct* ptr = array)
-            {
-                var data = (IntPtr)ptr;
-                var length = 10 * sizeof(DummyStruct);
-            
-                Assert.Throws<ArgumentException>(() => fbb.Add<DummyStruct>(data, length));
-            }
-        }
-
         private struct DummyStruct
         {
             int value;
@@ -742,25 +478,8 @@ namespace Google.FlatBuffers.Test
         [FlatBuffersTestMethod]
         public void FlatBufferBuilder_Add_null_String()
         {
-            var fbb = new FlatBufferBuilder(16);
-            string s = null;
-            Assert.AreEqual(fbb.CreateSharedString(s).Value, 0);
-            Assert.AreEqual(fbb.CreateString(s).Value, 0);
-        }
-
-        [FlatBuffersTestMethod]
-        public void FlatBufferBuilder_Empty_Builder()
-        {
-            var fbb = new FlatBufferBuilder(16);
-            var str = "Hello";
-            var flatbuffer = "Flatbuffers!";
-            var strOffset = fbb.CreateSharedString(str);
-            var flatbufferOffset = fbb.CreateSharedString(flatbuffer);
-            fbb.Clear();
-            var flatbufferOffset2 = fbb.CreateSharedString(flatbuffer);
-            var strOffset2 = fbb.CreateSharedString(str);
-            Assert.IsFalse(strOffset.Value == strOffset2.Value);
-            Assert.IsFalse(flatbufferOffset.Value == flatbufferOffset2.Value);
+            var    fbb = new FlatBufferBuilder(16, Allocator.Temp);
+            Assert.AreEqual(fbb.CreateString((string?)null).Value, 0);
         }
     }
 }

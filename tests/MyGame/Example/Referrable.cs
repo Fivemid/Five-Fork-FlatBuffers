@@ -5,52 +5,50 @@
 namespace MyGame.Example
 {
 
+using global::Unity.Collections;
 using global::System;
 using global::System.Collections.Generic;
-using global::Google.FlatBuffers;
+using global::Fivemid.FiveFlat;
 
-public struct Referrable : IFlatbufferObject
+public struct Referrable : IFlatBufferObject
 {
   private Table __p;
-  public ByteBuffer ByteBuffer { get { return __p.bb; } }
-  public static void ValidateVersion() { FlatBufferConstants.FLATBUFFERS_23_5_26(); }
-  public static Referrable GetRootAsReferrable(ByteBuffer _bb) { return GetRootAsReferrable(_bb, new Referrable()); }
-  public static Referrable GetRootAsReferrable(ByteBuffer _bb, Referrable obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, _bb)); }
-  public void __init(int _i, ByteBuffer _bb) { __p = new Table(_i, _bb); }
-  public Referrable __assign(int _i, ByteBuffer _bb) { __init(_i, _bb); return this; }
+  public ref ByteBuffer ByteBuffer { get { return ref __p.bb; } }
+  public static void ValidateVersion() { FlatBufferConstants.FIVE_FLAT_23_11_29(); }
+  public static Referrable GetRootAsReferrable(ref ByteBuffer _bb) { return GetRootAsReferrable(ref _bb, new Referrable()); }
+  public static Referrable GetRootAsReferrable(ref ByteBuffer _bb, Referrable obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, ref _bb)); }
+  public void __init(int _i, ref ByteBuffer _bb) { __p = new Table(_i, ref _bb); }
+  public Referrable __assign(int _i, ref ByteBuffer _bb) { __init(_i, ref _bb); return this; }
 
   public ulong Id { get { int o = __p.__offset(4); return o != 0 ? __p.bb.GetUlong(o + __p.bb_pos) : (ulong)0; } }
   public bool MutateId(ulong id) { int o = __p.__offset(4); if (o != 0) { __p.bb.PutUlong(o + __p.bb_pos, id); return true; } else { return false; } }
 
-  public static Offset<MyGame.Example.Referrable> CreateReferrable(FlatBufferBuilder builder,
+  public static Offset<MyGame.Example.Referrable> CreateReferrable(ref FlatBufferBuilder builder,
       ulong id = 0) {
     builder.StartTable(1);
-    Referrable.AddId(builder, id);
-    return Referrable.EndReferrable(builder);
+    Referrable.AddId(ref builder, id);
+    return Referrable.EndReferrable(ref builder);
   }
 
-  public static void StartReferrable(FlatBufferBuilder builder) { builder.StartTable(1); }
-  public static void AddId(FlatBufferBuilder builder, ulong id) { builder.AddUlong(0, id, 0); }
-  public static Offset<MyGame.Example.Referrable> EndReferrable(FlatBufferBuilder builder) {
+  public static void StartReferrable(ref FlatBufferBuilder builder) { builder.StartTable(1); }
+  public static void AddId(ref FlatBufferBuilder builder, ulong id) { builder.AddUlong(0, id, 0); }
+  public static Offset<MyGame.Example.Referrable> EndReferrable(ref FlatBufferBuilder builder) {
     int o = builder.EndTable();
     return new Offset<MyGame.Example.Referrable>(o);
   }
 
-  public static VectorOffset CreateSortedVectorOfReferrable(FlatBufferBuilder builder, Offset<Referrable>[] offsets) {
-    Array.Sort(offsets,
-      (Offset<Referrable> o1, Offset<Referrable> o2) =>
-        new Referrable().__assign(builder.DataBuffer.Length - o1.Value, builder.DataBuffer).Id.CompareTo(new Referrable().__assign(builder.DataBuffer.Length - o2.Value, builder.DataBuffer).Id));
-    return builder.CreateVectorOfTables(offsets);
+  public static int CompareReferrable(ref FlatBufferBuilder builder, Offset<Referrable> o1, Offset<Referrable> o2) {
+    return new Referrable().__assign(builder._bb.Length - o1.Value, ref builder._bb).Id.CompareTo(new Referrable().__assign(builder._bb.Length - o2.Value, ref builder._bb).Id);
   }
 
-  public static Referrable? __lookup_by_key(int vectorLocation, ulong key, ByteBuffer bb) {
+  public static Referrable? __lookup_by_key(int vectorLocation, ulong key, ref ByteBuffer bb) {
     Referrable obj_ = new Referrable();
     int span = bb.GetInt(vectorLocation - 4);
     int start = 0;
     while (span != 0) {
       int middle = span / 2;
-      int tableOffset = Table.__indirect(vectorLocation + 4 * (start + middle), bb);
-      obj_.__assign(tableOffset, bb);
+      int tableOffset = Table.__indirect(vectorLocation + 4 * (start + middle), ref bb);
+      obj_.__assign(tableOffset, ref bb);
       int comp = obj_.Id.CompareTo(key);
       if (comp > 0) {
         span = middle;
@@ -72,10 +70,10 @@ public struct Referrable : IFlatbufferObject
   public void UnPackTo(ReferrableT _o) {
     _o.Id = this.Id;
   }
-  public static Offset<MyGame.Example.Referrable> Pack(FlatBufferBuilder builder, ReferrableT _o) {
+  public static Offset<MyGame.Example.Referrable> Pack(ref FlatBufferBuilder builder, ReferrableT _o) {
     if (_o == null) return default(Offset<MyGame.Example.Referrable>);
     return CreateReferrable(
-      builder,
+      ref builder,
       _o.Id);
   }
 }
@@ -94,7 +92,7 @@ public class ReferrableT
 
 static public class ReferrableVerify
 {
-  static public bool Verify(Google.FlatBuffers.Verifier verifier, uint tablePos)
+  static public bool Verify(Fivemid.FiveFlat.Verifier verifier, uint tablePos)
   {
     return verifier.VerifyTableStart(tablePos)
       && verifier.VerifyField(tablePos, 4 /*Id*/, 8 /*ulong*/, 8, false)

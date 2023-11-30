@@ -5,6 +5,7 @@
 namespace MyGame.Example
 {
 
+using global::Unity.Collections;
 [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
 [System.FlagsAttribute]
 public enum LongEnum : ulong

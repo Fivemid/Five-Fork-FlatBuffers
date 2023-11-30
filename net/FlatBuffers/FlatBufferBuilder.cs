@@ -18,38 +18,36 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Unity.Collections;
 
 /// @file
 /// @addtogroup flatbuffers_csharp_api
 /// @{
 
-namespace Google.FlatBuffers
+namespace Fivemid.FiveFlat
 {
     /// <summary>
     /// Responsible for building up and accessing a FlatBuffer formatted byte
     /// array (via ByteBuffer).
     /// </summary>
-    public class FlatBufferBuilder
+    public struct FlatBufferBuilder
     {
         private int _space;
-        private ByteBuffer _bb;
-        private int _minAlign = 1;
+        private Allocator _allocator;
+        private int _minAlign;
 
         // The vtable for the current table (if _vtableSize >= 0)
-        private int[] _vtable = new int[16];
+        private NativeArray<int> _vtable;
         // The size of the vtable. -1 indicates no vtable
-        private int _vtableSize = -1;
+        private int _vtableSize;
         // Starting offset of the current struct/table.
         private int _objectStart;
         // List of offsets of all vtables.
-        private int[] _vtables = new int[16];
+        private NativeArray<int> _vtables;
         // Number of entries in `vtables` in use.
-        private int _numVtables = 0;
+        private int _numVtables;
         // For the current vector being built.
-        private int _vectorNumElems = 0;
-
-        // For CreateSharedString
-        private Dictionary<string, StringOffset> _sharedStringMap = null;
+        private int _vectorNumElems;
 
         /// <summary>
         /// Create a FlatBufferBuilder with a given initial size.
@@ -57,24 +55,23 @@ namespace Google.FlatBuffers
         /// <param name="initialSize">
         /// The initial size to use for the internal buffer.
         /// </param>
-        public FlatBufferBuilder(int initialSize)
+        /// <param name="allocator"></param>
+        public FlatBufferBuilder(int initialSize, Allocator allocator)
         {
             if (initialSize <= 0)
                 throw new ArgumentOutOfRangeException("initialSize",
                     initialSize, "Must be greater than zero");
             _space = initialSize;
-            _bb = new ByteBuffer(initialSize);
-        }
-
-        /// <summary>
-        /// Create a FlatBufferBuilder backed by the passed in ByteBuffer
-        /// </summary>
-        /// <param name="buffer">The ByteBuffer to write to</param>
-        public FlatBufferBuilder(ByteBuffer buffer)
-        {
-            _bb = buffer;
-            _space = buffer.Length;
-            buffer.Reset();
+            _bb = new ByteBuffer(initialSize, allocator);
+            _allocator = allocator;
+            _minAlign = 1;
+            _vtableSize = -1;
+            _vtable = new NativeArray<int>(16, allocator);
+            _objectStart = 0;
+            _vtables = new NativeArray<int>(16, allocator);
+            _numVtables = 0;
+            _vectorNumElems = 0;
+            ForceDefaults = false;
         }
 
         /// <summary>
@@ -90,10 +87,6 @@ namespace Google.FlatBuffers
             _objectStart = 0;
             _numVtables = 0;
             _vectorNumElems = 0;
-            if (_sharedStringMap != null)
-            {
-                _sharedStringMap.Clear();
-            }
         }
 
         /// <summary>
@@ -198,57 +191,6 @@ namespace Google.FlatBuffers
             _bb.PutFloat(_space -= sizeof(float), x);
         }
 
-        /// <summary>
-        /// Puts an array of type T into this builder at the
-        /// current offset
-        /// </summary>
-        /// <typeparam name="T">The type of the input data </typeparam>
-        /// <param name="x">The array to copy data from</param>
-        public void Put<T>(T[] x)
-            where T : struct
-        {
-            _space = _bb.Put(_space, x);
-        }
-
-        /// <summary>
-        /// Puts an array of type T into this builder at the
-        /// current offset
-        /// </summary>
-        /// <typeparam name="T">The type of the input data </typeparam>
-        /// <param name="x">The array segment to copy data from</param>
-        public void Put<T>(ArraySegment<T> x)
-            where T : struct
-        {
-            _space = _bb.Put(_space, x);
-        }
-
-        /// <summary>
-        /// Puts data of type T into this builder at the
-        /// current offset
-        /// </summary>
-        /// <typeparam name="T">The type of the input data </typeparam>
-        /// <param name="ptr">The pointer to copy data from</param>
-        /// <param name="sizeInBytes">The length of the data in bytes</param>
-        public void Put<T>(IntPtr ptr, int sizeInBytes)
-            where T : struct
-        {
-            _space = _bb.Put<T>(_space, ptr, sizeInBytes);
-        }
-
-#if ENABLE_SPAN_T && (UNSAFE_BYTEBUFFER || NETSTANDARD2_1)
-        /// <summary>
-        /// Puts a span of type T into this builder at the
-        /// current offset
-        /// </summary>
-        /// <typeparam name="T">The type of the input data </typeparam>
-        /// <param name="x">The span to copy data from</param>
-        public void Put<T>(Span<T> x)
-            where T : struct
-        {
-            _space = _bb.Put(_space, x);
-        }
-#endif
-
         public void PutDouble(double x)
         {
             _bb.PutDouble(_space -= sizeof(double), x);
@@ -316,112 +258,6 @@ namespace Google.FlatBuffers
         public void AddFloat(float x) { Prep(sizeof(float), 0); PutFloat(x); }
 
         /// <summary>
-        /// Add an array of type T to the buffer (aligns the data and grows if necessary).
-        /// </summary>
-        /// <typeparam name="T">The type of the input data</typeparam>
-        /// <param name="x">The array to copy data from</param>
-        public void Add<T>(T[] x)
-            where T : struct
-        {
-            Add(new ArraySegment<T>(x));
-        }
-
-        /// <summary>
-        /// Add an array of type T to the buffer (aligns the data and grows if necessary).
-        /// </summary>
-        /// <typeparam name="T">The type of the input data</typeparam>
-        /// <param name="x">The array segment to copy data from</param>
-        public void Add<T>(ArraySegment<T> x)
-            where T : struct
-        {
-            if (x == null)
-            {
-                throw new ArgumentNullException("Cannot add a null array");
-            }
-
-            if( x.Count == 0)
-            {
-                // don't do anything if the array is empty
-                return;
-            }
-
-            if(!ByteBuffer.IsSupportedType<T>())
-            {
-                throw new ArgumentException("Cannot add this Type array to the builder");
-            }
-
-            int size = ByteBuffer.SizeOf<T>();
-            // Need to prep on size (for data alignment) and then we pass the
-            // rest of the length (minus 1) as additional bytes
-            Prep(size, size * (x.Count - 1));
-            Put(x);
-        }
-
-        /// <summary>
-        /// Adds the data of type T pointed to by the given pointer to the buffer (aligns the data and grows if necessary).
-        /// </summary>
-        /// <typeparam name="T">The type of the input data</typeparam>
-        /// <param name="ptr">The pointer to copy data from</param>
-        /// <param name="sizeInBytes">The data size in bytes</param>
-        public void Add<T>(IntPtr ptr, int sizeInBytes)
-            where T : struct
-        {
-            if(sizeInBytes == 0)
-            {
-                // don't do anything if the array is empty
-                return;
-            }
-
-            if (ptr == IntPtr.Zero)
-            {
-                throw new ArgumentNullException("Cannot add a null pointer");
-            }
-
-            if(sizeInBytes < 0)
-            {
-                throw new ArgumentOutOfRangeException("sizeInBytes", "sizeInBytes cannot be negative");
-            }
-
-            if(!ByteBuffer.IsSupportedType<T>())
-            {
-                throw new ArgumentException("Cannot add this Type array to the builder");
-            }
-
-            int size = ByteBuffer.SizeOf<T>();
-            if((sizeInBytes % size) != 0)
-            {
-                throw new ArgumentException("The given size in bytes " + sizeInBytes + " doesn't match the element size of T ( " + size + ")", "sizeInBytes");
-            }
-
-            // Need to prep on size (for data alignment) and then we pass the
-            // rest of the length (minus 1) as additional bytes
-            Prep(size, sizeInBytes - size);
-            Put<T>(ptr, sizeInBytes);
-        }
-
-#if ENABLE_SPAN_T && (UNSAFE_BYTEBUFFER || NETSTANDARD2_1)
-        /// <summary>
-        /// Add a span of type T to the buffer (aligns the data and grows if necessary).
-        /// </summary>
-        /// <typeparam name="T">The type of the input data</typeparam>
-        /// <param name="x">The span to copy data from</param>
-        public void Add<T>(Span<T> x)
-            where T : struct
-        {
-            if (!ByteBuffer.IsSupportedType<T>())
-            {
-                throw new ArgumentException("Cannot add this Type array to the builder");
-            }
-
-            int size = ByteBuffer.SizeOf<T>();
-            // Need to prep on size (for data alignment) and then we pass the
-            // rest of the length (minus 1) as additional bytes
-            Prep(size, size * (x.Length - 1));
-            Put(x);
-        }
-#endif
-
-        /// <summary>
         /// Add a `double` to the buffer (aligns the data and grows if necessary).
         /// </summary>
         /// <param name="x">The `double` to add to the buffer.</param>
@@ -466,7 +302,7 @@ namespace Google.FlatBuffers
         /// Creates a vector of tables.
         /// </summary>
         /// <param name="offsets">Offsets of the tables.</param>
-        public VectorOffset CreateVectorOfTables<T>(Offset<T>[] offsets) where T : struct
+        public VectorOffset CreateVectorOfTables<T>(Span<Offset<T>> offsets) where T : struct
         {
             NotNested();
             StartVector(sizeof(int), offsets.Length, sizeof(int));
@@ -502,7 +338,10 @@ namespace Google.FlatBuffers
             NotNested();
 
             if (_vtable.Length < numfields)
-                _vtable = new int[numfields];
+            {
+                _vtable.Dispose();
+                _vtable = new NativeArray<int>(numfields, _allocator);
+            }
 
             _vtableSize = numfields;
             _objectStart = Offset;
@@ -533,10 +372,10 @@ namespace Google.FlatBuffers
         /// </summary>
         /// <param name="o">The index into the vtable</param>
         /// <param name="x">The nullable boolean value to put into the buffer. If it doesn't have a value
-        /// it will skip writing to the buffer.</param>       
+        /// it will skip writing to the buffer.</param>
         public void AddBool(int o, bool? x) { if (x.HasValue) { AddBool(x.Value); Slot(o); } }
 
-        
+
         /// <summary>
         /// Adds a SByte to the Table at index `o` in its vtable using the value `x` and default `d`
         /// </summary>
@@ -551,7 +390,7 @@ namespace Google.FlatBuffers
         /// </summary>
         /// <param name="o">The index into the vtable</param>
         /// <param name="x">The nullable sbyte value to put into the buffer. If it doesn't have a value
-        /// it will skip writing to the buffer.</param>  
+        /// it will skip writing to the buffer.</param>
         public void AddSbyte(int o, sbyte? x) { if (x.HasValue) { AddSbyte(x.Value); Slot(o); } }
 
         /// <summary>
@@ -568,7 +407,7 @@ namespace Google.FlatBuffers
         /// </summary>
         /// <param name="o">The index into the vtable</param>
         /// <param name="x">The nullable byte value to put into the buffer. If it doesn't have a value
-        /// it will skip writing to the buffer.</param>  
+        /// it will skip writing to the buffer.</param>
         public void AddByte(int o, byte? x) { if (x.HasValue) { AddByte(x.Value); Slot(o); } }
 
         /// <summary>
@@ -585,7 +424,7 @@ namespace Google.FlatBuffers
         /// </summary>
         /// <param name="o">The index into the vtable</param>
         /// <param name="x">The nullable int16 value to put into the buffer. If it doesn't have a value
-        /// it will skip writing to the buffer.</param>  
+        /// it will skip writing to the buffer.</param>
         public void AddShort(int o, short? x) { if (x.HasValue) { AddShort(x.Value); Slot(o); } }
 
         /// <summary>
@@ -602,7 +441,7 @@ namespace Google.FlatBuffers
         /// </summary>
         /// <param name="o">The index into the vtable</param>
         /// <param name="x">The nullable uint16 value to put into the buffer. If it doesn't have a value
-        /// it will skip writing to the buffer.</param>  
+        /// it will skip writing to the buffer.</param>
         public void AddUshort(int o, ushort? x) { if (x.HasValue) { AddUshort(x.Value); Slot(o); } }
 
         /// <summary>
@@ -619,7 +458,7 @@ namespace Google.FlatBuffers
         /// </summary>
         /// <param name="o">The index into the vtable</param>
         /// <param name="x">The nullable int32 value to put into the buffer. If it doesn't have a value
-        /// it will skip writing to the buffer.</param>  
+        /// it will skip writing to the buffer.</param>
         public void AddInt(int o, int? x) { if (x.HasValue) { AddInt(x.Value); Slot(o); } }
 
         /// <summary>
@@ -636,7 +475,7 @@ namespace Google.FlatBuffers
         /// </summary>
         /// <param name="o">The index into the vtable</param>
         /// <param name="x">The nullable uint32 value to put into the buffer. If it doesn't have a value
-        /// it will skip writing to the buffer.</param>  
+        /// it will skip writing to the buffer.</param>
         public void AddUint(int o, uint? x) { if (x.HasValue) { AddUint(x.Value); Slot(o); } }
 
         /// <summary>
@@ -653,7 +492,7 @@ namespace Google.FlatBuffers
         /// </summary>
         /// <param name="o">The index into the vtable</param>
         /// <param name="x">The nullable int64 value to put into the buffer. If it doesn't have a value
-        /// it will skip writing to the buffer.</param>  
+        /// it will skip writing to the buffer.</param>
         public void AddLong(int o, long? x) { if (x.HasValue) { AddLong(x.Value); Slot(o); } }
 
         /// <summary>
@@ -670,7 +509,7 @@ namespace Google.FlatBuffers
         /// </summary>
         /// <param name="o">The index into the vtable</param>
         /// <param name="x">The nullable int64 value to put into the buffer. If it doesn't have a value
-        /// it will skip writing to the buffer.</param>  
+        /// it will skip writing to the buffer.</param>
         public void AddUlong(int o, ulong? x) { if (x.HasValue) { AddUlong(x.Value); Slot(o); } }
 
         /// <summary>
@@ -687,7 +526,7 @@ namespace Google.FlatBuffers
         /// </summary>
         /// <param name="o">The index into the vtable</param>
         /// <param name="x">The nullable single value to put into the buffer. If it doesn't have a value
-        /// it will skip writing to the buffer.</param>  
+        /// it will skip writing to the buffer.</param>
         public void AddFloat(int o, float? x) { if (x.HasValue) { AddFloat(x.Value); Slot(o); } }
 
         /// <summary>
@@ -704,7 +543,7 @@ namespace Google.FlatBuffers
         /// </summary>
         /// <param name="o">The index into the vtable</param>
         /// <param name="x">The nullable double value to put into the buffer. If it doesn't have a value
-        /// it will skip writing to the buffer.</param>  
+        /// it will skip writing to the buffer.</param>
         public void AddDouble(int o, double? x) { if (x.HasValue) { AddDouble(x.Value); Slot(o); } }
 
         /// <summary>
@@ -717,6 +556,18 @@ namespace Google.FlatBuffers
         public void AddOffset(int o, int x, int d) { if (x != d) { AddOffset(x); Slot(o); } }
         /// @endcond
 
+        public static NativeArray<byte>? EncodeString(string? s, Allocator allocator)
+        {
+            if (s == null) return null;
+            return new NativeArray<byte>(Encoding.UTF8.GetBytes(s), allocator);
+        }
+
+        public static string? DecodeString(NativeArray<byte>? s)
+        {
+            if (s == null) return null;
+            return Encoding.UTF8.GetString(s.Value.AsReadOnlySpan());
+        }
+
         /// <summary>
         /// Encode the string `s` in the buffer using UTF-8.
         /// </summary>
@@ -724,7 +575,24 @@ namespace Google.FlatBuffers
         /// <returns>
         /// The offset in the buffer where the encoded string starts.
         /// </returns>
-        public StringOffset CreateString(string s)
+        public StringOffset CreateString(string? s)
+        {
+            if (s == null)
+            {
+                return new StringOffset(0);
+            }
+
+            return CreateString(new NativeArray<byte>(Encoding.UTF8.GetBytes(s), Allocator.Temp));
+        }
+
+        /// <summary>
+        /// Encode the string `s` in the buffer using UTF-8.
+        /// </summary>
+        /// <param name="s">The string to encode.</param>
+        /// <returns>
+        /// The offset in the buffer where the encoded string starts.
+        /// </returns>
+        public StringOffset CreateString(NativeArray<byte>? s)
         {
             if (s == null)
             {
@@ -732,62 +600,10 @@ namespace Google.FlatBuffers
             }
             NotNested();
             AddByte(0);
-            var utf8StringLen = Encoding.UTF8.GetByteCount(s);
+            var utf8StringLen = s.Value.Length;
             StartVector(1, utf8StringLen, 1);
-            _bb.PutStringUTF8(_space -= utf8StringLen, s);
+            _bb.PutStringUTF8(_space -= utf8StringLen, s.Value);
             return new StringOffset(EndVector().Value);
-        }
-
-
-#if ENABLE_SPAN_T && (UNSAFE_BYTEBUFFER || NETSTANDARD2_1)
-        /// <summary>
-        /// Creates a string in the buffer from a Span containing
-        /// a UTF8 string.
-        /// </summary>
-        /// <param name="chars">the UTF8 string to add to the buffer</param>
-        /// <returns>
-        /// The offset in the buffer where the encoded string starts.
-        /// </returns>
-        public StringOffset CreateUTF8String(Span<byte> chars)
-        {
-            NotNested();
-            AddByte(0);
-            var utf8StringLen = chars.Length;
-            StartVector(1, utf8StringLen, 1);
-            _space = _bb.Put(_space, chars);
-            return new StringOffset(EndVector().Value);
-        }
-#endif
-
-        /// <summary>
-        /// Store a string in the buffer, which can contain any binary data.
-        /// If a string with this exact contents has already been serialized before,
-        /// instead simply returns the offset of the existing string.
-        /// </summary>
-        /// <param name="s">The string to encode.</param>
-        /// <returns>
-        /// The offset in the buffer where the encoded string starts.
-        /// </returns>
-        public StringOffset CreateSharedString(string s)
-        {
-            if (s == null)
-            {
-              return new StringOffset(0);
-            }
-
-            if (_sharedStringMap == null)
-            {
-                _sharedStringMap = new Dictionary<string, StringOffset>();
-            }
-
-            if (_sharedStringMap.ContainsKey(s))
-            {
-                return _sharedStringMap[s];
-            }
-
-            var stringOffset = CreateString(s);
-            _sharedStringMap.Add(s, stringOffset);
-            return stringOffset;
         }
 
         /// @cond FLATBUFFERS_INTERNAL
@@ -862,10 +678,10 @@ namespace Google.FlatBuffers
                 // vtables.
                 if (_numVtables == _vtables.Length)
                 {
-                    // Arrays.CopyOf(vtables num_vtables * 2);
-                    var newvtables = new int[ _numVtables * 2];
-                    Array.Copy(_vtables, newvtables, _vtables.Length);
+                    var newvtables = new NativeArray<int>(_numVtables * 2, _allocator);
+                    NativeArray<int>.Copy(_vtables, newvtables, _vtables.Length);
 
+                    _vtables.Dispose();
                     _vtables = newvtables;
                 };
                 _vtables[_numVtables++] = Offset;
@@ -900,7 +716,7 @@ namespace Google.FlatBuffers
         /// <param name="sizePrefix">
         /// Whether to prefix the size to the buffer.
         /// </param>
-        protected void Finish(int rootTable, bool sizePrefix)
+        private void Finish(int rootTable, bool sizePrefix)
         {
             Prep(_minAlign, sizeof(int) + (sizePrefix ? sizeof(int) : 0));
             AddOffset(rootTable);
@@ -943,7 +759,7 @@ namespace Google.FlatBuffers
         /// <returns>
         /// Returns the ByteBuffer for this FlatBuffer.
         /// </returns>
-        public ByteBuffer DataBuffer { get { return _bb; } }
+        public ByteBuffer _bb;
 
         /// <summary>
         /// A utility function to copy and return the ByteBuffer data as a
@@ -952,7 +768,7 @@ namespace Google.FlatBuffers
         /// <returns>
         /// A full copy of the FlatBuffer data.
         /// </returns>
-        public byte[] SizedByteArray()
+        public NativeArray<byte> SizedByteArray()
         {
             return _bb.ToSizedArray();
         }
@@ -970,7 +786,7 @@ namespace Google.FlatBuffers
         /// <param name="sizePrefix">
         /// Whether to prefix the size to the buffer.
         /// </param>
-        protected void Finish(int rootTable, string fileIdentifier, bool sizePrefix)
+        private void Finish(int rootTable, string fileIdentifier, bool sizePrefix)
         {
             Prep(_minAlign, sizeof(int) + (sizePrefix ? sizeof(int) : 0) +
                             FlatBufferConstants.FileIdentifierLength);

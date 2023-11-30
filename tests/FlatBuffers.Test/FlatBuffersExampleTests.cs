@@ -14,14 +14,17 @@
  * limitations under the License.
  */
 
+using System;
 using System.IO;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using MyGame.Example;
 using optional_scalars;
 using KeywordTest;
+using Unity.Collections;
 
-namespace Google.FlatBuffers.Test
+namespace Fivemid.FiveFlat.Tests.Exported
 {
     [FlatBuffersTestClass]
     public class FlatBuffersExampleTests
@@ -46,20 +49,21 @@ namespace Google.FlatBuffers.Test
             // We use an initial size of 1 to exercise the reallocation algorithm,
             // normally a size larger than the typical FlatBuffer you generate would be
             // better for performance.
-            var fbb = new FlatBufferBuilder(1);
+            var fbb = new FlatBufferBuilder(1, Allocator.Temp);
 
             StringOffset[] names = { fbb.CreateString("Frodo"), fbb.CreateString("Barney"), fbb.CreateString("Wilma") };
             Offset<Monster>[] off = new Offset<Monster>[3];
-            Monster.StartMonster(fbb);
-            Monster.AddName(fbb, names[0]);
-            off[0] = Monster.EndMonster(fbb);
-            Monster.StartMonster(fbb);
-            Monster.AddName(fbb, names[1]);
-            off[1] = Monster.EndMonster(fbb);
-            Monster.StartMonster(fbb);
-            Monster.AddName(fbb, names[2]);
-            off[2] = Monster.EndMonster(fbb);
-            var sortMons = Monster.CreateSortedVectorOfMonster(fbb, off);
+            Monster.StartMonster(ref fbb);
+            Monster.AddName(ref fbb, names[0]);
+            off[0] = Monster.EndMonster(ref fbb);
+            Monster.StartMonster(ref fbb);
+            Monster.AddName(ref fbb, names[1]);
+            off[1] = Monster.EndMonster(ref fbb);
+            Monster.StartMonster(ref fbb);
+            Monster.AddName(ref fbb, names[2]);
+            off[2] = Monster.EndMonster(ref fbb);
+            Array.Sort(off, (o1, o2) => Monster.CompareMonster(ref fbb, o1, o2));
+            var sortMons = fbb.CreateVectorOfTables(off.AsSpan());
 
             // We set up the same values as monsterdata.json:
 
@@ -68,7 +72,7 @@ namespace Google.FlatBuffers.Test
             var test2 = fbb.CreateString("test2");
 
 
-            Monster.StartInventoryVector(fbb, 5);
+            Monster.StartInventoryVector(ref fbb, 5);
             for (int i = 4; i >= 0; i--)
             {
                 fbb.AddByte((byte)i);
@@ -76,73 +80,64 @@ namespace Google.FlatBuffers.Test
             var inv = fbb.EndVector();
 
             var fred = fbb.CreateString("Fred");
-            Monster.StartMonster(fbb);
-            Monster.AddName(fbb, fred);
-            var mon2 = Monster.EndMonster(fbb);
+            Monster.StartMonster(ref fbb);
+            Monster.AddName(ref fbb, fred);
+            var mon2 = Monster.EndMonster(ref fbb);
 
-            Monster.StartTest4Vector(fbb, 2);
-            MyGame.Example.Test.CreateTest(fbb, (short)10, (sbyte)20);
-            MyGame.Example.Test.CreateTest(fbb, (short)30, (sbyte)40);
+            Monster.StartTest4Vector(ref fbb, 2);
+            MyGame.Example.Test.CreateTest(ref fbb, (short)10, (sbyte)20);
+            MyGame.Example.Test.CreateTest(ref fbb, (short)30, (sbyte)40);
             var test4 = fbb.EndVector();
 
-            Monster.StartTestarrayofstringVector(fbb, 2);
+            Monster.StartTestarrayofstringVector(ref fbb, 2);
             fbb.AddOffset(test2.Value);
             fbb.AddOffset(test1.Value);
             var testArrayOfString = fbb.EndVector();
 
-            Monster.StartMonster(fbb);
-            Monster.AddPos(fbb, Vec3.CreateVec3(fbb, 1.0f, 2.0f, 3.0f, 3.0,
+            Monster.StartMonster(ref fbb);
+            Monster.AddPos(ref fbb, Vec3.CreateVec3(ref fbb, 1.0f, 2.0f, 3.0f, 3.0,
                                                      Color.Green, (short)5, (sbyte)6));
-            Monster.AddHp(fbb, (short)80);
-            Monster.AddName(fbb, str);
-            Monster.AddInventory(fbb, inv);
-            Monster.AddTestType(fbb, Any.Monster);
-            Monster.AddTest(fbb, mon2.Value);
-            Monster.AddTest4(fbb, test4);
-            Monster.AddTestarrayofstring(fbb, testArrayOfString);
-            Monster.AddTestbool(fbb, true);
-            Monster.AddTestarrayoftables(fbb, sortMons);
-            var mon = Monster.EndMonster(fbb);
+            Monster.AddHp(ref fbb, (short)80);
+            Monster.AddName(ref fbb, str);
+            Monster.AddInventory(ref fbb, inv);
+            Monster.AddTestType(ref fbb, Any.Monster);
+            Monster.AddTest(ref fbb, mon2.Value);
+            Monster.AddTest4(ref fbb, test4);
+            Monster.AddTestarrayofstring(ref fbb, testArrayOfString);
+            Monster.AddTestbool(ref fbb, true);
+            Monster.AddTestarrayoftables(ref fbb, sortMons);
+            var mon = Monster.EndMonster(ref fbb);
 
             if (sizePrefix)
             {
-                Monster.FinishSizePrefixedMonsterBuffer(fbb, mon);
+                Monster.FinishSizePrefixedMonsterBuffer(ref fbb, mon);
             }
             else
             {
-                Monster.FinishMonsterBuffer(fbb, mon);
+                Monster.FinishMonsterBuffer(ref fbb, mon);
             }
 
             // Dump to output directory so we can inspect later, if needed
-            #if ENABLE_SPAN_T
-            var data = fbb.DataBuffer.ToSizedArray();
+            var data = fbb._bb.ToSizedArray();
             string filename = @"monsterdata_cstest" + (sizePrefix ? "_sp" : "") + ".mon";
-            File.WriteAllBytes(filename, data);
-            #else
-            using (var ms = fbb.DataBuffer.ToMemoryStream(fbb.DataBuffer.Position, fbb.Offset))
-            {
-                var data = ms.ToArray();
-                string filename = @"monsterdata_cstest" + (sizePrefix ? "_sp" : "") + ".mon";
-                File.WriteAllBytes(filename, data);
-            }
-            #endif
+            File.WriteAllBytes(filename, data.ToArray());
 
             // Remove the size prefix if necessary for further testing
-            ByteBuffer dataBuffer = fbb.DataBuffer;
+            ref ByteBuffer dataBuffer = ref fbb._bb;
             if (sizePrefix)
             {
-                Assert.AreEqual(ByteBufferUtil.GetSizePrefix(dataBuffer) + FlatBufferConstants.SizePrefixLength,
+                Assert.AreEqual(ByteBufferUtil.GetSizePrefix(ref dataBuffer) + FlatBufferConstants.SizePrefixLength,
                                 dataBuffer.Length - dataBuffer.Position);
-                dataBuffer = ByteBufferUtil.RemoveSizePrefix(dataBuffer);
+                dataBuffer = ByteBufferUtil.RemoveSizePrefix(ref dataBuffer);
             }
 
             // Now assert the buffer
-            TestBuffer(dataBuffer);
+            TestBuffer(ref dataBuffer);
 
             //Attempt to mutate Monster fields and check whether the buffer has been mutated properly
             // revert to original values after testing
-            Monster monster = Monster.GetRootAsMonster(dataBuffer);
-            
+            Monster monster = Monster.GetRootAsMonster(ref dataBuffer);
+
 
             // mana is optional and does not exist in the buffer so the mutation should fail
             // the mana field should retain its default value
@@ -150,17 +145,17 @@ namespace Google.FlatBuffers.Test
             Assert.AreEqual(monster.Mana, (short)150);
 
             // Accessing a vector of sorted by the key tables
-            Assert.AreEqual(monster.Testarrayoftables(0).Value.Name, "Barney");
-            Assert.AreEqual(monster.Testarrayoftables(1).Value.Name, "Frodo");
-            Assert.AreEqual(monster.Testarrayoftables(2).Value.Name, "Wilma");
+            Assert.StringEqual(monster.Testarrayoftables(0).Value.Name, "Barney");
+            Assert.StringEqual(monster.Testarrayoftables(1).Value.Name, "Frodo");
+            Assert.StringEqual(monster.Testarrayoftables(2).Value.Name, "Wilma");
 
             // Example of searching for a table by the key
-            Assert.IsTrue(monster.TestarrayoftablesByKey("Frodo") != null);
-            Assert.AreEqual(monster.TestarrayoftablesByKey("Frodo").Value.Name, "Frodo");
-            Assert.IsTrue(monster.TestarrayoftablesByKey("Barney") != null);
-            Assert.AreEqual(monster.TestarrayoftablesByKey("Barney").Value.Name, "Barney");
-            Assert.IsTrue(monster.TestarrayoftablesByKey("Wilma") != null);
-            Assert.AreEqual(monster.TestarrayoftablesByKey("Wilma").Value.Name, "Wilma");
+            Assert.IsTrue(monster.TestarrayoftablesByKey(FlatBufferBuilder.EncodeString("Frodo", Allocator.Temp)) != null);
+            Assert.StringEqual(monster.TestarrayoftablesByKey(FlatBufferBuilder.EncodeString("Frodo", Allocator.Temp)).Value.Name, "Frodo");
+            Assert.IsTrue(monster.TestarrayoftablesByKey(FlatBufferBuilder.EncodeString("Barney", Allocator.Temp)) != null);
+            Assert.StringEqual(monster.TestarrayoftablesByKey(FlatBufferBuilder.EncodeString("Barney", Allocator.Temp)).Value.Name, "Barney");
+            Assert.IsTrue(monster.TestarrayoftablesByKey(FlatBufferBuilder.EncodeString("Wilma", Allocator.Temp)) != null);
+            Assert.StringEqual(monster.TestarrayoftablesByKey(FlatBufferBuilder.EncodeString("Wilma", Allocator.Temp)).Value.Name, "Wilma");
 
             // testType is an existing field
             Assert.AreEqual(monster.TestType, Any.Monster);
@@ -192,20 +187,20 @@ namespace Google.FlatBuffers.Test
             pos.MutateX(1.0f);
             Assert.AreEqual(pos.X, 1.0f);
 
-            TestBuffer(dataBuffer);
-            TestObjectAPI(Monster.GetRootAsMonster(dataBuffer));
+            TestBuffer(ref dataBuffer);
+            TestObjectAPI(Monster.GetRootAsMonster(ref dataBuffer));
         }
 
-        private void TestBuffer(ByteBuffer bb)
+        private void TestBuffer(ref ByteBuffer bb)
         {
             bool test = Monster.VerifyMonster(bb);
             Assert.AreEqual(true, test);
 
-            Monster monster = Monster.GetRootAsMonster(bb);
+            Monster monster = Monster.GetRootAsMonster(ref bb);
 
             Assert.AreEqual(80, monster.Hp);
             Assert.AreEqual(150, monster.Mana);
-            Assert.AreEqual("MyMonster", monster.Name);
+            Assert.StringEqual("MyMonster", monster.Name);
 
             var pos = monster.Pos.Value;
             Assert.AreEqual(1.0f, pos.X);
@@ -221,7 +216,7 @@ namespace Google.FlatBuffers.Test
             Assert.AreEqual(Any.Monster, monster.TestType);
 
             var monster2 = monster.Test<Monster>().Value;
-            Assert.AreEqual("Fred", monster2.Name);
+            Assert.StringEqual("Fred", monster2.Name);
 
 
             Assert.AreEqual(5, monster.InventoryLength);
@@ -232,16 +227,6 @@ namespace Google.FlatBuffers.Test
             }
             Assert.AreEqual(10, invsum);
 
-            // Get the inventory as an array and subtract the
-            // sum to get it back to 0
-            var inventoryArray = monster.GetInventoryArray();
-            Assert.AreEqual(5, inventoryArray.Length);
-            foreach(var inv in inventoryArray)
-            {
-                invsum -= inv;
-            }
-            Assert.AreEqual(0, invsum);
-
             var test0 = monster.Test4(0).Value;
             var test1 = monster.Test4(1).Value;
             Assert.AreEqual(2, monster.Test4Length);
@@ -249,61 +234,44 @@ namespace Google.FlatBuffers.Test
             Assert.AreEqual(100, test0.A + test0.B + test1.A + test1.B);
 
             Assert.AreEqual(2, monster.TestarrayofstringLength);
-            Assert.AreEqual("test1", monster.Testarrayofstring(0));
-            Assert.AreEqual("test2", monster.Testarrayofstring(1));
+            Assert.StringEqual("test1", monster.Testarrayofstring(0));
+            Assert.StringEqual("test2", monster.Testarrayofstring(1));
 
             Assert.AreEqual(true, monster.Testbool);
-
-            #if ENABLE_SPAN_T
-            var nameBytes = monster.GetNameBytes();
-            Assert.AreEqual("MyMonster", Encoding.UTF8.GetString(nameBytes.ToArray(), 0, nameBytes.Length));
-
-            if (0 == monster.TestarrayofboolsLength)
-            {
-                Assert.IsFalse(monster.GetTestarrayofboolsBytes().Length != 0);
-            }
-            else
-            {
-                Assert.IsTrue(monster.GetTestarrayofboolsBytes().Length != 0);
-            }
-
-            var longArrayBytes = monster.GetVectorOfLongsBytes();
-            Assert.IsTrue(monster.VectorOfLongsLength * 8 == longArrayBytes.Length);
-
-            var doubleArrayBytes = monster.GetVectorOfDoublesBytes();
-            Assert.IsTrue(monster.VectorOfDoublesLength * 8 == doubleArrayBytes.Length);
-            #else
-            var nameBytes = monster.GetNameBytes().Value;
-            Assert.AreEqual("MyMonster", Encoding.UTF8.GetString(nameBytes.Array, nameBytes.Offset, nameBytes.Count));
-
-            if (0 == monster.TestarrayofboolsLength)
-            {
-                Assert.IsFalse(monster.GetTestarrayofboolsBytes().HasValue);
-            }
-            else
-            {
-                Assert.IsTrue(monster.GetTestarrayofboolsBytes().HasValue);
-            }
-            #endif
         }
 
         [FlatBuffersTestMethod]
         public void CanReadCppGeneratedWireFile()
         {
-            var data = File.ReadAllBytes(@"../monsterdata_test.mon");
-            var bb = new ByteBuffer(data);
-            TestBuffer(bb);
-            TestObjectAPI(Monster.GetRootAsMonster(bb));
+            using var fromAssembly = Assembly.GetAssembly(typeof(FlatBuffersExampleTests))
+                                           .GetManifestResourceStream("Fivemid.FiveFlat.Tests.Exported.Resources.monsterdata_test.mon")!;
+            var data = ReadAllBytes(fromAssembly);
+            var bb   = new ByteBuffer(new NativeArray<byte>(data, Allocator.Temp));
+            TestBuffer(ref bb);
+            TestObjectAPI(Monster.GetRootAsMonster(ref bb));
+
+            static byte[] ReadAllBytes(Stream input) {
+              using var memoryStream = new MemoryStream();
+              input.CopyTo(memoryStream);
+              return memoryStream.ToArray();
+            }
         }
 
         [FlatBuffersTestMethod]
         public void CanReadJsonFile()
         {
-            var jsonText = File.ReadAllText(@"../monsterdata_test.json");
+            using var fromAssembly = Assembly.GetAssembly(typeof(FlatBuffersExampleTests))
+                                           .GetManifestResourceStream("Fivemid.FiveFlat.Tests.Exported.Resources.monsterdata_test.json")!;
+            var jsonText = ReadAllText(fromAssembly);
             var mon = MonsterT.DeserializeFromJson(jsonText);
-            var fbb = new FlatBufferBuilder(1);
-            Monster.FinishMonsterBuffer(fbb, Monster.Pack(fbb, mon));
-            TestBuffer(fbb.DataBuffer);
+            var fbb = new FlatBufferBuilder(1, Allocator.Temp);
+            Monster.FinishMonsterBuffer(ref fbb, Monster.Pack(ref fbb, mon));
+            TestBuffer(ref fbb._bb);
+
+            static string ReadAllText(Stream input) {
+              using var reader = new StreamReader(input);
+              return reader.ReadToEnd();
+            }
         }
 
         [FlatBuffersTestMethod]
@@ -320,18 +288,18 @@ namespace Google.FlatBuffers.Test
         {
             const string monsterName = "TestVectorOfEnumsMonster";
             var colorVec = new Color[] { Color.Red, Color.Green, Color.Blue };
-            var fbb = new FlatBufferBuilder(32);
+            var fbb = new FlatBufferBuilder(32, Allocator.Temp);
             var str1 = fbb.CreateString(monsterName);
-            var vec1 = Monster.CreateVectorOfEnumsVector(fbb, colorVec);
-            Monster.StartMonster(fbb);
-            Monster.AddName(fbb, str1);
-            Monster.AddVectorOfEnums(fbb, vec1);
-            var monster1 = Monster.EndMonster(fbb);
-            Monster.FinishMonsterBuffer(fbb, monster1);
+            var vec1 = Monster.CreateVectorOfEnumsVector(ref fbb, colorVec);
+            Monster.StartMonster(ref fbb);
+            Monster.AddName(ref fbb, str1);
+            Monster.AddVectorOfEnums(ref fbb, vec1);
+            var monster1 = Monster.EndMonster(ref fbb);
+            Monster.FinishMonsterBuffer(ref fbb, monster1);
 
-            var mons = Monster.GetRootAsMonster(fbb.DataBuffer);
-            var colors = mons.GetVectorOfEnumsArray();
-            Assert.ArrayEqual(colorVec, colors);
+            var mons = Monster.GetRootAsMonster(ref fbb._bb);
+            // var colors = mons.GetVectorOfEnumsArray();
+            // Assert.ArrayEqual(colorVec, colors);
 
             TestObjectAPI(mons);
         }
@@ -343,36 +311,36 @@ namespace Google.FlatBuffers.Test
             const short nestedMonsterHp = 600;
             const short nestedMonsterMana = 1024;
             // Create nested buffer as a Monster type
-            var fbb1 = new FlatBufferBuilder(16);
+            var fbb1 = new FlatBufferBuilder(16, Allocator.Temp);
             var str1 = fbb1.CreateString(nestedMonsterName);
-            Monster.StartMonster(fbb1);
-            Monster.AddName(fbb1, str1);
-            Monster.AddHp(fbb1, nestedMonsterHp);
-            Monster.AddMana(fbb1, nestedMonsterMana);
-            var monster1 = Monster.EndMonster(fbb1);
-            Monster.FinishMonsterBuffer(fbb1, monster1);
+            Monster.StartMonster(ref fbb1);
+            Monster.AddName(ref fbb1, str1);
+            Monster.AddHp(ref fbb1, nestedMonsterHp);
+            Monster.AddMana(ref fbb1, nestedMonsterMana);
+            var monster1 = Monster.EndMonster(ref fbb1);
+            Monster.FinishMonsterBuffer(ref fbb1, monster1);
             var fbb1Bytes = fbb1.SizedByteArray();
-            fbb1 = null;
+            fbb1 = default;
 
             // Create a Monster which has the first buffer as a nested buffer
-            var fbb2 = new FlatBufferBuilder(16);
+            var fbb2 = new FlatBufferBuilder(16, Allocator.Temp);
             var str2 = fbb2.CreateString("My Monster");
-            var nestedBuffer = Monster.CreateTestnestedflatbufferVector(fbb2, fbb1Bytes);
-            Monster.StartMonster(fbb2);
-            Monster.AddName(fbb2, str2);
-            Monster.AddHp(fbb2, 50);
-            Monster.AddMana(fbb2, 32);
-            Monster.AddTestnestedflatbuffer(fbb2, nestedBuffer);
-            var monster = Monster.EndMonster(fbb2);
-            Monster.FinishMonsterBuffer(fbb2, monster);
+            var nestedBuffer = Monster.CreateTestnestedflatbufferVector(ref fbb2, fbb1Bytes);
+            Monster.StartMonster(ref fbb2);
+            Monster.AddName(ref fbb2, str2);
+            Monster.AddHp(ref fbb2, 50);
+            Monster.AddMana(ref fbb2, 32);
+            Monster.AddTestnestedflatbuffer(ref fbb2, nestedBuffer);
+            var monster = Monster.EndMonster(ref fbb2);
+            Monster.FinishMonsterBuffer(ref fbb2, monster);
 
             // Now test the data extracted from the nested buffer
-            var mons = Monster.GetRootAsMonster(fbb2.DataBuffer);
+            var mons = Monster.GetRootAsMonster(ref fbb2._bb);
             var nestedMonster = mons.GetTestnestedflatbufferAsMonster().Value;
 
             Assert.AreEqual(nestedMonsterMana, nestedMonster.Mana);
             Assert.AreEqual(nestedMonsterHp, nestedMonster.Hp);
-            Assert.AreEqual(nestedMonsterName, nestedMonster.Name);
+            Assert.StringEqual(nestedMonsterName, nestedMonster.Name);
 
             TestObjectAPI(mons);
             TestObjectAPI(nestedMonster);
@@ -381,7 +349,7 @@ namespace Google.FlatBuffers.Test
         [FlatBuffersTestMethod]
         public void TestFixedLenghtArrays()
         {
-            FlatBufferBuilder builder = new FlatBufferBuilder(100);
+            FlatBufferBuilder builder = new FlatBufferBuilder(100, Allocator.Temp);
 
             float   a;
             int[]   b = new int[15];
@@ -415,16 +383,16 @@ namespace Google.FlatBuffers.Test
             f[1] = 1;
 
             Offset<ArrayStruct> arrayOffset = ArrayStruct.CreateArrayStruct(
-                builder, a, b, c, d_a, d_b, d_c, d_d, e, f);
+                ref builder, a, b, c, d_a, d_b, d_c, d_d, e, f);
 
             // Create a table with the ArrayStruct.
-            ArrayTable.StartArrayTable(builder);
-            ArrayTable.AddA(builder, arrayOffset);
-            Offset<ArrayTable> tableOffset = ArrayTable.EndArrayTable(builder);
+            ArrayTable.StartArrayTable(ref builder);
+            ArrayTable.AddA(ref builder, arrayOffset);
+            Offset<ArrayTable> tableOffset = ArrayTable.EndArrayTable(ref builder);
 
-            ArrayTable.FinishArrayTableBuffer(builder, tableOffset);
+            ArrayTable.FinishArrayTableBuffer(ref builder, tableOffset);
 
-            ArrayTable table = ArrayTable.GetRootAsArrayTable(builder.DataBuffer);
+            ArrayTable table = ArrayTable.GetRootAsArrayTable(ref builder._bb);
 
             Assert.AreEqual(table.A.Value.A, 0.5f);
             for (int i = 0; i < 15; i++) Assert.AreEqual(table.A.Value.B(i), i);
@@ -453,8 +421,8 @@ namespace Google.FlatBuffers.Test
         [FlatBuffersTestMethod]
         public void TestUnionVector()
         {
-            var fbb = new FlatBufferBuilder(100);
-            var rapunzel = Rapunzel.CreateRapunzel(fbb, 40).Value;
+            var fbb = new FlatBufferBuilder(100, Allocator.Temp);
+            var rapunzel = Rapunzel.CreateRapunzel(ref fbb, 40).Value;
 
             var characterTypes = new[]
             {
@@ -462,25 +430,25 @@ namespace Google.FlatBuffers.Test
                 Character.Belle,
                 Character.Other,
             };
-            var characterTypesOffset = Movie.CreateCharactersTypeVector(fbb, characterTypes);
+            var characterTypesOffset = Movie.CreateCharactersTypeVector(ref fbb, characterTypes);
 
             var characters = new[]
             {
-                Attacker.CreateAttacker(fbb, 10).Value,
-                BookReader.CreateBookReader(fbb, 20).Value,
-                fbb.CreateSharedString("Chip").Value,
+                Attacker.CreateAttacker(ref fbb, 10).Value,
+                BookReader.CreateBookReader(ref fbb, 20).Value,
+                fbb.CreateString("Chip").Value,
             };
-            var charactersOffset = Movie.CreateCharactersVector(fbb, characters);
+            var charactersOffset = Movie.CreateCharactersVector(ref fbb, characters);
 
             var movieOffset = Movie.CreateMovie(
-                fbb,
+                ref fbb,
                 Character.Rapunzel,
                 rapunzel,
                 characterTypesOffset,
                 charactersOffset);
-            Movie.FinishMovieBuffer(fbb, movieOffset);
+            Movie.FinishMovieBuffer(ref fbb, movieOffset);
 
-            var movie = Movie.GetRootAsMovie(fbb.DataBuffer);
+            var movie = Movie.GetRootAsMovie(ref fbb._bb);
             Assert.AreEqual(Character.Rapunzel, movie.MainCharacterType);
             Assert.AreEqual(40, movie.MainCharacter<Rapunzel>().Value.HairLength);
 
@@ -490,7 +458,7 @@ namespace Google.FlatBuffers.Test
             Assert.AreEqual(Character.Belle, movie.CharactersType(1));
             Assert.AreEqual(20, movie.Characters<BookReader>(1).Value.BooksRead);
             Assert.AreEqual(Character.Other, movie.CharactersType(2));
-            Assert.AreEqual("Chip", movie.CharactersAsString(2));
+            Assert.StringEqual("Chip", movie.CharactersAsString(2));
 
             TestObjectAPI(movie);
         }
@@ -509,17 +477,17 @@ namespace Google.FlatBuffers.Test
                 },
             };
 
-            var fbb = new FlatBufferBuilder(100);
-            Movie.FinishMovieBuffer(fbb, Movie.Pack(fbb, movie));
+            var fbb = new FlatBufferBuilder(100, Allocator.Temp);
+            Movie.FinishMovieBuffer(ref fbb, Movie.Pack(ref fbb, movie));
 
-            TestObjectAPI(Movie.GetRootAsMovie(fbb.DataBuffer));
+            TestObjectAPI(Movie.GetRootAsMovie(ref fbb._bb));
         }
 
         private void AreEqual(Monster a, MonsterT b)
         {
             Assert.AreEqual(a.Hp, b.Hp);
             Assert.AreEqual(a.Mana, b.Mana);
-            Assert.AreEqual(a.Name, b.Name);
+            Assert.StringEqual(a.Name, b.Name);
 
             var posA = a.Pos;
             var posB = b.Pos;
@@ -542,21 +510,13 @@ namespace Google.FlatBuffers.Test
             {
                 var monster2A = a.Test<Monster>().Value;
                 var monster2B = b.Test.AsMonster();
-                Assert.AreEqual(monster2A.Name, monster2B.Name);
+                Assert.StringEqual(monster2A.Name, monster2B.Name);
             }
 
             Assert.AreEqual(a.InventoryLength, b.Inventory.Count);
             for (var i = 0; i < a.InventoryLength; ++i)
             {
                 Assert.AreEqual(a.Inventory(i), b.Inventory[i]);
-            }
-
-            var inventoryArray = a.GetInventoryArray();
-            var inventoryArrayLength = inventoryArray == null ? 0 : inventoryArray.Length;
-            Assert.AreEqual(inventoryArrayLength, b.Inventory.Count);
-            for (var i = 0; i < inventoryArrayLength; ++i)
-            {
-                Assert.AreEqual(inventoryArray[i], b.Inventory[i]);
             }
 
             Assert.AreEqual(a.Test4Length, b.Test4.Count);
@@ -571,7 +531,7 @@ namespace Google.FlatBuffers.Test
             Assert.AreEqual(a.TestarrayofstringLength, b.Testarrayofstring.Count);
             for (var i = 0; i < a.TestarrayofstringLength; ++i)
             {
-                Assert.AreEqual(a.Testarrayofstring(i), b.Testarrayofstring[i]);
+                Assert.StringEqual(a.Testarrayofstring(i), b.Testarrayofstring[i]);
             }
 
             Assert.AreEqual(a.Testbool, b.Testbool);
@@ -605,7 +565,7 @@ namespace Google.FlatBuffers.Test
         {
             Assert.AreEqual(a.Hp, b.Hp);
             Assert.AreEqual(a.Mana, b.Mana);
-            Assert.AreEqual(a.Name, b.Name);
+            Assert.StringEqual(a.Name, b.Name);
 
             var posA = a.Pos;
             var posB = b.Pos;
@@ -628,23 +588,13 @@ namespace Google.FlatBuffers.Test
             {
                 var monster2A = a.Test<Monster>().Value;
                 var monster2B = b.Test<Monster>().Value;
-                Assert.AreEqual(monster2A.Name, monster2B.Name);
+                Assert.StringEqual(monster2A.Name, monster2B.Name);
             }
 
             Assert.AreEqual(a.InventoryLength, b.InventoryLength);
             for (var i = 0; i < a.InventoryLength; ++i)
             {
                 Assert.AreEqual(a.Inventory(i), b.Inventory(i));
-            }
-
-            var inventoryArrayA = a.GetInventoryArray();
-            var inventoryArrayALength = inventoryArrayA == null ? 0 : inventoryArrayA.Length;
-            var inventoryArrayB = b.GetInventoryArray();
-            var inventoryArrayBLength = inventoryArrayB == null ? 0 : inventoryArrayB.Length;
-            Assert.AreEqual(inventoryArrayALength, inventoryArrayBLength);
-            for (var i = 0; i < inventoryArrayALength; ++i)
-            {
-                Assert.AreEqual(inventoryArrayA[i], inventoryArrayB[i]);
             }
 
             Assert.AreEqual(a.Test4Length, b.Test4Length);
@@ -659,7 +609,7 @@ namespace Google.FlatBuffers.Test
             Assert.AreEqual(a.TestarrayofstringLength, b.TestarrayofstringLength);
             for (var i = 0; i < a.TestarrayofstringLength; ++i)
             {
-                Assert.AreEqual(a.Testarrayofstring(i), b.Testarrayofstring(i));
+                Assert.StringEqual(a.Testarrayofstring(i), b.Testarrayofstring(i));
             }
 
             Assert.AreEqual(a.Testbool, b.Testbool);
@@ -694,16 +644,16 @@ namespace Google.FlatBuffers.Test
             var b = a.UnPack();
             AreEqual(a, b);
 
-            var fbb = new FlatBufferBuilder(1);
-            fbb.Finish(Monster.Pack(fbb, b).Value);
-            var c = Monster.GetRootAsMonster(fbb.DataBuffer);
+            var fbb = new FlatBufferBuilder(1, Allocator.Temp);
+            fbb.Finish(Monster.Pack(ref fbb, b).Value);
+            var c = Monster.GetRootAsMonster(ref fbb._bb);
             AreEqual(a, c);
 
             var jsonText = b.SerializeToJson();
             var d = MonsterT.DeserializeFromJson(jsonText);
             AreEqual(a, d);
 
-            var fbBuffer = b.SerializeToBinary();
+            var fbBuffer = b.SerializeToBinary(Allocator.Temp);
             Assert.IsTrue(Monster.MonsterBufferHasIdentifier(new ByteBuffer(fbBuffer)));
             var e = MonsterT.DeserializeFromBinary(fbBuffer);
             AreEqual(a, e);
@@ -798,16 +748,16 @@ namespace Google.FlatBuffers.Test
             var b = a.UnPack();
             AreEqual(a, b);
 
-            var fbb = new FlatBufferBuilder(1);
-            fbb.Finish(ArrayTable.Pack(fbb, b).Value);
-            var c = ArrayTable.GetRootAsArrayTable(fbb.DataBuffer);
+            var fbb = new FlatBufferBuilder(1, Allocator.Temp);
+            fbb.Finish(ArrayTable.Pack(ref fbb, b).Value);
+            var c = ArrayTable.GetRootAsArrayTable(ref fbb._bb);
             AreEqual(a, c);
 
             var jsonText = b.SerializeToJson();
             var d = ArrayTableT.DeserializeFromJson(jsonText);
             AreEqual(a, d);
 
-            var fbBuffer = b.SerializeToBinary();
+            var fbBuffer = b.SerializeToBinary(Allocator.Temp);
             Assert.IsTrue(ArrayTable.ArrayTableBufferHasIdentifier(new ByteBuffer(fbBuffer)));
             var e = ArrayTableT.DeserializeFromBinary(fbBuffer);
             AreEqual(a, e);
@@ -824,7 +774,7 @@ namespace Google.FlatBuffers.Test
             Assert.AreEqual(a.CharactersType(1), b.Characters[1].Type);
             Assert.AreEqual(a.Characters<BookReader>(1).Value.BooksRead, b.Characters[1].AsBelle().BooksRead);
             Assert.AreEqual(a.CharactersType(2), b.Characters[2].Type);
-            Assert.AreEqual(a.CharactersAsString(2), b.Characters[2].AsOther());
+            Assert.StringEqual(a.CharactersAsString(2), b.Characters[2].AsOther());
         }
 
         private void AreEqual(Movie a, Movie b)
@@ -838,7 +788,7 @@ namespace Google.FlatBuffers.Test
             Assert.AreEqual(a.CharactersType(1), b.CharactersType(1));
             Assert.AreEqual(a.Characters<BookReader>(1).Value.BooksRead, b.Characters<BookReader>(1).Value.BooksRead);
             Assert.AreEqual(a.CharactersType(2), b.CharactersType(2));
-            Assert.AreEqual(a.CharactersAsString(2), b.CharactersAsString(2));
+            Assert.StringEqual(a.CharactersAsString(2), b.CharactersAsString(2));
         }
 
         private void TestObjectAPI(Movie a)
@@ -846,16 +796,16 @@ namespace Google.FlatBuffers.Test
             var b = a.UnPack();
             AreEqual(a, b);
 
-            var fbb = new FlatBufferBuilder(1);
-            fbb.Finish(Movie.Pack(fbb, b).Value);
-            var c = Movie.GetRootAsMovie(fbb.DataBuffer);
+            var fbb = new FlatBufferBuilder(1, Allocator.Temp);
+            fbb.Finish(Movie.Pack(ref fbb, b).Value);
+            var c = Movie.GetRootAsMovie(ref fbb._bb);
             AreEqual(a, c);
 
             var jsonText = b.SerializeToJson();
             var d = MovieT.DeserializeFromJson(jsonText);
             AreEqual(a, d);
 
-            var fbBuffer = b.SerializeToBinary();
+            var fbBuffer = b.SerializeToBinary(Allocator.Temp);
             Assert.IsTrue(Movie.MovieBufferHasIdentifier(new ByteBuffer(fbBuffer)));
             var e = MovieT.DeserializeFromBinary(fbBuffer);
             AreEqual(a, e);
@@ -883,16 +833,16 @@ namespace Google.FlatBuffers.Test
             const float floatValue = 3.141592F;
             const double doubleValue = 1.618033988;
 
-            var fbb = new FlatBufferBuilder(1);
+            var fbb = new FlatBufferBuilder(1, Allocator.Temp);
             var str = fbb.CreateString("ParallelTest");
-            Monster.StartMonster(fbb);
-            Monster.AddPos(fbb, Vec3.CreateVec3(fbb, 1.0f, 2.0f, floatValue, doubleValue,
+            Monster.StartMonster(ref fbb);
+            Monster.AddPos(ref fbb, Vec3.CreateVec3(ref fbb, 1.0f, 2.0f, floatValue, doubleValue,
                                                      Color.Green, (short)5, (sbyte)6));
 
-            Monster.AddName(fbb, str);
-            Monster.FinishMonsterBuffer(fbb, Monster.EndMonster(fbb));
+            Monster.AddName(ref fbb, str);
+            Monster.FinishMonsterBuffer(ref fbb, Monster.EndMonster(ref fbb));
 
-            var mon = Monster.GetRootAsMonster(fbb.DataBuffer);
+            var mon = Monster.GetRootAsMonster(ref fbb._bb);
 
             var pos = mon.Pos.Value;
             Assert.AreEqual(pos.Test1, doubleValue);
@@ -922,12 +872,12 @@ namespace Google.FlatBuffers.Test
 
         [FlatBuffersTestMethod]
         public void TestScalarOptional_EmptyBuffer() {
-            var fbb = new FlatBufferBuilder(1);
-            ScalarStuff.StartScalarStuff(fbb);
-            var offset = ScalarStuff.EndScalarStuff(fbb);
-            ScalarStuff.FinishScalarStuffBuffer(fbb, offset);
+            var fbb = new FlatBufferBuilder(1, Allocator.Temp);
+            ScalarStuff.StartScalarStuff(ref fbb);
+            var offset = ScalarStuff.EndScalarStuff(ref fbb);
+            ScalarStuff.FinishScalarStuffBuffer(ref fbb, offset);
 
-            ScalarStuff scalarStuff = ScalarStuff.GetRootAsScalarStuff(fbb.DataBuffer);
+            ScalarStuff scalarStuff = ScalarStuff.GetRootAsScalarStuff(ref fbb._bb);
             Assert.AreEqual((sbyte)0, scalarStuff.JustI8);
             Assert.AreEqual(null, scalarStuff.MaybeI8);
             Assert.AreEqual((sbyte)42, scalarStuff.DefaultI8);
@@ -975,55 +925,55 @@ namespace Google.FlatBuffers.Test
 
         [FlatBuffersTestMethod]
         public void TestScalarOptional_Construction() {
-            var fbb = new FlatBufferBuilder(1);
-            ScalarStuff.StartScalarStuff(fbb);
-            ScalarStuff.AddJustI8(fbb, 5);
-            ScalarStuff.AddMaybeI8(fbb, 5);
-            ScalarStuff.AddDefaultI8(fbb, 5);
-            ScalarStuff.AddJustU8(fbb, 6);
-            ScalarStuff.AddMaybeU8(fbb, 6);
-            ScalarStuff.AddDefaultU8(fbb, 6);
+            var fbb = new FlatBufferBuilder(1, Allocator.Temp);
+            ScalarStuff.StartScalarStuff(ref fbb);
+            ScalarStuff.AddJustI8(ref fbb, 5);
+            ScalarStuff.AddMaybeI8(ref fbb, 5);
+            ScalarStuff.AddDefaultI8(ref fbb, 5);
+            ScalarStuff.AddJustU8(ref fbb, 6);
+            ScalarStuff.AddMaybeU8(ref fbb, 6);
+            ScalarStuff.AddDefaultU8(ref fbb, 6);
 
-            ScalarStuff.AddJustI16(fbb, 7);
-            ScalarStuff.AddMaybeI16(fbb, 7);
-            ScalarStuff.AddDefaultI16(fbb, 7);
-            ScalarStuff.AddJustU16(fbb, 8);
-            ScalarStuff.AddMaybeU16(fbb, 8);
-            ScalarStuff.AddDefaultU16(fbb, 8);
+            ScalarStuff.AddJustI16(ref fbb, 7);
+            ScalarStuff.AddMaybeI16(ref fbb, 7);
+            ScalarStuff.AddDefaultI16(ref fbb, 7);
+            ScalarStuff.AddJustU16(ref fbb, 8);
+            ScalarStuff.AddMaybeU16(ref fbb, 8);
+            ScalarStuff.AddDefaultU16(ref fbb, 8);
 
-            ScalarStuff.AddJustI32(fbb, 9);
-            ScalarStuff.AddMaybeI32(fbb, 9);
-            ScalarStuff.AddDefaultI32(fbb, 9);
-            ScalarStuff.AddJustU32(fbb, 10);
-            ScalarStuff.AddMaybeU32(fbb, 10);
-            ScalarStuff.AddDefaultU32(fbb, 10);
+            ScalarStuff.AddJustI32(ref fbb, 9);
+            ScalarStuff.AddMaybeI32(ref fbb, 9);
+            ScalarStuff.AddDefaultI32(ref fbb, 9);
+            ScalarStuff.AddJustU32(ref fbb, 10);
+            ScalarStuff.AddMaybeU32(ref fbb, 10);
+            ScalarStuff.AddDefaultU32(ref fbb, 10);
 
-            ScalarStuff.AddJustI64(fbb, 11);
-            ScalarStuff.AddMaybeI64(fbb, 11);
-            ScalarStuff.AddDefaultI64(fbb, 11);
-            ScalarStuff.AddJustU64(fbb, 12);
-            ScalarStuff.AddMaybeU64(fbb, 12);
-            ScalarStuff.AddDefaultU64(fbb, 12);
+            ScalarStuff.AddJustI64(ref fbb, 11);
+            ScalarStuff.AddMaybeI64(ref fbb, 11);
+            ScalarStuff.AddDefaultI64(ref fbb, 11);
+            ScalarStuff.AddJustU64(ref fbb, 12);
+            ScalarStuff.AddMaybeU64(ref fbb, 12);
+            ScalarStuff.AddDefaultU64(ref fbb, 12);
 
-            ScalarStuff.AddJustF32(fbb, 13.0f);
-            ScalarStuff.AddMaybeF32(fbb, 13.0f);
-            ScalarStuff.AddDefaultF32(fbb, 13.0f);
-            ScalarStuff.AddJustF64(fbb, 14.0);
-            ScalarStuff.AddMaybeF64(fbb, 14.0);
-            ScalarStuff.AddDefaultF64(fbb, 14.0);
+            ScalarStuff.AddJustF32(ref fbb, 13.0f);
+            ScalarStuff.AddMaybeF32(ref fbb, 13.0f);
+            ScalarStuff.AddDefaultF32(ref fbb, 13.0f);
+            ScalarStuff.AddJustF64(ref fbb, 14.0);
+            ScalarStuff.AddMaybeF64(ref fbb, 14.0);
+            ScalarStuff.AddDefaultF64(ref fbb, 14.0);
 
-            ScalarStuff.AddJustBool(fbb, true);
-            ScalarStuff.AddMaybeBool(fbb, true);
-            ScalarStuff.AddDefaultBool(fbb, false); // note this is the opposite
+            ScalarStuff.AddJustBool(ref fbb, true);
+            ScalarStuff.AddMaybeBool(ref fbb, true);
+            ScalarStuff.AddDefaultBool(ref fbb, false); // note this is the opposite
 
-            ScalarStuff.AddJustEnum(fbb, OptionalByte.Two);
-            ScalarStuff.AddMaybeEnum(fbb, OptionalByte.Two);
-            ScalarStuff.AddDefaultEnum(fbb, OptionalByte.Two);
+            ScalarStuff.AddJustEnum(ref fbb, OptionalByte.Two);
+            ScalarStuff.AddMaybeEnum(ref fbb, OptionalByte.Two);
+            ScalarStuff.AddDefaultEnum(ref fbb, OptionalByte.Two);
 
-            var offset = ScalarStuff.EndScalarStuff(fbb);
-            ScalarStuff.FinishScalarStuffBuffer(fbb, offset);
+            var offset = ScalarStuff.EndScalarStuff(ref fbb);
+            ScalarStuff.FinishScalarStuffBuffer(ref fbb, offset);
 
-            ScalarStuff scalarStuff = ScalarStuff.GetRootAsScalarStuff(fbb.DataBuffer);
+            ScalarStuff scalarStuff = ScalarStuff.GetRootAsScalarStuff(ref fbb._bb);
             Assert.AreEqual((sbyte)5, scalarStuff.JustI8);
             Assert.AreEqual((sbyte)5, scalarStuff.MaybeI8);
             Assert.AreEqual((sbyte)5, scalarStuff.DefaultI8);
@@ -1071,15 +1021,15 @@ namespace Google.FlatBuffers.Test
 
         [FlatBuffersTestMethod]
         public void TestScalarOptional_Construction_CreatorMethod() {
-            var fbb = new FlatBufferBuilder(1);
+            var fbb = new FlatBufferBuilder(1, Allocator.Temp);
 
-            var offset = ScalarStuff.CreateScalarStuff(fbb,5,5,5,6,6,6,7,7,7,
+            var offset = ScalarStuff.CreateScalarStuff(ref fbb,5,5,5,6,6,6,7,7,7,
                 8,8,8,9,9,9,10,10,10,11,11,11,12,12,12,13.0f,13.0f,13.0f,14.0,
                 14.0,14.0,true,true,false,OptionalByte.Two,OptionalByte.Two,
                 OptionalByte.Two);
-            ScalarStuff.FinishScalarStuffBuffer(fbb, offset);
+            ScalarStuff.FinishScalarStuffBuffer(ref fbb, offset);
 
-            ScalarStuff scalarStuff = ScalarStuff.GetRootAsScalarStuff(fbb.DataBuffer);
+            ScalarStuff scalarStuff = ScalarStuff.GetRootAsScalarStuff(ref fbb._bb);
             Assert.AreEqual((sbyte)5, scalarStuff.JustI8);
             Assert.AreEqual((sbyte)5, scalarStuff.MaybeI8);
             Assert.AreEqual((sbyte)5, scalarStuff.DefaultI8);
@@ -1134,13 +1084,13 @@ namespace Google.FlatBuffers.Test
             Assert.AreEqual((int)KeywordTest.ABC.where, 1);
             Assert.AreEqual((int)KeywordTest.ABC.@stackalloc, 2);
 
-            var fbb = new FlatBufferBuilder(1);
+            var fbb = new FlatBufferBuilder(1, Allocator.Temp);
             var offset = KeywordsInTable.CreateKeywordsInTable(
-                fbb, KeywordTest.ABC.@stackalloc, KeywordTest.@public.NONE);
+                ref fbb, KeywordTest.ABC.@stackalloc, KeywordTest.@public.NONE);
             fbb.Finish(offset.Value);
- 
-            KeywordsInTable keywordsInTable = 
-                KeywordsInTable.GetRootAsKeywordsInTable(fbb.DataBuffer);
+
+            KeywordsInTable keywordsInTable =
+                KeywordsInTable.GetRootAsKeywordsInTable(ref fbb._bb);
 
             Assert.AreEqual(keywordsInTable.Is, KeywordTest.ABC.@stackalloc);
             Assert.AreEqual(keywordsInTable.Private, KeywordTest.@public.NONE);
@@ -1149,13 +1099,13 @@ namespace Google.FlatBuffers.Test
 
         [FlatBuffersTestMethod]
         public void AddOptionalEnum_WhenPassNull_ShouldWorkProperly() {
-          var fbb = new FlatBufferBuilder(1);
-          ScalarStuff.StartScalarStuff(fbb);
-          ScalarStuff.AddMaybeEnum(fbb, null);
-          var offset = ScalarStuff.EndScalarStuff(fbb);
-          ScalarStuff.FinishScalarStuffBuffer(fbb, offset);
-          
-          ScalarStuff scalarStuff = ScalarStuff.GetRootAsScalarStuff(fbb.DataBuffer);
+          var fbb = new FlatBufferBuilder(1, Allocator.Temp);
+          ScalarStuff.StartScalarStuff(ref fbb);
+          ScalarStuff.AddMaybeEnum(ref fbb, null);
+          var offset = ScalarStuff.EndScalarStuff(ref fbb);
+          ScalarStuff.FinishScalarStuffBuffer(ref fbb, offset);
+
+          ScalarStuff scalarStuff = ScalarStuff.GetRootAsScalarStuff(ref fbb._bb);
           Assert.AreEqual(null, scalarStuff.MaybeEnum);
         }
 
@@ -1165,28 +1115,29 @@ namespace Google.FlatBuffers.Test
             // This checks if using the `key` attribute that includes the
             // default value (e.g., 0) is still searchable. This is a regression
             // test for https://github.com/google/flatbuffers/issues/7380.
-            var fbb = new FlatBufferBuilder(1);
+            var fbb = new FlatBufferBuilder(1, Allocator.Temp);
 
-            // Create a vector of Stat objects, with Count being the key. 
+            // Create a vector of Stat objects, with Count being the key.
             var stat_offsets = new Offset<Stat>[4];
             for(ushort i = 0; i < stat_offsets.Length; i++) {
-                Stat.StartStat(fbb);
-                Stat.AddCount(fbb, i);
-                stat_offsets[stat_offsets.Length - 1 - i] = Stat.EndStat(fbb);
+                Stat.StartStat(ref fbb);
+                Stat.AddCount(ref fbb, i);
+                stat_offsets[stat_offsets.Length - 1 - i] = Stat.EndStat(ref fbb);
             }
 
             // Ensure the sort works.
-            var sort = Stat.CreateSortedVectorOfStat(fbb, stat_offsets);
+            Array.Sort(stat_offsets, (o1, o2) => Stat.CompareStat(ref fbb, o1, o2));
+            var sort = fbb.CreateVectorOfTables(stat_offsets.AsSpan());
 
             // Create the monster with the sorted vector of Stat objects.
             var str = fbb.CreateString("MyMonster");
-            Monster.StartMonster(fbb);
-            Monster.AddName(fbb, str);
-            Monster.AddScalarKeySortedTables(fbb, sort);
-            fbb.Finish(Monster.EndMonster(fbb).Value);
+            Monster.StartMonster(ref fbb);
+            Monster.AddName(ref fbb, str);
+            Monster.AddScalarKeySortedTables(ref fbb, sort);
+            fbb.Finish(Monster.EndMonster(ref fbb).Value);
 
             // Get the monster.
-            var monster = Monster.GetRootAsMonster(fbb.DataBuffer);
+            var monster = Monster.GetRootAsMonster(ref fbb._bb);
 
             // Ensure each key is findable.
             for(ushort i =0 ; i < stat_offsets.Length; i++) {

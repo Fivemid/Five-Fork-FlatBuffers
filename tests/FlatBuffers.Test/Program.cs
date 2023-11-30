@@ -19,15 +19,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace Google.FlatBuffers.Test
+namespace Fivemid.FiveFlat.Tests.Exported
 {
-    static class Program
+    public static class Program
     {
         public static int Main(string[] args)
         {
             var testResults = new List<bool>();
 
-            var testClasses = Assembly.GetExecutingAssembly().GetExportedTypes()
+            var testClasses = Assembly.GetAssembly(typeof (FlatBuffersTestClassAttribute)).GetExportedTypes()
                 .Where(t => t.IsClass && t.GetCustomAttributes(typeof (FlatBuffersTestClassAttribute), false).Length > 0);
 
             foreach (var testClass in testClasses)
@@ -47,8 +47,8 @@ namespace Google.FlatBuffers.Test
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine("{0}: FAILED when invoking {1} with error {2}",
-                            testClass.Name ,method.Name, ex.GetBaseException());
+                        UnityEngine.Debug.LogError(
+                          $"{testClass.Name}: FAILED when invoking {method.Name} with error {ex.GetBaseException()}");
                         testResults.Add(false);
                     }
                 }
@@ -56,7 +56,7 @@ namespace Google.FlatBuffers.Test
 
             var failedCount = testResults.Count(i => i == false);
 
-            Console.WriteLine("{0} tests run, {1} failed", testResults.Count, failedCount);
+            UnityEngine.Debug.Log($"{testResults.Count} tests run, {failedCount} failed");
 
             if (failedCount > 0)
             {

@@ -5,33 +5,34 @@
 namespace MyGame.Example
 {
 
+using global::Unity.Collections;
 using global::System;
 using global::System.Collections.Generic;
-using global::Google.FlatBuffers;
+using global::Fivemid.FiveFlat;
 
-internal partial struct TestSimpleTableWithEnum : IFlatbufferObject
+internal partial struct TestSimpleTableWithEnum : IFlatBufferObject
 {
   private Table __p;
-  public ByteBuffer ByteBuffer { get { return __p.bb; } }
-  public static void ValidateVersion() { FlatBufferConstants.FLATBUFFERS_23_5_26(); }
-  public static TestSimpleTableWithEnum GetRootAsTestSimpleTableWithEnum(ByteBuffer _bb) { return GetRootAsTestSimpleTableWithEnum(_bb, new TestSimpleTableWithEnum()); }
-  public static TestSimpleTableWithEnum GetRootAsTestSimpleTableWithEnum(ByteBuffer _bb, TestSimpleTableWithEnum obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, _bb)); }
-  public void __init(int _i, ByteBuffer _bb) { __p = new Table(_i, _bb); }
-  public TestSimpleTableWithEnum __assign(int _i, ByteBuffer _bb) { __init(_i, _bb); return this; }
+  public ref ByteBuffer ByteBuffer { get { return ref __p.bb; } }
+  public static void ValidateVersion() { FlatBufferConstants.FIVE_FLAT_23_11_29(); }
+  public static TestSimpleTableWithEnum GetRootAsTestSimpleTableWithEnum(ref ByteBuffer _bb) { return GetRootAsTestSimpleTableWithEnum(ref _bb, new TestSimpleTableWithEnum()); }
+  public static TestSimpleTableWithEnum GetRootAsTestSimpleTableWithEnum(ref ByteBuffer _bb, TestSimpleTableWithEnum obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, ref _bb)); }
+  public void __init(int _i, ref ByteBuffer _bb) { __p = new Table(_i, ref _bb); }
+  public TestSimpleTableWithEnum __assign(int _i, ref ByteBuffer _bb) { __init(_i, ref _bb); return this; }
 
   public MyGame.Example.Color Color { get { int o = __p.__offset(4); return o != 0 ? (MyGame.Example.Color)__p.bb.Get(o + __p.bb_pos) : MyGame.Example.Color.Green; } }
-  public bool MutateColor(MyGame.Example.Color color) { int o = __p.__offset(4); if (o != 0) { __p.bb.Put(o + __p.bb_pos, (byte)color); return true; } else { return false; } }
+  public bool MutateColor(MyGame.Example.Color color) { int o = __p.__offset(4); if (o != 0) { __p.bb.PutByte(o + __p.bb_pos, (byte)color); return true; } else { return false; } }
 
-  public static Offset<MyGame.Example.TestSimpleTableWithEnum> CreateTestSimpleTableWithEnum(FlatBufferBuilder builder,
+  public static Offset<MyGame.Example.TestSimpleTableWithEnum> CreateTestSimpleTableWithEnum(ref FlatBufferBuilder builder,
       MyGame.Example.Color color = MyGame.Example.Color.Green) {
     builder.StartTable(1);
-    TestSimpleTableWithEnum.AddColor(builder, color);
-    return TestSimpleTableWithEnum.EndTestSimpleTableWithEnum(builder);
+    TestSimpleTableWithEnum.AddColor(ref builder, color);
+    return TestSimpleTableWithEnum.EndTestSimpleTableWithEnum(ref builder);
   }
 
-  public static void StartTestSimpleTableWithEnum(FlatBufferBuilder builder) { builder.StartTable(1); }
-  public static void AddColor(FlatBufferBuilder builder, MyGame.Example.Color color) { builder.AddByte(0, (byte)color, 2); }
-  public static Offset<MyGame.Example.TestSimpleTableWithEnum> EndTestSimpleTableWithEnum(FlatBufferBuilder builder) {
+  public static void StartTestSimpleTableWithEnum(ref FlatBufferBuilder builder) { builder.StartTable(1); }
+  public static void AddColor(ref FlatBufferBuilder builder, MyGame.Example.Color color) { builder.AddByte(0, (byte)color, 2); }
+  public static Offset<MyGame.Example.TestSimpleTableWithEnum> EndTestSimpleTableWithEnum(ref FlatBufferBuilder builder) {
     int o = builder.EndTable();
     return new Offset<MyGame.Example.TestSimpleTableWithEnum>(o);
   }
@@ -43,10 +44,10 @@ internal partial struct TestSimpleTableWithEnum : IFlatbufferObject
   public void UnPackTo(TestSimpleTableWithEnumT _o) {
     _o.Color = this.Color;
   }
-  public static Offset<MyGame.Example.TestSimpleTableWithEnum> Pack(FlatBufferBuilder builder, TestSimpleTableWithEnumT _o) {
+  public static Offset<MyGame.Example.TestSimpleTableWithEnum> Pack(ref FlatBufferBuilder builder, TestSimpleTableWithEnumT _o) {
     if (_o == null) return default(Offset<MyGame.Example.TestSimpleTableWithEnum>);
     return CreateTestSimpleTableWithEnum(
-      builder,
+      ref builder,
       _o.Color);
   }
 }
@@ -64,7 +65,7 @@ internal partial class TestSimpleTableWithEnumT
 
 static public class TestSimpleTableWithEnumVerify
 {
-  static public bool Verify(Google.FlatBuffers.Verifier verifier, uint tablePos)
+  static public bool Verify(Fivemid.FiveFlat.Verifier verifier, uint tablePos)
   {
     return verifier.VerifyTableStart(tablePos)
       && verifier.VerifyField(tablePos, 4 /*Color*/, 1 /*MyGame.Example.Color*/, 1, false)

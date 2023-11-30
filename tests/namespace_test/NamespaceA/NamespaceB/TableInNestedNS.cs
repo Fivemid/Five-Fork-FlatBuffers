@@ -5,33 +5,34 @@
 namespace NamespaceA.NamespaceB
 {
 
+using global::Unity.Collections;
 using global::System;
 using global::System.Collections.Generic;
-using global::Google.FlatBuffers;
+using global::Fivemid.FiveFlat;
 
-public struct TableInNestedNS : IFlatbufferObject
+public struct TableInNestedNS : IFlatBufferObject
 {
   private Table __p;
-  public ByteBuffer ByteBuffer { get { return __p.bb; } }
-  public static void ValidateVersion() { FlatBufferConstants.FLATBUFFERS_23_5_26(); }
-  public static TableInNestedNS GetRootAsTableInNestedNS(ByteBuffer _bb) { return GetRootAsTableInNestedNS(_bb, new TableInNestedNS()); }
-  public static TableInNestedNS GetRootAsTableInNestedNS(ByteBuffer _bb, TableInNestedNS obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, _bb)); }
-  public void __init(int _i, ByteBuffer _bb) { __p = new Table(_i, _bb); }
-  public TableInNestedNS __assign(int _i, ByteBuffer _bb) { __init(_i, _bb); return this; }
+  public ref ByteBuffer ByteBuffer { get { return ref __p.bb; } }
+  public static void ValidateVersion() { FlatBufferConstants.FIVE_FLAT_23_11_29(); }
+  public static TableInNestedNS GetRootAsTableInNestedNS(ref ByteBuffer _bb) { return GetRootAsTableInNestedNS(ref _bb, new TableInNestedNS()); }
+  public static TableInNestedNS GetRootAsTableInNestedNS(ref ByteBuffer _bb, TableInNestedNS obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, ref _bb)); }
+  public void __init(int _i, ref ByteBuffer _bb) { __p = new Table(_i, ref _bb); }
+  public TableInNestedNS __assign(int _i, ref ByteBuffer _bb) { __init(_i, ref _bb); return this; }
 
   public int Foo { get { int o = __p.__offset(4); return o != 0 ? __p.bb.GetInt(o + __p.bb_pos) : (int)0; } }
   public bool MutateFoo(int foo) { int o = __p.__offset(4); if (o != 0) { __p.bb.PutInt(o + __p.bb_pos, foo); return true; } else { return false; } }
 
-  public static Offset<NamespaceA.NamespaceB.TableInNestedNS> CreateTableInNestedNS(FlatBufferBuilder builder,
+  public static Offset<NamespaceA.NamespaceB.TableInNestedNS> CreateTableInNestedNS(ref FlatBufferBuilder builder,
       int foo = 0) {
     builder.StartTable(1);
-    TableInNestedNS.AddFoo(builder, foo);
-    return TableInNestedNS.EndTableInNestedNS(builder);
+    TableInNestedNS.AddFoo(ref builder, foo);
+    return TableInNestedNS.EndTableInNestedNS(ref builder);
   }
 
-  public static void StartTableInNestedNS(FlatBufferBuilder builder) { builder.StartTable(1); }
-  public static void AddFoo(FlatBufferBuilder builder, int foo) { builder.AddInt(0, foo, 0); }
-  public static Offset<NamespaceA.NamespaceB.TableInNestedNS> EndTableInNestedNS(FlatBufferBuilder builder) {
+  public static void StartTableInNestedNS(ref FlatBufferBuilder builder) { builder.StartTable(1); }
+  public static void AddFoo(ref FlatBufferBuilder builder, int foo) { builder.AddInt(0, foo, 0); }
+  public static Offset<NamespaceA.NamespaceB.TableInNestedNS> EndTableInNestedNS(ref FlatBufferBuilder builder) {
     int o = builder.EndTable();
     return new Offset<NamespaceA.NamespaceB.TableInNestedNS>(o);
   }
@@ -43,10 +44,10 @@ public struct TableInNestedNS : IFlatbufferObject
   public void UnPackTo(TableInNestedNST _o) {
     _o.Foo = this.Foo;
   }
-  public static Offset<NamespaceA.NamespaceB.TableInNestedNS> Pack(FlatBufferBuilder builder, TableInNestedNST _o) {
+  public static Offset<NamespaceA.NamespaceB.TableInNestedNS> Pack(ref FlatBufferBuilder builder, TableInNestedNST _o) {
     if (_o == null) return default(Offset<NamespaceA.NamespaceB.TableInNestedNS>);
     return CreateTableInNestedNS(
-      builder,
+      ref builder,
       _o.Foo);
   }
 }
@@ -64,7 +65,7 @@ public class TableInNestedNST
 
 static public class TableInNestedNSVerify
 {
-  static public bool Verify(Google.FlatBuffers.Verifier verifier, uint tablePos)
+  static public bool Verify(Fivemid.FiveFlat.Verifier verifier, uint tablePos)
   {
     return verifier.VerifyTableStart(tablePos)
       && verifier.VerifyField(tablePos, 4 /*Foo*/, 4 /*int*/, 4, false)

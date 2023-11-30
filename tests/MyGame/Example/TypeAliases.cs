@@ -5,24 +5,25 @@
 namespace MyGame.Example
 {
 
+using global::Unity.Collections;
 using global::System;
 using global::System.Collections.Generic;
-using global::Google.FlatBuffers;
+using global::Fivemid.FiveFlat;
 
-public struct TypeAliases : IFlatbufferObject
+public struct TypeAliases : IFlatBufferObject
 {
   private Table __p;
-  public ByteBuffer ByteBuffer { get { return __p.bb; } }
-  public static void ValidateVersion() { FlatBufferConstants.FLATBUFFERS_23_5_26(); }
-  public static TypeAliases GetRootAsTypeAliases(ByteBuffer _bb) { return GetRootAsTypeAliases(_bb, new TypeAliases()); }
-  public static TypeAliases GetRootAsTypeAliases(ByteBuffer _bb, TypeAliases obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, _bb)); }
-  public void __init(int _i, ByteBuffer _bb) { __p = new Table(_i, _bb); }
-  public TypeAliases __assign(int _i, ByteBuffer _bb) { __init(_i, _bb); return this; }
+  public ref ByteBuffer ByteBuffer { get { return ref __p.bb; } }
+  public static void ValidateVersion() { FlatBufferConstants.FIVE_FLAT_23_11_29(); }
+  public static TypeAliases GetRootAsTypeAliases(ref ByteBuffer _bb) { return GetRootAsTypeAliases(ref _bb, new TypeAliases()); }
+  public static TypeAliases GetRootAsTypeAliases(ref ByteBuffer _bb, TypeAliases obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, ref _bb)); }
+  public void __init(int _i, ref ByteBuffer _bb) { __p = new Table(_i, ref _bb); }
+  public TypeAliases __assign(int _i, ref ByteBuffer _bb) { __init(_i, ref _bb); return this; }
 
   public sbyte I8 { get { int o = __p.__offset(4); return o != 0 ? __p.bb.GetSbyte(o + __p.bb_pos) : (sbyte)0; } }
   public bool MutateI8(sbyte i8) { int o = __p.__offset(4); if (o != 0) { __p.bb.PutSbyte(o + __p.bb_pos, i8); return true; } else { return false; } }
   public byte U8 { get { int o = __p.__offset(6); return o != 0 ? __p.bb.Get(o + __p.bb_pos) : (byte)0; } }
-  public bool MutateU8(byte u8) { int o = __p.__offset(6); if (o != 0) { __p.bb.Put(o + __p.bb_pos, u8); return true; } else { return false; } }
+  public bool MutateU8(byte u8) { int o = __p.__offset(6); if (o != 0) { __p.bb.PutByte(o + __p.bb_pos, u8); return true; } else { return false; } }
   public short I16 { get { int o = __p.__offset(8); return o != 0 ? __p.bb.GetShort(o + __p.bb_pos) : (short)0; } }
   public bool MutateI16(short i16) { int o = __p.__offset(8); if (o != 0) { __p.bb.PutShort(o + __p.bb_pos, i16); return true; } else { return false; } }
   public ushort U16 { get { int o = __p.__offset(10); return o != 0 ? __p.bb.GetUshort(o + __p.bb_pos) : (ushort)0; } }
@@ -41,24 +42,12 @@ public struct TypeAliases : IFlatbufferObject
   public bool MutateF64(double f64) { int o = __p.__offset(22); if (o != 0) { __p.bb.PutDouble(o + __p.bb_pos, f64); return true; } else { return false; } }
   public sbyte V8(int j) { int o = __p.__offset(24); return o != 0 ? __p.bb.GetSbyte(__p.__vector(o) + j * 1) : (sbyte)0; }
   public int V8Length { get { int o = __p.__offset(24); return o != 0 ? __p.__vector_len(o) : 0; } }
-#if ENABLE_SPAN_T
-  public Span<sbyte> GetV8Bytes() { return __p.__vector_as_span<sbyte>(24, 1); }
-#else
-  public ArraySegment<byte>? GetV8Bytes() { return __p.__vector_as_arraysegment(24); }
-#endif
-  public sbyte[] GetV8Array() { return __p.__vector_as_array<sbyte>(24); }
   public bool MutateV8(int j, sbyte v8) { int o = __p.__offset(24); if (o != 0) { __p.bb.PutSbyte(__p.__vector(o) + j * 1, v8); return true; } else { return false; } }
   public double Vf64(int j) { int o = __p.__offset(26); return o != 0 ? __p.bb.GetDouble(__p.__vector(o) + j * 8) : (double)0; }
   public int Vf64Length { get { int o = __p.__offset(26); return o != 0 ? __p.__vector_len(o) : 0; } }
-#if ENABLE_SPAN_T
-  public Span<double> GetVf64Bytes() { return __p.__vector_as_span<double>(26, 8); }
-#else
-  public ArraySegment<byte>? GetVf64Bytes() { return __p.__vector_as_arraysegment(26); }
-#endif
-  public double[] GetVf64Array() { return __p.__vector_as_array<double>(26); }
   public bool MutateVf64(int j, double vf64) { int o = __p.__offset(26); if (o != 0) { __p.bb.PutDouble(__p.__vector(o) + j * 8, vf64); return true; } else { return false; } }
 
-  public static Offset<MyGame.Example.TypeAliases> CreateTypeAliases(FlatBufferBuilder builder,
+  public static Offset<MyGame.Example.TypeAliases> CreateTypeAliases(ref FlatBufferBuilder builder,
       sbyte i8 = 0,
       byte u8 = 0,
       short i16 = 0,
@@ -72,45 +61,39 @@ public struct TypeAliases : IFlatbufferObject
       VectorOffset v8Offset = default(VectorOffset),
       VectorOffset vf64Offset = default(VectorOffset)) {
     builder.StartTable(12);
-    TypeAliases.AddF64(builder, f64);
-    TypeAliases.AddU64(builder, u64);
-    TypeAliases.AddI64(builder, i64);
-    TypeAliases.AddVf64(builder, vf64Offset);
-    TypeAliases.AddV8(builder, v8Offset);
-    TypeAliases.AddF32(builder, f32);
-    TypeAliases.AddU32(builder, u32);
-    TypeAliases.AddI32(builder, i32);
-    TypeAliases.AddU16(builder, u16);
-    TypeAliases.AddI16(builder, i16);
-    TypeAliases.AddU8(builder, u8);
-    TypeAliases.AddI8(builder, i8);
-    return TypeAliases.EndTypeAliases(builder);
+    TypeAliases.AddF64(ref builder, f64);
+    TypeAliases.AddU64(ref builder, u64);
+    TypeAliases.AddI64(ref builder, i64);
+    TypeAliases.AddVf64(ref builder, vf64Offset);
+    TypeAliases.AddV8(ref builder, v8Offset);
+    TypeAliases.AddF32(ref builder, f32);
+    TypeAliases.AddU32(ref builder, u32);
+    TypeAliases.AddI32(ref builder, i32);
+    TypeAliases.AddU16(ref builder, u16);
+    TypeAliases.AddI16(ref builder, i16);
+    TypeAliases.AddU8(ref builder, u8);
+    TypeAliases.AddI8(ref builder, i8);
+    return TypeAliases.EndTypeAliases(ref builder);
   }
 
-  public static void StartTypeAliases(FlatBufferBuilder builder) { builder.StartTable(12); }
-  public static void AddI8(FlatBufferBuilder builder, sbyte i8) { builder.AddSbyte(0, i8, 0); }
-  public static void AddU8(FlatBufferBuilder builder, byte u8) { builder.AddByte(1, u8, 0); }
-  public static void AddI16(FlatBufferBuilder builder, short i16) { builder.AddShort(2, i16, 0); }
-  public static void AddU16(FlatBufferBuilder builder, ushort u16) { builder.AddUshort(3, u16, 0); }
-  public static void AddI32(FlatBufferBuilder builder, int i32) { builder.AddInt(4, i32, 0); }
-  public static void AddU32(FlatBufferBuilder builder, uint u32) { builder.AddUint(5, u32, 0); }
-  public static void AddI64(FlatBufferBuilder builder, long i64) { builder.AddLong(6, i64, 0); }
-  public static void AddU64(FlatBufferBuilder builder, ulong u64) { builder.AddUlong(7, u64, 0); }
-  public static void AddF32(FlatBufferBuilder builder, float f32) { builder.AddFloat(8, f32, 0.0f); }
-  public static void AddF64(FlatBufferBuilder builder, double f64) { builder.AddDouble(9, f64, 0.0); }
-  public static void AddV8(FlatBufferBuilder builder, VectorOffset v8Offset) { builder.AddOffset(10, v8Offset.Value, 0); }
-  public static VectorOffset CreateV8Vector(FlatBufferBuilder builder, sbyte[] data) { builder.StartVector(1, data.Length, 1); for (int i = data.Length - 1; i >= 0; i--) builder.AddSbyte(data[i]); return builder.EndVector(); }
-  public static VectorOffset CreateV8VectorBlock(FlatBufferBuilder builder, sbyte[] data) { builder.StartVector(1, data.Length, 1); builder.Add(data); return builder.EndVector(); }
-  public static VectorOffset CreateV8VectorBlock(FlatBufferBuilder builder, ArraySegment<sbyte> data) { builder.StartVector(1, data.Count, 1); builder.Add(data); return builder.EndVector(); }
-  public static VectorOffset CreateV8VectorBlock(FlatBufferBuilder builder, IntPtr dataPtr, int sizeInBytes) { builder.StartVector(1, sizeInBytes, 1); builder.Add<sbyte>(dataPtr, sizeInBytes); return builder.EndVector(); }
-  public static void StartV8Vector(FlatBufferBuilder builder, int numElems) { builder.StartVector(1, numElems, 1); }
-  public static void AddVf64(FlatBufferBuilder builder, VectorOffset vf64Offset) { builder.AddOffset(11, vf64Offset.Value, 0); }
-  public static VectorOffset CreateVf64Vector(FlatBufferBuilder builder, double[] data) { builder.StartVector(8, data.Length, 8); for (int i = data.Length - 1; i >= 0; i--) builder.AddDouble(data[i]); return builder.EndVector(); }
-  public static VectorOffset CreateVf64VectorBlock(FlatBufferBuilder builder, double[] data) { builder.StartVector(8, data.Length, 8); builder.Add(data); return builder.EndVector(); }
-  public static VectorOffset CreateVf64VectorBlock(FlatBufferBuilder builder, ArraySegment<double> data) { builder.StartVector(8, data.Count, 8); builder.Add(data); return builder.EndVector(); }
-  public static VectorOffset CreateVf64VectorBlock(FlatBufferBuilder builder, IntPtr dataPtr, int sizeInBytes) { builder.StartVector(1, sizeInBytes, 1); builder.Add<double>(dataPtr, sizeInBytes); return builder.EndVector(); }
-  public static void StartVf64Vector(FlatBufferBuilder builder, int numElems) { builder.StartVector(8, numElems, 8); }
-  public static Offset<MyGame.Example.TypeAliases> EndTypeAliases(FlatBufferBuilder builder) {
+  public static void StartTypeAliases(ref FlatBufferBuilder builder) { builder.StartTable(12); }
+  public static void AddI8(ref FlatBufferBuilder builder, sbyte i8) { builder.AddSbyte(0, i8, 0); }
+  public static void AddU8(ref FlatBufferBuilder builder, byte u8) { builder.AddByte(1, u8, 0); }
+  public static void AddI16(ref FlatBufferBuilder builder, short i16) { builder.AddShort(2, i16, 0); }
+  public static void AddU16(ref FlatBufferBuilder builder, ushort u16) { builder.AddUshort(3, u16, 0); }
+  public static void AddI32(ref FlatBufferBuilder builder, int i32) { builder.AddInt(4, i32, 0); }
+  public static void AddU32(ref FlatBufferBuilder builder, uint u32) { builder.AddUint(5, u32, 0); }
+  public static void AddI64(ref FlatBufferBuilder builder, long i64) { builder.AddLong(6, i64, 0); }
+  public static void AddU64(ref FlatBufferBuilder builder, ulong u64) { builder.AddUlong(7, u64, 0); }
+  public static void AddF32(ref FlatBufferBuilder builder, float f32) { builder.AddFloat(8, f32, 0.0f); }
+  public static void AddF64(ref FlatBufferBuilder builder, double f64) { builder.AddDouble(9, f64, 0.0); }
+  public static void AddV8(ref FlatBufferBuilder builder, VectorOffset v8Offset) { builder.AddOffset(10, v8Offset.Value, 0); }
+  public static VectorOffset CreateV8Vector(ref FlatBufferBuilder builder, Span<sbyte> data) { builder.StartVector(1, data.Length, 1); for (int i = data.Length - 1; i >= 0; i--) builder.AddSbyte(data[i]); return builder.EndVector(); }
+  public static void StartV8Vector(ref FlatBufferBuilder builder, int numElems) { builder.StartVector(1, numElems, 1); }
+  public static void AddVf64(ref FlatBufferBuilder builder, VectorOffset vf64Offset) { builder.AddOffset(11, vf64Offset.Value, 0); }
+  public static VectorOffset CreateVf64Vector(ref FlatBufferBuilder builder, Span<double> data) { builder.StartVector(8, data.Length, 8); for (int i = data.Length - 1; i >= 0; i--) builder.AddDouble(data[i]); return builder.EndVector(); }
+  public static void StartVf64Vector(ref FlatBufferBuilder builder, int numElems) { builder.StartVector(8, numElems, 8); }
+  public static Offset<MyGame.Example.TypeAliases> EndTypeAliases(ref FlatBufferBuilder builder) {
     int o = builder.EndTable();
     return new Offset<MyGame.Example.TypeAliases>(o);
   }
@@ -135,20 +118,20 @@ public struct TypeAliases : IFlatbufferObject
     _o.Vf64 = new List<double>();
     for (var _j = 0; _j < this.Vf64Length; ++_j) {_o.Vf64.Add(this.Vf64(_j));}
   }
-  public static Offset<MyGame.Example.TypeAliases> Pack(FlatBufferBuilder builder, TypeAliasesT _o) {
+  public static Offset<MyGame.Example.TypeAliases> Pack(ref FlatBufferBuilder builder, TypeAliasesT _o) {
     if (_o == null) return default(Offset<MyGame.Example.TypeAliases>);
     var _v8 = default(VectorOffset);
     if (_o.V8 != null) {
       var __v8 = _o.V8.ToArray();
-      _v8 = CreateV8Vector(builder, __v8);
+      _v8 = CreateV8Vector(ref builder, __v8);
     }
     var _vf64 = default(VectorOffset);
     if (_o.Vf64 != null) {
       var __vf64 = _o.Vf64.ToArray();
-      _vf64 = CreateVf64Vector(builder, __vf64);
+      _vf64 = CreateVf64Vector(ref builder, __vf64);
     }
     return CreateTypeAliases(
-      builder,
+      ref builder,
       _o.I8,
       _o.U8,
       _o.I16,
@@ -210,7 +193,7 @@ public class TypeAliasesT
 
 static public class TypeAliasesVerify
 {
-  static public bool Verify(Google.FlatBuffers.Verifier verifier, uint tablePos)
+  static public bool Verify(Fivemid.FiveFlat.Verifier verifier, uint tablePos)
   {
     return verifier.VerifyTableStart(tablePos)
       && verifier.VerifyField(tablePos, 4 /*I8*/, 1 /*sbyte*/, 1, false)

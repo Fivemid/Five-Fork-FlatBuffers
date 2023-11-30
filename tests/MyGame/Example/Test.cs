@@ -5,23 +5,24 @@
 namespace MyGame.Example
 {
 
+using global::Unity.Collections;
 using global::System;
 using global::System.Collections.Generic;
-using global::Google.FlatBuffers;
+using global::Fivemid.FiveFlat;
 
-public struct Test : IFlatbufferObject
+public struct Test : IFlatBufferObject
 {
   private Struct __p;
-  public ByteBuffer ByteBuffer { get { return __p.bb; } }
-  public void __init(int _i, ByteBuffer _bb) { __p = new Struct(_i, _bb); }
-  public Test __assign(int _i, ByteBuffer _bb) { __init(_i, _bb); return this; }
+  public ref ByteBuffer ByteBuffer { get { return ref __p.bb; } }
+  public void __init(int _i, ref ByteBuffer _bb) { __p = new Struct(_i, ref _bb); }
+  public Test __assign(int _i, ref ByteBuffer _bb) { __init(_i, ref _bb); return this; }
 
   public short A { get { return __p.bb.GetShort(__p.bb_pos + 0); } }
   public void MutateA(short a) { __p.bb.PutShort(__p.bb_pos + 0, a); }
   public sbyte B { get { return __p.bb.GetSbyte(__p.bb_pos + 2); } }
   public void MutateB(sbyte b) { __p.bb.PutSbyte(__p.bb_pos + 2, b); }
 
-  public static Offset<MyGame.Example.Test> CreateTest(FlatBufferBuilder builder, short A, sbyte B) {
+  public static Offset<MyGame.Example.Test> CreateTest(ref FlatBufferBuilder builder, short A, sbyte B) {
     builder.Prep(2, 4);
     builder.Pad(1);
     builder.PutSbyte(B);
@@ -37,10 +38,10 @@ public struct Test : IFlatbufferObject
     _o.A = this.A;
     _o.B = this.B;
   }
-  public static Offset<MyGame.Example.Test> Pack(FlatBufferBuilder builder, TestT _o) {
+  public static Offset<MyGame.Example.Test> Pack(ref FlatBufferBuilder builder, TestT _o) {
     if (_o == null) return default(Offset<MyGame.Example.Test>);
     return CreateTest(
-      builder,
+      ref builder,
       _o.A,
       _o.B);
   }

@@ -5,6 +5,7 @@
 namespace optional_scalars
 {
 
+using global::Unity.Collections;
 public enum OptionalByte : sbyte
 {
   None = 0,

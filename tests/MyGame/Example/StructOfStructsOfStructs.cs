@@ -5,20 +5,21 @@
 namespace MyGame.Example
 {
 
+using global::Unity.Collections;
 using global::System;
 using global::System.Collections.Generic;
-using global::Google.FlatBuffers;
+using global::Fivemid.FiveFlat;
 
-public struct StructOfStructsOfStructs : IFlatbufferObject
+public struct StructOfStructsOfStructs : IFlatBufferObject
 {
   private Struct __p;
-  public ByteBuffer ByteBuffer { get { return __p.bb; } }
-  public void __init(int _i, ByteBuffer _bb) { __p = new Struct(_i, _bb); }
-  public StructOfStructsOfStructs __assign(int _i, ByteBuffer _bb) { __init(_i, _bb); return this; }
+  public ref ByteBuffer ByteBuffer { get { return ref __p.bb; } }
+  public void __init(int _i, ref ByteBuffer _bb) { __p = new Struct(_i, ref _bb); }
+  public StructOfStructsOfStructs __assign(int _i, ref ByteBuffer _bb) { __init(_i, ref _bb); return this; }
 
-  public MyGame.Example.StructOfStructs A { get { return (new MyGame.Example.StructOfStructs()).__assign(__p.bb_pos + 0, __p.bb); } }
+  public MyGame.Example.StructOfStructs A { get { return (new MyGame.Example.StructOfStructs()).__assign(__p.bb_pos + 0, ref __p.bb); } }
 
-  public static Offset<MyGame.Example.StructOfStructsOfStructs> CreateStructOfStructsOfStructs(FlatBufferBuilder builder, uint a_a_Id, uint a_a_Distance, short a_b_A, sbyte a_b_B, uint a_c_Id, uint a_c_Distance) {
+  public static Offset<MyGame.Example.StructOfStructsOfStructs> CreateStructOfStructsOfStructs(ref FlatBufferBuilder builder, uint a_a_Id, uint a_a_Distance, short a_b_A, sbyte a_b_B, uint a_c_Id, uint a_c_Distance) {
     builder.Prep(4, 20);
     builder.Prep(4, 20);
     builder.Prep(4, 8);
@@ -41,7 +42,7 @@ public struct StructOfStructsOfStructs : IFlatbufferObject
   public void UnPackTo(StructOfStructsOfStructsT _o) {
     _o.A = this.A.UnPack();
   }
-  public static Offset<MyGame.Example.StructOfStructsOfStructs> Pack(FlatBufferBuilder builder, StructOfStructsOfStructsT _o) {
+  public static Offset<MyGame.Example.StructOfStructsOfStructs> Pack(ref FlatBufferBuilder builder, StructOfStructsOfStructsT _o) {
     if (_o == null) return default(Offset<MyGame.Example.StructOfStructsOfStructs>);
     var _a_a_id = _o.A.A.Id;
     var _a_a_distance = _o.A.A.Distance;
@@ -50,7 +51,7 @@ public struct StructOfStructsOfStructs : IFlatbufferObject
     var _a_c_id = _o.A.C.Id;
     var _a_c_distance = _o.A.C.Distance;
     return CreateStructOfStructsOfStructs(
-      builder,
+      ref builder,
       _a_a_id,
       _a_a_distance,
       _a_b_a,

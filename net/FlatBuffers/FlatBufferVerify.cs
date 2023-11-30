@@ -17,29 +17,29 @@ using System;
 using System.Reflection;using System.Collections.Generic;
 using System.IO;
 
-namespace Google.FlatBuffers
+namespace Fivemid.FiveFlat
 {
 
   /// <summary>
   /// The Class of the Verifier Options
   /// </summary>
-  public class Options
+  public struct Options
   {
     public const int DEFAULT_MAX_DEPTH = 64;
     public const int DEFAULT_MAX_TABLES = 1000000;
 
-    private int max_depth = 0;
-    private int max_tables = 0;
-    private bool string_end_check = false;
-    private bool alignment_check = false;
+    private int max_depth;
+    private int max_tables;
+    private bool string_end_check;
+    private bool alignment_check;
 
-    public Options()
+    public readonly static Options DEFAULTS = new Options
     {
-      max_depth = DEFAULT_MAX_DEPTH;
-      max_tables = DEFAULT_MAX_TABLES;
-      string_end_check = true;
-      alignment_check = true;
-    }
+        max_depth = DEFAULT_MAX_DEPTH,
+        max_tables = DEFAULT_MAX_TABLES,
+        string_end_check = true,
+        alignment_check = true
+    };
 
     public Options(int maxDepth, int maxTables, bool stringEndCheck, bool alignmentCheck)
     {
@@ -86,12 +86,12 @@ namespace Google.FlatBuffers
   /// <summary>
   /// The Main Class of the FlatBuffer Verifier
   /// </summary>
-  public class Verifier
+  public struct Verifier
   {
-    private ByteBuffer verifier_buffer = null;
-    private Options verifier_options = null;
-    private int depth_cnt = 0;
-    private int num_tables_cnt = 0;
+    private ByteBuffer verifier_buffer;
+    private Options verifier_options;
+    private int depth_cnt;
+    private int num_tables_cnt;
 
     public const int SIZE_BYTE = 1;
     public const int SIZE_INT = 4;
@@ -102,26 +102,13 @@ namespace Google.FlatBuffers
     public const int FLATBUFFERS_MAX_BUFFER_SIZE = System.Int32.MaxValue;               // default size = 2147483647
     public const int FILE_IDENTIFIER_LENGTH = FlatBufferConstants.FileIdentifierLength; // default size = 4
 
-    /// <summary> The Base Constructor of the Verifier object </summary>
-    public Verifier()
-    {
-      // Verifier buffer
-      verifier_buffer = null;
-      // Verifier settings 
-      verifier_options = null;
-      // Depth counter
-      depth_cnt = 0;
-      // Tables counter
-      num_tables_cnt = 0;
-    }
-
     /// <summary> The Constructor of the Verifier object with input parameters: ByteBuffer and/or Options </summary>
     /// <param name="buf"> Input flat byte buffer defined as ByteBuffer type</param>
     /// <param name="options"> Options object with settings for the coniguration the Verifier </param>
-    public Verifier(ByteBuffer buf, Options options = null)
+    public Verifier(ByteBuffer buf, Options? options = null)
     {
       verifier_buffer = buf;
-      verifier_options = options ?? new Options();
+      verifier_options = options ?? Options.DEFAULTS;
       depth_cnt = 0;
       num_tables_cnt = 0;
     }
@@ -297,7 +284,7 @@ namespace Google.FlatBuffers
       return (((element & (align - 1)) == 0) || (!options.alignmentCheck));
     }
 
-    /// <summary> Check if element is valid in buffer area. </summary> 
+    /// <summary> Check if element is valid in buffer area. </summary>
     /// <param name="pos"> Value defines the offset/position to element</param>
     /// <param name="elementSize"> Size of element</param>
     /// <returns> Return True when Element is correct </returns>
@@ -340,7 +327,7 @@ namespace Google.FlatBuffers
       ulong max_elements = (FLATBUFFERS_MAX_BUFFER_SIZE / elementSize);
       if (size >= max_elements)
       {
-        // Protect against byte_size overflowing. 
+        // Protect against byte_size overflowing.
         // result.elementValid = false; result.elementOffset = 0;
         return result;
       }
@@ -457,7 +444,7 @@ namespace Google.FlatBuffers
 
     /// <summary> Verify beginning of table </summary>
     /// <param name="tablePos"> Position in the Table </param>
-    /// <returns> Return True when the verification of the beginning of the table is passed</returns> 
+    /// <returns> Return True when the verification of the beginning of the table is passed</returns>
     // (this method is used internally by generated verification functions)
     public bool VerifyTableStart(uint tablePos)
     {
@@ -500,7 +487,7 @@ namespace Google.FlatBuffers
       return !required; // it is OK if field is not required
     }
 
-    /// <summary> Verify string </summary> 
+    /// <summary> Verify string </summary>
     /// <param name="tablePos"> Position in the Table</param>
     /// <param name="vOffset"> Offset to the String element </param>
     /// <param name="required"> Required Value when the offset == 0 </param>
@@ -561,7 +548,7 @@ namespace Google.FlatBuffers
         return false;
       }
       var vecOffset = GetIndirectOffset(offset);
-      return CheckVectorOfObjects(vecOffset, CheckStringFunc); 
+      return CheckVectorOfObjects(vecOffset, CheckStringFunc);
     }
 
     /// <summary> Verify vector of tables (objects). Tables are verified using generated verifyObjFunc </summary>
@@ -657,7 +644,7 @@ namespace Google.FlatBuffers
 
     /// <summary> Verify string referenced by absolute offset value </summary>
     /// <param name="pos"> Position of Union String in the Byte Buffer</param>
-    /// <returns>Return True when the verification of the Union String is passed</returns> 
+    /// <returns>Return True when the verification of the Union String is passed</returns>
     // (this method is used internally by generated verification functions)
     public bool VerifyUnionString(uint pos)
     {
@@ -784,15 +771,15 @@ namespace Google.FlatBuffers
     //  /* Verify Monster table. Buffer name is 'MONS' and contains data length prefix */
     //  isValid = verifier.verifyBuffer("MONS", true, MonsterVerify)
     /// <summary> Method verifies flatbuffer data using generated Table verification function </summary>
-    /// 
+    ///
     /// <param name="identifier"> The expected identifier of buffer data</param>
     /// <param name="sizePrefixed"> Flag should be true when buffer is prefixed with content size</param>
     /// <param name="verifyAction"> Function to be used for verification. This function is generated by compiler and included in each table definition file</param>
     /// <returns> Return True when verification of FlatBuffer passed</returns>
     /// <example>
-    /// Example 1. Verify Monster table. Ignore buffer name and assume buffer does not contain data length prefix 
+    /// Example 1. Verify Monster table. Ignore buffer name and assume buffer does not contain data length prefix
     /// <code>  isValid = verifier.VerifyBuffer(bb, false, MonsterVerify)</code>
-    /// Example 2. Verify Monster table. Buffer name is 'MONS' and contains data length prefix 
+    /// Example 2. Verify Monster table. Buffer name is 'MONS' and contains data length prefix
     /// <code>  isValid = verifier.VerifyBuffer("MONS", true, MonsterVerify)</code>
     /// </example>
     public bool VerifyBuffer(string identifier, bool sizePrefixed, VerifyTableAction verifyAction)
@@ -802,7 +789,7 @@ namespace Google.FlatBuffers
       numTables = 0;
 
       var start = (uint)(verifier_buffer.Position);
-      if (sizePrefixed) 
+      if (sizePrefixed)
       {
         start = (uint)(verifier_buffer.Position) + SIZE_PREFIX_LENGTH;
         if(!CheckScalar((uint)(verifier_buffer.Position), SIZE_PREFIX_LENGTH))
@@ -814,7 +801,7 @@ namespace Google.FlatBuffers
         {
           return false;
         }
-      } 
+      }
       return CheckBufferFromStart(identifier, start, verifyAction);
     }
   }

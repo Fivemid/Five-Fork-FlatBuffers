@@ -5,36 +5,37 @@
 namespace NamespaceC
 {
 
+using global::Unity.Collections;
 using global::System;
 using global::System.Collections.Generic;
-using global::Google.FlatBuffers;
+using global::Fivemid.FiveFlat;
 
-public struct TableInC : IFlatbufferObject
+public struct TableInC : IFlatBufferObject
 {
   private Table __p;
-  public ByteBuffer ByteBuffer { get { return __p.bb; } }
-  public static void ValidateVersion() { FlatBufferConstants.FLATBUFFERS_23_5_26(); }
-  public static TableInC GetRootAsTableInC(ByteBuffer _bb) { return GetRootAsTableInC(_bb, new TableInC()); }
-  public static TableInC GetRootAsTableInC(ByteBuffer _bb, TableInC obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, _bb)); }
-  public void __init(int _i, ByteBuffer _bb) { __p = new Table(_i, _bb); }
-  public TableInC __assign(int _i, ByteBuffer _bb) { __init(_i, _bb); return this; }
+  public ref ByteBuffer ByteBuffer { get { return ref __p.bb; } }
+  public static void ValidateVersion() { FlatBufferConstants.FIVE_FLAT_23_11_29(); }
+  public static TableInC GetRootAsTableInC(ref ByteBuffer _bb) { return GetRootAsTableInC(ref _bb, new TableInC()); }
+  public static TableInC GetRootAsTableInC(ref ByteBuffer _bb, TableInC obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, ref _bb)); }
+  public void __init(int _i, ref ByteBuffer _bb) { __p = new Table(_i, ref _bb); }
+  public TableInC __assign(int _i, ref ByteBuffer _bb) { __init(_i, ref _bb); return this; }
 
-  public NamespaceA.TableInFirstNS? ReferToA1 { get { int o = __p.__offset(4); return o != 0 ? (NamespaceA.TableInFirstNS?)(new NamespaceA.TableInFirstNS()).__assign(__p.__indirect(o + __p.bb_pos), __p.bb) : null; } }
-  public NamespaceA.SecondTableInA? ReferToA2 { get { int o = __p.__offset(6); return o != 0 ? (NamespaceA.SecondTableInA?)(new NamespaceA.SecondTableInA()).__assign(__p.__indirect(o + __p.bb_pos), __p.bb) : null; } }
+  public NamespaceA.TableInFirstNS? ReferToA1 { get { int o = __p.__offset(4); return o != 0 ? (NamespaceA.TableInFirstNS?)(new NamespaceA.TableInFirstNS()).__assign(__p.__indirect(o + __p.bb_pos), ref __p.bb) : null; } }
+  public NamespaceA.SecondTableInA? ReferToA2 { get { int o = __p.__offset(6); return o != 0 ? (NamespaceA.SecondTableInA?)(new NamespaceA.SecondTableInA()).__assign(__p.__indirect(o + __p.bb_pos), ref __p.bb) : null; } }
 
-  public static Offset<NamespaceC.TableInC> CreateTableInC(FlatBufferBuilder builder,
+  public static Offset<NamespaceC.TableInC> CreateTableInC(ref FlatBufferBuilder builder,
       Offset<NamespaceA.TableInFirstNS> refer_to_a1Offset = default(Offset<NamespaceA.TableInFirstNS>),
       Offset<NamespaceA.SecondTableInA> refer_to_a2Offset = default(Offset<NamespaceA.SecondTableInA>)) {
     builder.StartTable(2);
-    TableInC.AddReferToA2(builder, refer_to_a2Offset);
-    TableInC.AddReferToA1(builder, refer_to_a1Offset);
-    return TableInC.EndTableInC(builder);
+    TableInC.AddReferToA2(ref builder, refer_to_a2Offset);
+    TableInC.AddReferToA1(ref builder, refer_to_a1Offset);
+    return TableInC.EndTableInC(ref builder);
   }
 
-  public static void StartTableInC(FlatBufferBuilder builder) { builder.StartTable(2); }
-  public static void AddReferToA1(FlatBufferBuilder builder, Offset<NamespaceA.TableInFirstNS> referToA1Offset) { builder.AddOffset(0, referToA1Offset.Value, 0); }
-  public static void AddReferToA2(FlatBufferBuilder builder, Offset<NamespaceA.SecondTableInA> referToA2Offset) { builder.AddOffset(1, referToA2Offset.Value, 0); }
-  public static Offset<NamespaceC.TableInC> EndTableInC(FlatBufferBuilder builder) {
+  public static void StartTableInC(ref FlatBufferBuilder builder) { builder.StartTable(2); }
+  public static void AddReferToA1(ref FlatBufferBuilder builder, Offset<NamespaceA.TableInFirstNS> referToA1Offset) { builder.AddOffset(0, referToA1Offset.Value, 0); }
+  public static void AddReferToA2(ref FlatBufferBuilder builder, Offset<NamespaceA.SecondTableInA> referToA2Offset) { builder.AddOffset(1, referToA2Offset.Value, 0); }
+  public static Offset<NamespaceC.TableInC> EndTableInC(ref FlatBufferBuilder builder) {
     int o = builder.EndTable();
     return new Offset<NamespaceC.TableInC>(o);
   }
@@ -47,12 +48,12 @@ public struct TableInC : IFlatbufferObject
     _o.ReferToA1 = this.ReferToA1.HasValue ? this.ReferToA1.Value.UnPack() : null;
     _o.ReferToA2 = this.ReferToA2.HasValue ? this.ReferToA2.Value.UnPack() : null;
   }
-  public static Offset<NamespaceC.TableInC> Pack(FlatBufferBuilder builder, TableInCT _o) {
+  public static Offset<NamespaceC.TableInC> Pack(ref FlatBufferBuilder builder, TableInCT _o) {
     if (_o == null) return default(Offset<NamespaceC.TableInC>);
-    var _refer_to_a1 = _o.ReferToA1 == null ? default(Offset<NamespaceA.TableInFirstNS>) : NamespaceA.TableInFirstNS.Pack(builder, _o.ReferToA1);
-    var _refer_to_a2 = _o.ReferToA2 == null ? default(Offset<NamespaceA.SecondTableInA>) : NamespaceA.SecondTableInA.Pack(builder, _o.ReferToA2);
+    var _refer_to_a1 = _o.ReferToA1 == null ? default(Offset<NamespaceA.TableInFirstNS>) : NamespaceA.TableInFirstNS.Pack(ref builder, _o.ReferToA1);
+    var _refer_to_a2 = _o.ReferToA2 == null ? default(Offset<NamespaceA.SecondTableInA>) : NamespaceA.SecondTableInA.Pack(ref builder, _o.ReferToA2);
     return CreateTableInC(
-      builder,
+      ref builder,
       _refer_to_a1,
       _refer_to_a2);
   }
@@ -74,7 +75,7 @@ public class TableInCT
 
 static public class TableInCVerify
 {
-  static public bool Verify(Google.FlatBuffers.Verifier verifier, uint tablePos)
+  static public bool Verify(Fivemid.FiveFlat.Verifier verifier, uint tablePos)
   {
     return verifier.VerifyTableStart(tablePos)
       && verifier.VerifyTable(tablePos, 4 /*ReferToA1*/, NamespaceA.TableInFirstNSVerify.Verify, false)

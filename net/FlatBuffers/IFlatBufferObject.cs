@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-namespace Google.FlatBuffers
+namespace Fivemid.FiveFlat
 {
     /// <summary>
     /// This is the base for both structs and tables.
     /// </summary>
-    public interface IFlatbufferObject
+    public unsafe interface IFlatBufferObject
     {
-        void __init(int _i, ByteBuffer _bb);
+        void __init(int _i, ref ByteBuffer _bb);
 
-        ByteBuffer ByteBuffer { get; }
+        ref ByteBuffer ByteBuffer { get; }
     }
 }

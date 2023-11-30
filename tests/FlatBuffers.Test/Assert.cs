@@ -18,8 +18,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Unity.Collections;
 
-namespace Google.FlatBuffers.Test
+namespace Fivemid.FiveFlat.Tests.Exported
 {
 
     public class AssertFailedException : Exception
@@ -83,8 +84,28 @@ namespace Google.FlatBuffers.Test
             }
         }
 
-        public static void ArrayEqual<T>(T[] expected, T[] actual)
-        {
+        public static void StringEqual(string? expected, NativeArray<byte>? actual) {
+          StringEqual(FlatBufferBuilder.EncodeString(expected, Allocator.Temp), actual);
+        }
+
+        public static void StringEqual(NativeArray<byte>? expected, string? actual) {
+          StringEqual(expected, FlatBufferBuilder.EncodeString(actual, Allocator.Temp));
+        }
+
+        public static void StringEqual(NativeArray<byte>? expected, NativeArray<byte>? actual) {
+          if (expected.HasValue != actual.HasValue) {
+            throw new AssertFailedException(expected, actual);
+          }
+
+          if (expected.HasValue && actual.HasValue)
+            ArrayEqual(expected.Value, actual.Value);
+        }
+
+        public static void ArrayEqual<T>(T[] expected, NativeArray<T> actual) where T : struct {
+          ArrayEqual(new NativeArray<T>(expected, Allocator.Temp), actual);
+        }
+
+        public static void ArrayEqual<T>(NativeArray<T> expected, NativeArray<T> actual) where T : struct {
             if (expected.Length != actual.Length)
             {
                 throw new AssertFailedException(expected, actual);

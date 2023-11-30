@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-namespace Google.FlatBuffers.Test
+namespace Fivemid.FiveFlat.Tests.Exported
 {
     /// <summary>
     /// Lcg Pseudo RNG

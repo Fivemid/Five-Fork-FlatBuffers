@@ -5,6 +5,7 @@
 namespace KeywordTest
 {
 
+using global::Unity.Collections;
 [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
 public enum @public : int
 {

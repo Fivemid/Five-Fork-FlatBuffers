@@ -5,21 +5,22 @@
 namespace optional_scalars
 {
 
+using global::Unity.Collections;
 using global::System;
 using global::System.Collections.Generic;
-using global::Google.FlatBuffers;
+using global::Fivemid.FiveFlat;
 
-public struct ScalarStuff : IFlatbufferObject
+public struct ScalarStuff : IFlatBufferObject
 {
   private Table __p;
-  public ByteBuffer ByteBuffer { get { return __p.bb; } }
-  public static void ValidateVersion() { FlatBufferConstants.FLATBUFFERS_23_5_26(); }
-  public static ScalarStuff GetRootAsScalarStuff(ByteBuffer _bb) { return GetRootAsScalarStuff(_bb, new ScalarStuff()); }
-  public static ScalarStuff GetRootAsScalarStuff(ByteBuffer _bb, ScalarStuff obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, _bb)); }
+  public ref ByteBuffer ByteBuffer { get { return ref __p.bb; } }
+  public static void ValidateVersion() { FlatBufferConstants.FIVE_FLAT_23_11_29(); }
+  public static ScalarStuff GetRootAsScalarStuff(ref ByteBuffer _bb) { return GetRootAsScalarStuff(ref _bb, new ScalarStuff()); }
+  public static ScalarStuff GetRootAsScalarStuff(ref ByteBuffer _bb, ScalarStuff obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, ref _bb)); }
   public static bool ScalarStuffBufferHasIdentifier(ByteBuffer _bb) { return Table.__has_identifier(_bb, "NULL"); }
-  public static bool VerifyScalarStuff(ByteBuffer _bb) {Google.FlatBuffers.Verifier verifier = new Google.FlatBuffers.Verifier(_bb); return verifier.VerifyBuffer("NULL", false, ScalarStuffVerify.Verify); }
-  public void __init(int _i, ByteBuffer _bb) { __p = new Table(_i, _bb); }
-  public ScalarStuff __assign(int _i, ByteBuffer _bb) { __init(_i, _bb); return this; }
+  public static bool VerifyScalarStuff(ByteBuffer _bb) {Fivemid.FiveFlat.Verifier verifier = new Fivemid.FiveFlat.Verifier(_bb); return verifier.VerifyBuffer("NULL", false, ScalarStuffVerify.Verify); }
+  public void __init(int _i, ref ByteBuffer _bb) { __p = new Table(_i, ref _bb); }
+  public ScalarStuff __assign(int _i, ref ByteBuffer _bb) { __init(_i, ref _bb); return this; }
 
   public sbyte JustI8 { get { int o = __p.__offset(4); return o != 0 ? __p.bb.GetSbyte(o + __p.bb_pos) : (sbyte)0; } }
   public sbyte? MaybeI8 { get { int o = __p.__offset(6); return o != 0 ? __p.bb.GetSbyte(o + __p.bb_pos) : (sbyte?)null; } }
@@ -58,7 +59,7 @@ public struct ScalarStuff : IFlatbufferObject
   public optional_scalars.OptionalByte? MaybeEnum { get { int o = __p.__offset(72); return o != 0 ? (optional_scalars.OptionalByte)__p.bb.GetSbyte(o + __p.bb_pos) : (optional_scalars.OptionalByte?)null; } }
   public optional_scalars.OptionalByte DefaultEnum { get { int o = __p.__offset(74); return o != 0 ? (optional_scalars.OptionalByte)__p.bb.GetSbyte(o + __p.bb_pos) : optional_scalars.OptionalByte.One; } }
 
-  public static Offset<optional_scalars.ScalarStuff> CreateScalarStuff(FlatBufferBuilder builder,
+  public static Offset<optional_scalars.ScalarStuff> CreateScalarStuff(ref FlatBufferBuilder builder,
       sbyte just_i8 = 0,
       sbyte? maybe_i8 = null,
       sbyte default_i8 = 42,
@@ -96,88 +97,88 @@ public struct ScalarStuff : IFlatbufferObject
       optional_scalars.OptionalByte? maybe_enum = null,
       optional_scalars.OptionalByte default_enum = optional_scalars.OptionalByte.One) {
     builder.StartTable(36);
-    ScalarStuff.AddDefaultF64(builder, default_f64);
-    ScalarStuff.AddMaybeF64(builder, maybe_f64);
-    ScalarStuff.AddJustF64(builder, just_f64);
-    ScalarStuff.AddDefaultU64(builder, default_u64);
-    ScalarStuff.AddMaybeU64(builder, maybe_u64);
-    ScalarStuff.AddJustU64(builder, just_u64);
-    ScalarStuff.AddDefaultI64(builder, default_i64);
-    ScalarStuff.AddMaybeI64(builder, maybe_i64);
-    ScalarStuff.AddJustI64(builder, just_i64);
-    ScalarStuff.AddDefaultF32(builder, default_f32);
-    ScalarStuff.AddMaybeF32(builder, maybe_f32);
-    ScalarStuff.AddJustF32(builder, just_f32);
-    ScalarStuff.AddDefaultU32(builder, default_u32);
-    ScalarStuff.AddMaybeU32(builder, maybe_u32);
-    ScalarStuff.AddJustU32(builder, just_u32);
-    ScalarStuff.AddDefaultI32(builder, default_i32);
-    ScalarStuff.AddMaybeI32(builder, maybe_i32);
-    ScalarStuff.AddJustI32(builder, just_i32);
-    ScalarStuff.AddDefaultU16(builder, default_u16);
-    ScalarStuff.AddMaybeU16(builder, maybe_u16);
-    ScalarStuff.AddJustU16(builder, just_u16);
-    ScalarStuff.AddDefaultI16(builder, default_i16);
-    ScalarStuff.AddMaybeI16(builder, maybe_i16);
-    ScalarStuff.AddJustI16(builder, just_i16);
-    ScalarStuff.AddDefaultEnum(builder, default_enum);
-    ScalarStuff.AddMaybeEnum(builder, maybe_enum);
-    ScalarStuff.AddJustEnum(builder, just_enum);
-    ScalarStuff.AddDefaultBool(builder, default_bool);
-    ScalarStuff.AddMaybeBool(builder, maybe_bool);
-    ScalarStuff.AddJustBool(builder, just_bool);
-    ScalarStuff.AddDefaultU8(builder, default_u8);
-    ScalarStuff.AddMaybeU8(builder, maybe_u8);
-    ScalarStuff.AddJustU8(builder, just_u8);
-    ScalarStuff.AddDefaultI8(builder, default_i8);
-    ScalarStuff.AddMaybeI8(builder, maybe_i8);
-    ScalarStuff.AddJustI8(builder, just_i8);
-    return ScalarStuff.EndScalarStuff(builder);
+    ScalarStuff.AddDefaultF64(ref builder, default_f64);
+    ScalarStuff.AddMaybeF64(ref builder, maybe_f64);
+    ScalarStuff.AddJustF64(ref builder, just_f64);
+    ScalarStuff.AddDefaultU64(ref builder, default_u64);
+    ScalarStuff.AddMaybeU64(ref builder, maybe_u64);
+    ScalarStuff.AddJustU64(ref builder, just_u64);
+    ScalarStuff.AddDefaultI64(ref builder, default_i64);
+    ScalarStuff.AddMaybeI64(ref builder, maybe_i64);
+    ScalarStuff.AddJustI64(ref builder, just_i64);
+    ScalarStuff.AddDefaultF32(ref builder, default_f32);
+    ScalarStuff.AddMaybeF32(ref builder, maybe_f32);
+    ScalarStuff.AddJustF32(ref builder, just_f32);
+    ScalarStuff.AddDefaultU32(ref builder, default_u32);
+    ScalarStuff.AddMaybeU32(ref builder, maybe_u32);
+    ScalarStuff.AddJustU32(ref builder, just_u32);
+    ScalarStuff.AddDefaultI32(ref builder, default_i32);
+    ScalarStuff.AddMaybeI32(ref builder, maybe_i32);
+    ScalarStuff.AddJustI32(ref builder, just_i32);
+    ScalarStuff.AddDefaultU16(ref builder, default_u16);
+    ScalarStuff.AddMaybeU16(ref builder, maybe_u16);
+    ScalarStuff.AddJustU16(ref builder, just_u16);
+    ScalarStuff.AddDefaultI16(ref builder, default_i16);
+    ScalarStuff.AddMaybeI16(ref builder, maybe_i16);
+    ScalarStuff.AddJustI16(ref builder, just_i16);
+    ScalarStuff.AddDefaultEnum(ref builder, default_enum);
+    ScalarStuff.AddMaybeEnum(ref builder, maybe_enum);
+    ScalarStuff.AddJustEnum(ref builder, just_enum);
+    ScalarStuff.AddDefaultBool(ref builder, default_bool);
+    ScalarStuff.AddMaybeBool(ref builder, maybe_bool);
+    ScalarStuff.AddJustBool(ref builder, just_bool);
+    ScalarStuff.AddDefaultU8(ref builder, default_u8);
+    ScalarStuff.AddMaybeU8(ref builder, maybe_u8);
+    ScalarStuff.AddJustU8(ref builder, just_u8);
+    ScalarStuff.AddDefaultI8(ref builder, default_i8);
+    ScalarStuff.AddMaybeI8(ref builder, maybe_i8);
+    ScalarStuff.AddJustI8(ref builder, just_i8);
+    return ScalarStuff.EndScalarStuff(ref builder);
   }
 
-  public static void StartScalarStuff(FlatBufferBuilder builder) { builder.StartTable(36); }
-  public static void AddJustI8(FlatBufferBuilder builder, sbyte justI8) { builder.AddSbyte(0, justI8, 0); }
-  public static void AddMaybeI8(FlatBufferBuilder builder, sbyte? maybeI8) { builder.AddSbyte(1, maybeI8); }
-  public static void AddDefaultI8(FlatBufferBuilder builder, sbyte defaultI8) { builder.AddSbyte(2, defaultI8, 42); }
-  public static void AddJustU8(FlatBufferBuilder builder, byte justU8) { builder.AddByte(3, justU8, 0); }
-  public static void AddMaybeU8(FlatBufferBuilder builder, byte? maybeU8) { builder.AddByte(4, maybeU8); }
-  public static void AddDefaultU8(FlatBufferBuilder builder, byte defaultU8) { builder.AddByte(5, defaultU8, 42); }
-  public static void AddJustI16(FlatBufferBuilder builder, short justI16) { builder.AddShort(6, justI16, 0); }
-  public static void AddMaybeI16(FlatBufferBuilder builder, short? maybeI16) { builder.AddShort(7, maybeI16); }
-  public static void AddDefaultI16(FlatBufferBuilder builder, short defaultI16) { builder.AddShort(8, defaultI16, 42); }
-  public static void AddJustU16(FlatBufferBuilder builder, ushort justU16) { builder.AddUshort(9, justU16, 0); }
-  public static void AddMaybeU16(FlatBufferBuilder builder, ushort? maybeU16) { builder.AddUshort(10, maybeU16); }
-  public static void AddDefaultU16(FlatBufferBuilder builder, ushort defaultU16) { builder.AddUshort(11, defaultU16, 42); }
-  public static void AddJustI32(FlatBufferBuilder builder, int justI32) { builder.AddInt(12, justI32, 0); }
-  public static void AddMaybeI32(FlatBufferBuilder builder, int? maybeI32) { builder.AddInt(13, maybeI32); }
-  public static void AddDefaultI32(FlatBufferBuilder builder, int defaultI32) { builder.AddInt(14, defaultI32, 42); }
-  public static void AddJustU32(FlatBufferBuilder builder, uint justU32) { builder.AddUint(15, justU32, 0); }
-  public static void AddMaybeU32(FlatBufferBuilder builder, uint? maybeU32) { builder.AddUint(16, maybeU32); }
-  public static void AddDefaultU32(FlatBufferBuilder builder, uint defaultU32) { builder.AddUint(17, defaultU32, 42); }
-  public static void AddJustI64(FlatBufferBuilder builder, long justI64) { builder.AddLong(18, justI64, 0); }
-  public static void AddMaybeI64(FlatBufferBuilder builder, long? maybeI64) { builder.AddLong(19, maybeI64); }
-  public static void AddDefaultI64(FlatBufferBuilder builder, long defaultI64) { builder.AddLong(20, defaultI64, 42); }
-  public static void AddJustU64(FlatBufferBuilder builder, ulong justU64) { builder.AddUlong(21, justU64, 0); }
-  public static void AddMaybeU64(FlatBufferBuilder builder, ulong? maybeU64) { builder.AddUlong(22, maybeU64); }
-  public static void AddDefaultU64(FlatBufferBuilder builder, ulong defaultU64) { builder.AddUlong(23, defaultU64, 42); }
-  public static void AddJustF32(FlatBufferBuilder builder, float justF32) { builder.AddFloat(24, justF32, 0.0f); }
-  public static void AddMaybeF32(FlatBufferBuilder builder, float? maybeF32) { builder.AddFloat(25, maybeF32); }
-  public static void AddDefaultF32(FlatBufferBuilder builder, float defaultF32) { builder.AddFloat(26, defaultF32, 42.0f); }
-  public static void AddJustF64(FlatBufferBuilder builder, double justF64) { builder.AddDouble(27, justF64, 0.0); }
-  public static void AddMaybeF64(FlatBufferBuilder builder, double? maybeF64) { builder.AddDouble(28, maybeF64); }
-  public static void AddDefaultF64(FlatBufferBuilder builder, double defaultF64) { builder.AddDouble(29, defaultF64, 42.0); }
-  public static void AddJustBool(FlatBufferBuilder builder, bool justBool) { builder.AddBool(30, justBool, false); }
-  public static void AddMaybeBool(FlatBufferBuilder builder, bool? maybeBool) { builder.AddBool(31, maybeBool); }
-  public static void AddDefaultBool(FlatBufferBuilder builder, bool defaultBool) { builder.AddBool(32, defaultBool, true); }
-  public static void AddJustEnum(FlatBufferBuilder builder, optional_scalars.OptionalByte justEnum) { builder.AddSbyte(33, (sbyte)justEnum, 0); }
-  public static void AddMaybeEnum(FlatBufferBuilder builder, optional_scalars.OptionalByte? maybeEnum) { builder.AddSbyte(34, (sbyte?)maybeEnum); }
-  public static void AddDefaultEnum(FlatBufferBuilder builder, optional_scalars.OptionalByte defaultEnum) { builder.AddSbyte(35, (sbyte)defaultEnum, 1); }
-  public static Offset<optional_scalars.ScalarStuff> EndScalarStuff(FlatBufferBuilder builder) {
+  public static void StartScalarStuff(ref FlatBufferBuilder builder) { builder.StartTable(36); }
+  public static void AddJustI8(ref FlatBufferBuilder builder, sbyte justI8) { builder.AddSbyte(0, justI8, 0); }
+  public static void AddMaybeI8(ref FlatBufferBuilder builder, sbyte? maybeI8) { builder.AddSbyte(1, maybeI8); }
+  public static void AddDefaultI8(ref FlatBufferBuilder builder, sbyte defaultI8) { builder.AddSbyte(2, defaultI8, 42); }
+  public static void AddJustU8(ref FlatBufferBuilder builder, byte justU8) { builder.AddByte(3, justU8, 0); }
+  public static void AddMaybeU8(ref FlatBufferBuilder builder, byte? maybeU8) { builder.AddByte(4, maybeU8); }
+  public static void AddDefaultU8(ref FlatBufferBuilder builder, byte defaultU8) { builder.AddByte(5, defaultU8, 42); }
+  public static void AddJustI16(ref FlatBufferBuilder builder, short justI16) { builder.AddShort(6, justI16, 0); }
+  public static void AddMaybeI16(ref FlatBufferBuilder builder, short? maybeI16) { builder.AddShort(7, maybeI16); }
+  public static void AddDefaultI16(ref FlatBufferBuilder builder, short defaultI16) { builder.AddShort(8, defaultI16, 42); }
+  public static void AddJustU16(ref FlatBufferBuilder builder, ushort justU16) { builder.AddUshort(9, justU16, 0); }
+  public static void AddMaybeU16(ref FlatBufferBuilder builder, ushort? maybeU16) { builder.AddUshort(10, maybeU16); }
+  public static void AddDefaultU16(ref FlatBufferBuilder builder, ushort defaultU16) { builder.AddUshort(11, defaultU16, 42); }
+  public static void AddJustI32(ref FlatBufferBuilder builder, int justI32) { builder.AddInt(12, justI32, 0); }
+  public static void AddMaybeI32(ref FlatBufferBuilder builder, int? maybeI32) { builder.AddInt(13, maybeI32); }
+  public static void AddDefaultI32(ref FlatBufferBuilder builder, int defaultI32) { builder.AddInt(14, defaultI32, 42); }
+  public static void AddJustU32(ref FlatBufferBuilder builder, uint justU32) { builder.AddUint(15, justU32, 0); }
+  public static void AddMaybeU32(ref FlatBufferBuilder builder, uint? maybeU32) { builder.AddUint(16, maybeU32); }
+  public static void AddDefaultU32(ref FlatBufferBuilder builder, uint defaultU32) { builder.AddUint(17, defaultU32, 42); }
+  public static void AddJustI64(ref FlatBufferBuilder builder, long justI64) { builder.AddLong(18, justI64, 0); }
+  public static void AddMaybeI64(ref FlatBufferBuilder builder, long? maybeI64) { builder.AddLong(19, maybeI64); }
+  public static void AddDefaultI64(ref FlatBufferBuilder builder, long defaultI64) { builder.AddLong(20, defaultI64, 42); }
+  public static void AddJustU64(ref FlatBufferBuilder builder, ulong justU64) { builder.AddUlong(21, justU64, 0); }
+  public static void AddMaybeU64(ref FlatBufferBuilder builder, ulong? maybeU64) { builder.AddUlong(22, maybeU64); }
+  public static void AddDefaultU64(ref FlatBufferBuilder builder, ulong defaultU64) { builder.AddUlong(23, defaultU64, 42); }
+  public static void AddJustF32(ref FlatBufferBuilder builder, float justF32) { builder.AddFloat(24, justF32, 0.0f); }
+  public static void AddMaybeF32(ref FlatBufferBuilder builder, float? maybeF32) { builder.AddFloat(25, maybeF32); }
+  public static void AddDefaultF32(ref FlatBufferBuilder builder, float defaultF32) { builder.AddFloat(26, defaultF32, 42.0f); }
+  public static void AddJustF64(ref FlatBufferBuilder builder, double justF64) { builder.AddDouble(27, justF64, 0.0); }
+  public static void AddMaybeF64(ref FlatBufferBuilder builder, double? maybeF64) { builder.AddDouble(28, maybeF64); }
+  public static void AddDefaultF64(ref FlatBufferBuilder builder, double defaultF64) { builder.AddDouble(29, defaultF64, 42.0); }
+  public static void AddJustBool(ref FlatBufferBuilder builder, bool justBool) { builder.AddBool(30, justBool, false); }
+  public static void AddMaybeBool(ref FlatBufferBuilder builder, bool? maybeBool) { builder.AddBool(31, maybeBool); }
+  public static void AddDefaultBool(ref FlatBufferBuilder builder, bool defaultBool) { builder.AddBool(32, defaultBool, true); }
+  public static void AddJustEnum(ref FlatBufferBuilder builder, optional_scalars.OptionalByte justEnum) { builder.AddSbyte(33, (sbyte)justEnum, 0); }
+  public static void AddMaybeEnum(ref FlatBufferBuilder builder, optional_scalars.OptionalByte? maybeEnum) { builder.AddSbyte(34, (sbyte?)maybeEnum); }
+  public static void AddDefaultEnum(ref FlatBufferBuilder builder, optional_scalars.OptionalByte defaultEnum) { builder.AddSbyte(35, (sbyte)defaultEnum, 1); }
+  public static Offset<optional_scalars.ScalarStuff> EndScalarStuff(ref FlatBufferBuilder builder) {
     int o = builder.EndTable();
     return new Offset<optional_scalars.ScalarStuff>(o);
   }
-  public static void FinishScalarStuffBuffer(FlatBufferBuilder builder, Offset<optional_scalars.ScalarStuff> offset) { builder.Finish(offset.Value, "NULL"); }
-  public static void FinishSizePrefixedScalarStuffBuffer(FlatBufferBuilder builder, Offset<optional_scalars.ScalarStuff> offset) { builder.FinishSizePrefixed(offset.Value, "NULL"); }
+  public static void FinishScalarStuffBuffer(ref FlatBufferBuilder builder, Offset<optional_scalars.ScalarStuff> offset) { builder.Finish(offset.Value, "NULL"); }
+  public static void FinishSizePrefixedScalarStuffBuffer(ref FlatBufferBuilder builder, Offset<optional_scalars.ScalarStuff> offset) { builder.FinishSizePrefixed(offset.Value, "NULL"); }
   public ScalarStuffT UnPack() {
     var _o = new ScalarStuffT();
     this.UnPackTo(_o);
@@ -221,10 +222,10 @@ public struct ScalarStuff : IFlatbufferObject
     _o.MaybeEnum = this.MaybeEnum;
     _o.DefaultEnum = this.DefaultEnum;
   }
-  public static Offset<optional_scalars.ScalarStuff> Pack(FlatBufferBuilder builder, ScalarStuffT _o) {
+  public static Offset<optional_scalars.ScalarStuff> Pack(ref FlatBufferBuilder builder, ScalarStuffT _o) {
     if (_o == null) return default(Offset<optional_scalars.ScalarStuff>);
     return CreateScalarStuff(
-      builder,
+      ref builder,
       _o.JustI8,
       _o.MaybeI8,
       _o.DefaultI8,
@@ -341,20 +342,21 @@ public class ScalarStuffT
     this.MaybeEnum = null;
     this.DefaultEnum = optional_scalars.OptionalByte.One;
   }
-  public static ScalarStuffT DeserializeFromBinary(byte[] fbBuffer) {
-    return ScalarStuff.GetRootAsScalarStuff(new ByteBuffer(fbBuffer)).UnPack();
+  public static ScalarStuffT DeserializeFromBinary(NativeArray<byte> fbBuffer) {
+    ByteBuffer bb = new ByteBuffer(fbBuffer);
+    return ScalarStuff.GetRootAsScalarStuff(ref bb).UnPack();
   }
-  public byte[] SerializeToBinary() {
-    var fbb = new FlatBufferBuilder(0x10000);
-    ScalarStuff.FinishScalarStuffBuffer(fbb, ScalarStuff.Pack(fbb, this));
-    return fbb.DataBuffer.ToSizedArray();
+  public NativeArray<byte> SerializeToBinary(Allocator allocator) {
+    var fbb = new FlatBufferBuilder(0x10000, allocator);
+    ScalarStuff.FinishScalarStuffBuffer(ref fbb, ScalarStuff.Pack(ref fbb, this));
+    return fbb._bb.ToSizedArray();
   }
 }
 
 
 static public class ScalarStuffVerify
 {
-  static public bool Verify(Google.FlatBuffers.Verifier verifier, uint tablePos)
+  static public bool Verify(Fivemid.FiveFlat.Verifier verifier, uint tablePos)
   {
     return verifier.VerifyTableStart(tablePos)
       && verifier.VerifyField(tablePos, 4 /*JustI8*/, 1 /*sbyte*/, 1, false)

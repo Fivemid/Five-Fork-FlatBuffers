@@ -5,23 +5,24 @@
 namespace MyGame.Example2
 {
 
+using global::Unity.Collections;
 using global::System;
 using global::System.Collections.Generic;
-using global::Google.FlatBuffers;
+using global::Fivemid.FiveFlat;
 
-public struct Monster : IFlatbufferObject
+public struct Monster : IFlatBufferObject
 {
   private Table __p;
-  public ByteBuffer ByteBuffer { get { return __p.bb; } }
-  public static void ValidateVersion() { FlatBufferConstants.FLATBUFFERS_23_5_26(); }
-  public static Monster GetRootAsMonster(ByteBuffer _bb) { return GetRootAsMonster(_bb, new Monster()); }
-  public static Monster GetRootAsMonster(ByteBuffer _bb, Monster obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, _bb)); }
-  public void __init(int _i, ByteBuffer _bb) { __p = new Table(_i, _bb); }
-  public Monster __assign(int _i, ByteBuffer _bb) { __init(_i, _bb); return this; }
+  public ref ByteBuffer ByteBuffer { get { return ref __p.bb; } }
+  public static void ValidateVersion() { FlatBufferConstants.FIVE_FLAT_23_11_29(); }
+  public static Monster GetRootAsMonster(ref ByteBuffer _bb) { return GetRootAsMonster(ref _bb, new Monster()); }
+  public static Monster GetRootAsMonster(ref ByteBuffer _bb, Monster obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, ref _bb)); }
+  public void __init(int _i, ref ByteBuffer _bb) { __p = new Table(_i, ref _bb); }
+  public Monster __assign(int _i, ref ByteBuffer _bb) { __init(_i, ref _bb); return this; }
 
 
-  public static void StartMonster(FlatBufferBuilder builder) { builder.StartTable(0); }
-  public static Offset<MyGame.Example2.Monster> EndMonster(FlatBufferBuilder builder) {
+  public static void StartMonster(ref FlatBufferBuilder builder) { builder.StartTable(0); }
+  public static Offset<MyGame.Example2.Monster> EndMonster(ref FlatBufferBuilder builder) {
     int o = builder.EndTable();
     return new Offset<MyGame.Example2.Monster>(o);
   }
@@ -32,10 +33,10 @@ public struct Monster : IFlatbufferObject
   }
   public void UnPackTo(MonsterT _o) {
   }
-  public static Offset<MyGame.Example2.Monster> Pack(FlatBufferBuilder builder, MonsterT _o) {
+  public static Offset<MyGame.Example2.Monster> Pack(ref FlatBufferBuilder builder, MonsterT _o) {
     if (_o == null) return default(Offset<MyGame.Example2.Monster>);
-    StartMonster(builder);
-    return EndMonster(builder);
+    StartMonster(ref builder);
+    return EndMonster(ref builder);
   }
 }
 
@@ -49,7 +50,7 @@ public class MonsterT
 
 static public class MonsterVerify
 {
-  static public bool Verify(Google.FlatBuffers.Verifier verifier, uint tablePos)
+  static public bool Verify(Fivemid.FiveFlat.Verifier verifier, uint tablePos)
   {
     return verifier.VerifyTableStart(tablePos)
       && verifier.VerifyTableEnd(tablePos);

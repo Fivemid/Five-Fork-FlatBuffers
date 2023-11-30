@@ -16,7 +16,7 @@
 
  using System;
 
-namespace Google.FlatBuffers.Test
+namespace Fivemid.FiveFlat.Tests.Exported
 {
     [AttributeUsage(AttributeTargets.Method)]
     public class FlatBuffersTestMethodAttribute : Attribute

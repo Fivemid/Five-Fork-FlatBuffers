@@ -5,23 +5,24 @@
 namespace MyGame.Example
 {
 
+using global::Unity.Collections;
 using global::System;
 using global::System.Collections.Generic;
-using global::Google.FlatBuffers;
+using global::Fivemid.FiveFlat;
 
-public struct Ability : IFlatbufferObject
+public struct Ability : IFlatBufferObject
 {
   private Struct __p;
-  public ByteBuffer ByteBuffer { get { return __p.bb; } }
-  public void __init(int _i, ByteBuffer _bb) { __p = new Struct(_i, _bb); }
-  public Ability __assign(int _i, ByteBuffer _bb) { __init(_i, _bb); return this; }
+  public ref ByteBuffer ByteBuffer { get { return ref __p.bb; } }
+  public void __init(int _i, ref ByteBuffer _bb) { __p = new Struct(_i, ref _bb); }
+  public Ability __assign(int _i, ref ByteBuffer _bb) { __init(_i, ref _bb); return this; }
 
   public uint Id { get { return __p.bb.GetUint(__p.bb_pos + 0); } }
   public void MutateId(uint id) { __p.bb.PutUint(__p.bb_pos + 0, id); }
   public uint Distance { get { return __p.bb.GetUint(__p.bb_pos + 4); } }
   public void MutateDistance(uint distance) { __p.bb.PutUint(__p.bb_pos + 4, distance); }
 
-  public static Offset<MyGame.Example.Ability> CreateAbility(FlatBufferBuilder builder, uint Id, uint Distance) {
+  public static Offset<MyGame.Example.Ability> CreateAbility(ref FlatBufferBuilder builder, uint Id, uint Distance) {
     builder.Prep(4, 8);
     builder.PutUint(Distance);
     builder.PutUint(Id);
@@ -36,10 +37,10 @@ public struct Ability : IFlatbufferObject
     _o.Id = this.Id;
     _o.Distance = this.Distance;
   }
-  public static Offset<MyGame.Example.Ability> Pack(FlatBufferBuilder builder, AbilityT _o) {
+  public static Offset<MyGame.Example.Ability> Pack(ref FlatBufferBuilder builder, AbilityT _o) {
     if (_o == null) return default(Offset<MyGame.Example.Ability>);
     return CreateAbility(
-      builder,
+      ref builder,
       _o.Id,
       _o.Distance);
   }

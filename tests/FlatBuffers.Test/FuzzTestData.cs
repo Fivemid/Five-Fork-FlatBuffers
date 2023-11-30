@@ -16,7 +16,7 @@
 
 using System;
 
-namespace Google.FlatBuffers.Test
+namespace Fivemid.FiveFlat.Tests.Exported
 {
     internal static class FuzzTestData
     {

@@ -5,38 +5,39 @@
 namespace type_field_collsion
 {
 
+using global::Unity.Collections;
 using global::System;
 using global::System.Collections.Generic;
-using global::Google.FlatBuffers;
+using global::Fivemid.FiveFlat;
 
-public struct Collision : IFlatbufferObject
+public struct Collision : IFlatBufferObject
 {
   private Table __p;
-  public ByteBuffer ByteBuffer { get { return __p.bb; } }
-  public static void ValidateVersion() { FlatBufferConstants.FLATBUFFERS_23_5_26(); }
-  public static Collision GetRootAsCollision(ByteBuffer _bb) { return GetRootAsCollision(_bb, new Collision()); }
-  public static Collision GetRootAsCollision(ByteBuffer _bb, Collision obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, _bb)); }
-  public static bool VerifyCollision(ByteBuffer _bb) {Google.FlatBuffers.Verifier verifier = new Google.FlatBuffers.Verifier(_bb); return verifier.VerifyBuffer("", false, CollisionVerify.Verify); }
-  public void __init(int _i, ByteBuffer _bb) { __p = new Table(_i, _bb); }
-  public Collision __assign(int _i, ByteBuffer _bb) { __init(_i, _bb); return this; }
+  public ref ByteBuffer ByteBuffer { get { return ref __p.bb; } }
+  public static void ValidateVersion() { FlatBufferConstants.FIVE_FLAT_23_11_29(); }
+  public static Collision GetRootAsCollision(ref ByteBuffer _bb) { return GetRootAsCollision(ref _bb, new Collision()); }
+  public static Collision GetRootAsCollision(ref ByteBuffer _bb, Collision obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, ref _bb)); }
+  public static bool VerifyCollision(ByteBuffer _bb) {Fivemid.FiveFlat.Verifier verifier = new Fivemid.FiveFlat.Verifier(_bb); return verifier.VerifyBuffer("", false, CollisionVerify.Verify); }
+  public void __init(int _i, ref ByteBuffer _bb) { __p = new Table(_i, ref _bb); }
+  public Collision __assign(int _i, ref ByteBuffer _bb) { __init(_i, ref _bb); return this; }
 
   public int Collision_ { get { int o = __p.__offset(4); return o != 0 ? __p.bb.GetInt(o + __p.bb_pos) : (int)0; } }
 
-  public static Offset<type_field_collsion.Collision> CreateCollision(FlatBufferBuilder builder,
+  public static Offset<type_field_collsion.Collision> CreateCollision(ref FlatBufferBuilder builder,
       int collision = 0) {
     builder.StartTable(1);
-    Collision.AddCollision(builder, collision);
-    return Collision.EndCollision(builder);
+    Collision.AddCollision(ref builder, collision);
+    return Collision.EndCollision(ref builder);
   }
 
-  public static void StartCollision(FlatBufferBuilder builder) { builder.StartTable(1); }
-  public static void AddCollision(FlatBufferBuilder builder, int collision) { builder.AddInt(0, collision, 0); }
-  public static Offset<type_field_collsion.Collision> EndCollision(FlatBufferBuilder builder) {
+  public static void StartCollision(ref FlatBufferBuilder builder) { builder.StartTable(1); }
+  public static void AddCollision(ref FlatBufferBuilder builder, int collision) { builder.AddInt(0, collision, 0); }
+  public static Offset<type_field_collsion.Collision> EndCollision(ref FlatBufferBuilder builder) {
     int o = builder.EndTable();
     return new Offset<type_field_collsion.Collision>(o);
   }
-  public static void FinishCollisionBuffer(FlatBufferBuilder builder, Offset<type_field_collsion.Collision> offset) { builder.Finish(offset.Value); }
-  public static void FinishSizePrefixedCollisionBuffer(FlatBufferBuilder builder, Offset<type_field_collsion.Collision> offset) { builder.FinishSizePrefixed(offset.Value); }
+  public static void FinishCollisionBuffer(ref FlatBufferBuilder builder, Offset<type_field_collsion.Collision> offset) { builder.Finish(offset.Value); }
+  public static void FinishSizePrefixedCollisionBuffer(ref FlatBufferBuilder builder, Offset<type_field_collsion.Collision> offset) { builder.FinishSizePrefixed(offset.Value); }
   public CollisionT UnPack() {
     var _o = new CollisionT();
     this.UnPackTo(_o);
@@ -45,10 +46,10 @@ public struct Collision : IFlatbufferObject
   public void UnPackTo(CollisionT _o) {
     _o.Collision_ = this.Collision_;
   }
-  public static Offset<type_field_collsion.Collision> Pack(FlatBufferBuilder builder, CollisionT _o) {
+  public static Offset<type_field_collsion.Collision> Pack(ref FlatBufferBuilder builder, CollisionT _o) {
     if (_o == null) return default(Offset<type_field_collsion.Collision>);
     return CreateCollision(
-      builder,
+      ref builder,
       _o.Collision_);
   }
 }
@@ -60,20 +61,21 @@ public class CollisionT
   public CollisionT() {
     this.Collision_ = 0;
   }
-  public static CollisionT DeserializeFromBinary(byte[] fbBuffer) {
-    return Collision.GetRootAsCollision(new ByteBuffer(fbBuffer)).UnPack();
+  public static CollisionT DeserializeFromBinary(NativeArray<byte> fbBuffer) {
+    ByteBuffer bb = new ByteBuffer(fbBuffer);
+    return Collision.GetRootAsCollision(ref bb).UnPack();
   }
-  public byte[] SerializeToBinary() {
-    var fbb = new FlatBufferBuilder(0x10000);
-    Collision.FinishCollisionBuffer(fbb, Collision.Pack(fbb, this));
-    return fbb.DataBuffer.ToSizedArray();
+  public NativeArray<byte> SerializeToBinary(Allocator allocator) {
+    var fbb = new FlatBufferBuilder(0x10000, allocator);
+    Collision.FinishCollisionBuffer(ref fbb, Collision.Pack(ref fbb, this));
+    return fbb._bb.ToSizedArray();
   }
 }
 
 
 static public class CollisionVerify
 {
-  static public bool Verify(Google.FlatBuffers.Verifier verifier, uint tablePos)
+  static public bool Verify(Fivemid.FiveFlat.Verifier verifier, uint tablePos)
   {
     return verifier.VerifyTableStart(tablePos)
       && verifier.VerifyField(tablePos, 4 /*Collision*/, 4 /*int*/, 4, false)

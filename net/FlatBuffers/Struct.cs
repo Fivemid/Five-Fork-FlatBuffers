@@ -14,20 +14,24 @@
  * limitations under the License.
  */
 
-namespace Google.FlatBuffers
+using Unity.Collections.LowLevel.Unsafe;
+
+namespace Fivemid.FiveFlat
 {
     /// <summary>
     /// All structs in the generated code derive from this class, and add their own accessors.
     /// </summary>
-    public struct Struct
+    public unsafe struct Struct
     {
-        public int bb_pos { get; private set; }
-        public ByteBuffer bb { get; private set; }
+        public readonly int bb_pos;
+        private readonly ByteBuffer* _bb;
+
+        public ref ByteBuffer bb { get { return ref *_bb; } }
 
         // Re-init the internal state with an external buffer {@code ByteBuffer} and an offset within.
-        public Struct(int _i, ByteBuffer _bb) : this()
+        public Struct(int _i, ref ByteBuffer _bb) : this()
         {
-            bb = _bb;
+            this._bb = (ByteBuffer*)UnsafeUtility.AddressOf(ref _bb);
             bb_pos = _i;
         }
     }

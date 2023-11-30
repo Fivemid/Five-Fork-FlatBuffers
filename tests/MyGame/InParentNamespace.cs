@@ -5,23 +5,24 @@
 namespace MyGame
 {
 
+using global::Unity.Collections;
 using global::System;
 using global::System.Collections.Generic;
-using global::Google.FlatBuffers;
+using global::Fivemid.FiveFlat;
 
-public struct InParentNamespace : IFlatbufferObject
+public struct InParentNamespace : IFlatBufferObject
 {
   private Table __p;
-  public ByteBuffer ByteBuffer { get { return __p.bb; } }
-  public static void ValidateVersion() { FlatBufferConstants.FLATBUFFERS_23_5_26(); }
-  public static InParentNamespace GetRootAsInParentNamespace(ByteBuffer _bb) { return GetRootAsInParentNamespace(_bb, new InParentNamespace()); }
-  public static InParentNamespace GetRootAsInParentNamespace(ByteBuffer _bb, InParentNamespace obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, _bb)); }
-  public void __init(int _i, ByteBuffer _bb) { __p = new Table(_i, _bb); }
-  public InParentNamespace __assign(int _i, ByteBuffer _bb) { __init(_i, _bb); return this; }
+  public ref ByteBuffer ByteBuffer { get { return ref __p.bb; } }
+  public static void ValidateVersion() { FlatBufferConstants.FIVE_FLAT_23_11_29(); }
+  public static InParentNamespace GetRootAsInParentNamespace(ref ByteBuffer _bb) { return GetRootAsInParentNamespace(ref _bb, new InParentNamespace()); }
+  public static InParentNamespace GetRootAsInParentNamespace(ref ByteBuffer _bb, InParentNamespace obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, ref _bb)); }
+  public void __init(int _i, ref ByteBuffer _bb) { __p = new Table(_i, ref _bb); }
+  public InParentNamespace __assign(int _i, ref ByteBuffer _bb) { __init(_i, ref _bb); return this; }
 
 
-  public static void StartInParentNamespace(FlatBufferBuilder builder) { builder.StartTable(0); }
-  public static Offset<MyGame.InParentNamespace> EndInParentNamespace(FlatBufferBuilder builder) {
+  public static void StartInParentNamespace(ref FlatBufferBuilder builder) { builder.StartTable(0); }
+  public static Offset<MyGame.InParentNamespace> EndInParentNamespace(ref FlatBufferBuilder builder) {
     int o = builder.EndTable();
     return new Offset<MyGame.InParentNamespace>(o);
   }
@@ -32,10 +33,10 @@ public struct InParentNamespace : IFlatbufferObject
   }
   public void UnPackTo(InParentNamespaceT _o) {
   }
-  public static Offset<MyGame.InParentNamespace> Pack(FlatBufferBuilder builder, InParentNamespaceT _o) {
+  public static Offset<MyGame.InParentNamespace> Pack(ref FlatBufferBuilder builder, InParentNamespaceT _o) {
     if (_o == null) return default(Offset<MyGame.InParentNamespace>);
-    StartInParentNamespace(builder);
-    return EndInParentNamespace(builder);
+    StartInParentNamespace(ref builder);
+    return EndInParentNamespace(ref builder);
   }
 }
 
@@ -49,7 +50,7 @@ public class InParentNamespaceT
 
 static public class InParentNamespaceVerify
 {
-  static public bool Verify(Google.FlatBuffers.Verifier verifier, uint tablePos)
+  static public bool Verify(Fivemid.FiveFlat.Verifier verifier, uint tablePos)
   {
     return verifier.VerifyTableStart(tablePos)
       && verifier.VerifyTableEnd(tablePos);

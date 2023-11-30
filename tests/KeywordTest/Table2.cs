@@ -5,38 +5,39 @@
 namespace KeywordTest
 {
 
+using global::Unity.Collections;
 using global::System;
 using global::System.Collections.Generic;
-using global::Google.FlatBuffers;
+using global::Fivemid.FiveFlat;
 
-public struct Table2 : IFlatbufferObject
+public struct Table2 : IFlatBufferObject
 {
   private Table __p;
-  public ByteBuffer ByteBuffer { get { return __p.bb; } }
-  public static void ValidateVersion() { FlatBufferConstants.FLATBUFFERS_23_5_26(); }
-  public static Table2 GetRootAsTable2(ByteBuffer _bb) { return GetRootAsTable2(_bb, new Table2()); }
-  public static Table2 GetRootAsTable2(ByteBuffer _bb, Table2 obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, _bb)); }
-  public void __init(int _i, ByteBuffer _bb) { __p = new Table(_i, _bb); }
-  public Table2 __assign(int _i, ByteBuffer _bb) { __init(_i, _bb); return this; }
+  public ref ByteBuffer ByteBuffer { get { return ref __p.bb; } }
+  public static void ValidateVersion() { FlatBufferConstants.FIVE_FLAT_23_11_29(); }
+  public static Table2 GetRootAsTable2(ref ByteBuffer _bb) { return GetRootAsTable2(ref _bb, new Table2()); }
+  public static Table2 GetRootAsTable2(ref ByteBuffer _bb, Table2 obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, ref _bb)); }
+  public void __init(int _i, ref ByteBuffer _bb) { __p = new Table(_i, ref _bb); }
+  public Table2 __assign(int _i, ref ByteBuffer _bb) { __init(_i, ref _bb); return this; }
 
   public KeywordTest.KeywordsInUnion TypeType { get { int o = __p.__offset(4); return o != 0 ? (KeywordTest.KeywordsInUnion)__p.bb.Get(o + __p.bb_pos) : KeywordTest.KeywordsInUnion.NONE; } }
-  public TTable? Type<TTable>() where TTable : struct, IFlatbufferObject { int o = __p.__offset(6); return o != 0 ? (TTable?)__p.__union<TTable>(o + __p.bb_pos) : null; }
+  public TTable? Type<TTable>() where TTable : struct, IFlatBufferObject { int o = __p.__offset(6); return o != 0 ? (TTable?)__p.__union<TTable>(o + __p.bb_pos) : null; }
   public KeywordTest.KeywordsInTable TypeAsstatic() { return Type<KeywordTest.KeywordsInTable>().Value; }
   public KeywordTest.KeywordsInTable TypeAsinternal() { return Type<KeywordTest.KeywordsInTable>().Value; }
 
-  public static Offset<KeywordTest.Table2> CreateTable2(FlatBufferBuilder builder,
+  public static Offset<KeywordTest.Table2> CreateTable2(ref FlatBufferBuilder builder,
       KeywordTest.KeywordsInUnion type_type = KeywordTest.KeywordsInUnion.NONE,
       int typeOffset = 0) {
     builder.StartTable(2);
-    Table2.AddType(builder, typeOffset);
-    Table2.AddTypeType(builder, type_type);
-    return Table2.EndTable2(builder);
+    Table2.AddType(ref builder, typeOffset);
+    Table2.AddTypeType(ref builder, type_type);
+    return Table2.EndTable2(ref builder);
   }
 
-  public static void StartTable2(FlatBufferBuilder builder) { builder.StartTable(2); }
-  public static void AddTypeType(FlatBufferBuilder builder, KeywordTest.KeywordsInUnion typeType) { builder.AddByte(0, (byte)typeType, 0); }
-  public static void AddType(FlatBufferBuilder builder, int typeOffset) { builder.AddOffset(1, typeOffset, 0); }
-  public static Offset<KeywordTest.Table2> EndTable2(FlatBufferBuilder builder) {
+  public static void StartTable2(ref FlatBufferBuilder builder) { builder.StartTable(2); }
+  public static void AddTypeType(ref FlatBufferBuilder builder, KeywordTest.KeywordsInUnion typeType) { builder.AddByte(0, (byte)typeType, 0); }
+  public static void AddType(ref FlatBufferBuilder builder, int typeOffset) { builder.AddOffset(1, typeOffset, 0); }
+  public static Offset<KeywordTest.Table2> EndTable2(ref FlatBufferBuilder builder) {
     int o = builder.EndTable();
     return new Offset<KeywordTest.Table2>(o);
   }
@@ -58,12 +59,12 @@ public struct Table2 : IFlatbufferObject
         break;
     }
   }
-  public static Offset<KeywordTest.Table2> Pack(FlatBufferBuilder builder, Table2T _o) {
+  public static Offset<KeywordTest.Table2> Pack(ref FlatBufferBuilder builder, Table2T _o) {
     if (_o == null) return default(Offset<KeywordTest.Table2>);
     var _type_type = _o.Type == null ? KeywordTest.KeywordsInUnion.NONE : _o.Type.Type;
-    var _type = _o.Type == null ? 0 : KeywordTest.KeywordsInUnionUnion.Pack(builder, _o.Type);
+    var _type = _o.Type == null ? 0 : KeywordTest.KeywordsInUnionUnion.Pack(ref builder, _o.Type);
     return CreateTable2(
-      builder,
+      ref builder,
       _type_type,
       _type);
   }
@@ -93,7 +94,7 @@ public class Table2T
 
 static public class Table2Verify
 {
-  static public bool Verify(Google.FlatBuffers.Verifier verifier, uint tablePos)
+  static public bool Verify(Fivemid.FiveFlat.Verifier verifier, uint tablePos)
   {
     return verifier.VerifyTableStart(tablePos)
       && verifier.VerifyField(tablePos, 4 /*TypeType*/, 1 /*KeywordTest.KeywordsInUnion*/, 1, false)

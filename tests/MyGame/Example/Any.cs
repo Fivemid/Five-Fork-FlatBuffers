@@ -5,6 +5,7 @@
 namespace MyGame.Example
 {
 
+using global::Unity.Collections;
 [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
 public enum Any : byte
 {
@@ -31,12 +32,12 @@ public class AnyUnion {
   public MyGame.Example2.MonsterT AsMyGame_Example2_Monster() { return this.As<MyGame.Example2.MonsterT>(); }
   public static AnyUnion FromMyGame_Example2_Monster(MyGame.Example2.MonsterT _mygame_example2_monster) { return new AnyUnion{ Type = Any.MyGame_Example2_Monster, Value = _mygame_example2_monster }; }
 
-  public static int Pack(Google.FlatBuffers.FlatBufferBuilder builder, AnyUnion _o) {
+  public static int Pack(ref Fivemid.FiveFlat.FlatBufferBuilder builder, AnyUnion _o) {
     switch (_o.Type) {
       default: return 0;
-      case Any.Monster: return MyGame.Example.Monster.Pack(builder, _o.AsMonster()).Value;
-      case Any.TestSimpleTableWithEnum: return MyGame.Example.TestSimpleTableWithEnum.Pack(builder, _o.AsTestSimpleTableWithEnum()).Value;
-      case Any.MyGame_Example2_Monster: return MyGame.Example2.Monster.Pack(builder, _o.AsMyGame_Example2_Monster()).Value;
+      case Any.Monster: return MyGame.Example.Monster.Pack(ref builder, _o.AsMonster()).Value;
+      case Any.TestSimpleTableWithEnum: return MyGame.Example.TestSimpleTableWithEnum.Pack(ref builder, _o.AsTestSimpleTableWithEnum()).Value;
+      case Any.MyGame_Example2_Monster: return MyGame.Example2.Monster.Pack(ref builder, _o.AsMyGame_Example2_Monster()).Value;
     }
   }
 }
@@ -88,7 +89,7 @@ public class AnyUnion_JsonConverter : Newtonsoft.Json.JsonConverter {
 
 static public class AnyVerify
 {
-  static public bool Verify(Google.FlatBuffers.Verifier verifier, byte typeId, uint tablePos)
+  static public bool Verify(Fivemid.FiveFlat.Verifier verifier, byte typeId, uint tablePos)
   {
     bool result = true;
     switch((Any)typeId)
