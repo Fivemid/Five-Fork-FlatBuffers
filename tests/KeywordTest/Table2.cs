@@ -14,16 +14,17 @@ public struct Table2 : IFlatBufferObject
 {
   private Table __p;
   public ref ByteBuffer ByteBuffer { get { return ref __p.bb; } }
-  public static void ValidateVersion() { FlatBufferConstants.FIVE_FLAT_23_11_29(); }
+  public static void ValidateVersion() { FlatBufferConstants.FIVE_FLAT_23_12_01(); }
   public static Table2 GetRootAsTable2(ref ByteBuffer _bb) { return GetRootAsTable2(ref _bb, new Table2()); }
   public static Table2 GetRootAsTable2(ref ByteBuffer _bb, Table2 obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, ref _bb)); }
   public void __init(int _i, ref ByteBuffer _bb) { __p = new Table(_i, ref _bb); }
   public Table2 __assign(int _i, ref ByteBuffer _bb) { __init(_i, ref _bb); return this; }
 
-  public KeywordTest.KeywordsInUnion TypeType { get { int o = __p.__offset(4); return o != 0 ? (KeywordTest.KeywordsInUnion)__p.bb.Get(o + __p.bb_pos) : KeywordTest.KeywordsInUnion.NONE; } }
-  public TTable? Type<TTable>() where TTable : struct, IFlatBufferObject { int o = __p.__offset(6); return o != 0 ? (TTable?)__p.__union<TTable>(o + __p.bb_pos) : null; }
-  public KeywordTest.KeywordsInTable TypeAsstatic() { return Type<KeywordTest.KeywordsInTable>().Value; }
-  public KeywordTest.KeywordsInTable TypeAsinternal() { return Type<KeywordTest.KeywordsInTable>().Value; }
+  public readonly KeywordTest.KeywordsInUnion TypeType { get { int o = __p.__offset(4); return o != 0 ? (KeywordTest.KeywordsInUnion)__p.bb.Get(o + __p.bb_pos) : KeywordTest.KeywordsInUnion.NONE; } }
+  public readonly Union<KeywordTest.KeywordsInUnion> Type { get { int o = __p.__offset(6); return o != 0 ? __p.__union<KeywordTest.KeywordsInUnion>(TypeType, o + __p.bb_pos) : __p.__union_none<KeywordTest.KeywordsInUnion>(); } }
+  public readonly TTable? TypeAs<TTable>() where TTable : struct, IFlatBufferObject { int o = __p.__offset(6); return o != 0 ? (TTable?)__p.__union_as<TTable>(o + __p.bb_pos) : null; }
+  public KeywordTest.KeywordsInTable TypeAsstatic() { return TypeAs<KeywordTest.KeywordsInTable>().Value; }
+  public KeywordTest.KeywordsInTable TypeAsinternal() { return TypeAs<KeywordTest.KeywordsInTable>().Value; }
 
   public static Offset<KeywordTest.Table2> CreateTable2(ref FlatBufferBuilder builder,
       KeywordTest.KeywordsInUnion type_type = KeywordTest.KeywordsInUnion.NONE,
@@ -52,10 +53,10 @@ public struct Table2 : IFlatBufferObject
     switch (this.TypeType) {
       default: break;
       case KeywordTest.KeywordsInUnion.static:
-        _o.Type.Value = this.Type<KeywordTest.KeywordsInTable>().HasValue ? this.Type<KeywordTest.KeywordsInTable>().Value.UnPack() : null;
+        _o.Type.Value = this.TypeAs<KeywordTest.KeywordsInTable>().HasValue ? this.TypeAs<KeywordTest.KeywordsInTable>().Value.UnPack() : null;
         break;
       case KeywordTest.KeywordsInUnion.internal:
-        _o.Type.Value = this.Type<KeywordTest.KeywordsInTable>().HasValue ? this.Type<KeywordTest.KeywordsInTable>().Value.UnPack() : null;
+        _o.Type.Value = this.TypeAs<KeywordTest.KeywordsInTable>().HasValue ? this.TypeAs<KeywordTest.KeywordsInTable>().Value.UnPack() : null;
         break;
     }
   }

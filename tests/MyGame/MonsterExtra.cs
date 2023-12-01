@@ -14,7 +14,7 @@ public struct MonsterExtra : IFlatBufferObject
 {
   private Table __p;
   public ref ByteBuffer ByteBuffer { get { return ref __p.bb; } }
-  public static void ValidateVersion() { FlatBufferConstants.FIVE_FLAT_23_11_29(); }
+  public static void ValidateVersion() { FlatBufferConstants.FIVE_FLAT_23_12_01(); }
   public static MonsterExtra GetRootAsMonsterExtra(ref ByteBuffer _bb) { return GetRootAsMonsterExtra(ref _bb, new MonsterExtra()); }
   public static MonsterExtra GetRootAsMonsterExtra(ref ByteBuffer _bb, MonsterExtra obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, ref _bb)); }
   public static bool MonsterExtraBufferHasIdentifier(ByteBuffer _bb) { return Table.__has_identifier(_bb, "MONE"); }
@@ -22,26 +22,26 @@ public struct MonsterExtra : IFlatBufferObject
   public void __init(int _i, ref ByteBuffer _bb) { __p = new Table(_i, ref _bb); }
   public MonsterExtra __assign(int _i, ref ByteBuffer _bb) { __init(_i, ref _bb); return this; }
 
-  public double D0 { get { int o = __p.__offset(4); return o != 0 ? __p.bb.GetDouble(o + __p.bb_pos) : (double)Double.NaN; } }
+  public readonly double D0 { get { int o = __p.__offset(4); return o != 0 ? __p.bb.GetDouble(o + __p.bb_pos) : (double)Double.NaN; } }
   public bool MutateD0(double d0) { int o = __p.__offset(4); if (o != 0) { __p.bb.PutDouble(o + __p.bb_pos, d0); return true; } else { return false; } }
-  public double D1 { get { int o = __p.__offset(6); return o != 0 ? __p.bb.GetDouble(o + __p.bb_pos) : (double)Double.NaN; } }
+  public readonly double D1 { get { int o = __p.__offset(6); return o != 0 ? __p.bb.GetDouble(o + __p.bb_pos) : (double)Double.NaN; } }
   public bool MutateD1(double d1) { int o = __p.__offset(6); if (o != 0) { __p.bb.PutDouble(o + __p.bb_pos, d1); return true; } else { return false; } }
-  public double D2 { get { int o = __p.__offset(8); return o != 0 ? __p.bb.GetDouble(o + __p.bb_pos) : (double)Double.PositiveInfinity; } }
+  public readonly double D2 { get { int o = __p.__offset(8); return o != 0 ? __p.bb.GetDouble(o + __p.bb_pos) : (double)Double.PositiveInfinity; } }
   public bool MutateD2(double d2) { int o = __p.__offset(8); if (o != 0) { __p.bb.PutDouble(o + __p.bb_pos, d2); return true; } else { return false; } }
-  public double D3 { get { int o = __p.__offset(10); return o != 0 ? __p.bb.GetDouble(o + __p.bb_pos) : (double)Double.NegativeInfinity; } }
+  public readonly double D3 { get { int o = __p.__offset(10); return o != 0 ? __p.bb.GetDouble(o + __p.bb_pos) : (double)Double.NegativeInfinity; } }
   public bool MutateD3(double d3) { int o = __p.__offset(10); if (o != 0) { __p.bb.PutDouble(o + __p.bb_pos, d3); return true; } else { return false; } }
-  public float F0 { get { int o = __p.__offset(12); return o != 0 ? __p.bb.GetFloat(o + __p.bb_pos) : (float)Single.NaN; } }
+  public readonly float F0 { get { int o = __p.__offset(12); return o != 0 ? __p.bb.GetFloat(o + __p.bb_pos) : (float)Single.NaN; } }
   public bool MutateF0(float f0) { int o = __p.__offset(12); if (o != 0) { __p.bb.PutFloat(o + __p.bb_pos, f0); return true; } else { return false; } }
-  public float F1 { get { int o = __p.__offset(14); return o != 0 ? __p.bb.GetFloat(o + __p.bb_pos) : (float)Single.NaN; } }
+  public readonly float F1 { get { int o = __p.__offset(14); return o != 0 ? __p.bb.GetFloat(o + __p.bb_pos) : (float)Single.NaN; } }
   public bool MutateF1(float f1) { int o = __p.__offset(14); if (o != 0) { __p.bb.PutFloat(o + __p.bb_pos, f1); return true; } else { return false; } }
-  public float F2 { get { int o = __p.__offset(16); return o != 0 ? __p.bb.GetFloat(o + __p.bb_pos) : (float)Single.PositiveInfinity; } }
+  public readonly float F2 { get { int o = __p.__offset(16); return o != 0 ? __p.bb.GetFloat(o + __p.bb_pos) : (float)Single.PositiveInfinity; } }
   public bool MutateF2(float f2) { int o = __p.__offset(16); if (o != 0) { __p.bb.PutFloat(o + __p.bb_pos, f2); return true; } else { return false; } }
-  public float F3 { get { int o = __p.__offset(18); return o != 0 ? __p.bb.GetFloat(o + __p.bb_pos) : (float)Single.NegativeInfinity; } }
+  public readonly float F3 { get { int o = __p.__offset(18); return o != 0 ? __p.bb.GetFloat(o + __p.bb_pos) : (float)Single.NegativeInfinity; } }
   public bool MutateF3(float f3) { int o = __p.__offset(18); if (o != 0) { __p.bb.PutFloat(o + __p.bb_pos, f3); return true; } else { return false; } }
-  public double Dvec(int j) { int o = __p.__offset(20); return o != 0 ? __p.bb.GetDouble(__p.__vector(o) + j * 8) : (double)0; }
+  public readonly double Dvec(int j) { int o = __p.__offset(20); return o != 0 ? __p.bb.GetDouble(__p.__vector(o) + j * 8) : (double)0; }
   public int DvecLength { get { int o = __p.__offset(20); return o != 0 ? __p.__vector_len(o) : 0; } }
   public bool MutateDvec(int j, double dvec) { int o = __p.__offset(20); if (o != 0) { __p.bb.PutDouble(__p.__vector(o) + j * 8, dvec); return true; } else { return false; } }
-  public float Fvec(int j) { int o = __p.__offset(22); return o != 0 ? __p.bb.GetFloat(__p.__vector(o) + j * 4) : (float)0; }
+  public readonly float Fvec(int j) { int o = __p.__offset(22); return o != 0 ? __p.bb.GetFloat(__p.__vector(o) + j * 4) : (float)0; }
   public int FvecLength { get { int o = __p.__offset(22); return o != 0 ? __p.__vector_len(o) : 0; } }
   public bool MutateFvec(int j, float fvec) { int o = __p.__offset(22); if (o != 0) { __p.bb.PutFloat(__p.__vector(o) + j * 4, fvec); return true; } else { return false; } }
 

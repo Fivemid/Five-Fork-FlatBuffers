@@ -15,7 +15,7 @@ public struct Monster : IFlatBufferObject
 {
   private Table __p;
   public ref ByteBuffer ByteBuffer { get { return ref __p.bb; } }
-  public static void ValidateVersion() { FlatBufferConstants.FIVE_FLAT_23_11_29(); }
+  public static void ValidateVersion() { FlatBufferConstants.FIVE_FLAT_23_12_01(); }
   public static Monster GetRootAsMonster(ref ByteBuffer _bb) { return GetRootAsMonster(ref _bb, new Monster()); }
   public static Monster GetRootAsMonster(ref ByteBuffer _bb, Monster obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, ref _bb)); }
   public static bool MonsterBufferHasIdentifier(ByteBuffer _bb) { return Table.__has_identifier(_bb, "MONS"); }
@@ -23,143 +23,146 @@ public struct Monster : IFlatBufferObject
   public void __init(int _i, ref ByteBuffer _bb) { __p = new Table(_i, ref _bb); }
   public Monster __assign(int _i, ref ByteBuffer _bb) { __init(_i, ref _bb); return this; }
 
-  public MyGame.Example.Vec3? Pos { get { int o = __p.__offset(4); return o != 0 ? (MyGame.Example.Vec3?)(new MyGame.Example.Vec3()).__assign(o + __p.bb_pos, ref __p.bb) : null; } }
-  public short Mana { get { int o = __p.__offset(6); return o != 0 ? __p.bb.GetShort(o + __p.bb_pos) : (short)150; } }
+  public readonly MyGame.Example.Vec3? Pos { get { int o = __p.__offset(4); return o != 0 ? (MyGame.Example.Vec3?)(new MyGame.Example.Vec3()).__assign(o + __p.bb_pos, ref __p.bb) : null; } }
+  public readonly short Mana { get { int o = __p.__offset(6); return o != 0 ? __p.bb.GetShort(o + __p.bb_pos) : (short)150; } }
   public bool MutateMana(short mana) { int o = __p.__offset(6); if (o != 0) { __p.bb.PutShort(o + __p.bb_pos, mana); return true; } else { return false; } }
-  public short Hp { get { int o = __p.__offset(8); return o != 0 ? __p.bb.GetShort(o + __p.bb_pos) : (short)100; } }
+  public readonly short Hp { get { int o = __p.__offset(8); return o != 0 ? __p.bb.GetShort(o + __p.bb_pos) : (short)100; } }
   public bool MutateHp(short hp) { int o = __p.__offset(8); if (o != 0) { __p.bb.PutShort(o + __p.bb_pos, hp); return true; } else { return false; } }
-  public NativeArray<byte>? Name { get { int o = __p.__offset(10); return o != 0 ? __p.__string(o + __p.bb_pos) : null; } }
-  public byte Inventory(int j) { int o = __p.__offset(14); return o != 0 ? __p.bb.Get(__p.__vector(o) + j * 1) : (byte)0; }
+  public readonly NativeArray<byte>? Name { get { int o = __p.__offset(10); return o != 0 ? __p.__string(o + __p.bb_pos) : null; } }
+  public readonly byte Inventory(int j) { int o = __p.__offset(14); return o != 0 ? __p.bb.Get(__p.__vector(o) + j * 1) : (byte)0; }
   public int InventoryLength { get { int o = __p.__offset(14); return o != 0 ? __p.__vector_len(o) : 0; } }
   public bool MutateInventory(int j, byte inventory) { int o = __p.__offset(14); if (o != 0) { __p.bb.PutByte(__p.__vector(o) + j * 1, inventory); return true; } else { return false; } }
-  public MyGame.Example.Color Color { get { int o = __p.__offset(16); return o != 0 ? (MyGame.Example.Color)__p.bb.Get(o + __p.bb_pos) : MyGame.Example.Color.Blue; } }
+  public readonly MyGame.Example.Color Color { get { int o = __p.__offset(16); return o != 0 ? (MyGame.Example.Color)__p.bb.Get(o + __p.bb_pos) : MyGame.Example.Color.Blue; } }
   public bool MutateColor(MyGame.Example.Color color) { int o = __p.__offset(16); if (o != 0) { __p.bb.PutByte(o + __p.bb_pos, (byte)color); return true; } else { return false; } }
-  public MyGame.Example.Any TestType { get { int o = __p.__offset(18); return o != 0 ? (MyGame.Example.Any)__p.bb.Get(o + __p.bb_pos) : MyGame.Example.Any.NONE; } }
-  public TTable? Test<TTable>() where TTable : struct, IFlatBufferObject { int o = __p.__offset(20); return o != 0 ? (TTable?)__p.__union<TTable>(o + __p.bb_pos) : null; }
-  public MyGame.Example.Monster TestAsMonster() { return Test<MyGame.Example.Monster>().Value; }
-  internal MyGame.Example.TestSimpleTableWithEnum TestAsTestSimpleTableWithEnum() { return Test<MyGame.Example.TestSimpleTableWithEnum>().Value; }
-  public MyGame.Example2.Monster TestAsMyGame_Example2_Monster() { return Test<MyGame.Example2.Monster>().Value; }
-  public MyGame.Example.Test? Test4(int j) { int o = __p.__offset(22); return o != 0 ? (MyGame.Example.Test?)(new MyGame.Example.Test()).__assign(__p.__vector(o) + j * 4, ref __p.bb) : null; }
+  public readonly MyGame.Example.Any TestType { get { int o = __p.__offset(18); return o != 0 ? (MyGame.Example.Any)__p.bb.Get(o + __p.bb_pos) : MyGame.Example.Any.NONE; } }
+  public readonly Union<MyGame.Example.Any> Test { get { int o = __p.__offset(20); return o != 0 ? __p.__union<MyGame.Example.Any>(TestType, o + __p.bb_pos) : __p.__union_none<MyGame.Example.Any>(); } }
+  public readonly TTable? TestAs<TTable>() where TTable : struct, IFlatBufferObject { int o = __p.__offset(20); return o != 0 ? (TTable?)__p.__union_as<TTable>(o + __p.bb_pos) : null; }
+  public MyGame.Example.Monster TestAsMonster() { return TestAs<MyGame.Example.Monster>().Value; }
+  internal MyGame.Example.TestSimpleTableWithEnum TestAsTestSimpleTableWithEnum() { return TestAs<MyGame.Example.TestSimpleTableWithEnum>().Value; }
+  public MyGame.Example2.Monster TestAsMyGame_Example2_Monster() { return TestAs<MyGame.Example2.Monster>().Value; }
+  public readonly MyGame.Example.Test? Test4(int j) { int o = __p.__offset(22); return o != 0 ? (MyGame.Example.Test?)(new MyGame.Example.Test()).__assign(__p.__vector(o) + j * 4, ref __p.bb) : null; }
   public int Test4Length { get { int o = __p.__offset(22); return o != 0 ? __p.__vector_len(o) : 0; } }
-  public NativeArray<byte>? Testarrayofstring(int j) { int o = __p.__offset(24); return o != 0 ? __p.__string(__p.__vector(o) + j * 4) : null; }
+  public readonly NativeArray<byte>? Testarrayofstring(int j) { int o = __p.__offset(24); return o != 0 ? __p.__string(__p.__vector(o) + j * 4) : null; }
   public int TestarrayofstringLength { get { int o = __p.__offset(24); return o != 0 ? __p.__vector_len(o) : 0; } }
   /// an example documentation comment: this will end up in the generated code
   /// multiline too
-  public MyGame.Example.Monster? Testarrayoftables(int j) { int o = __p.__offset(26); return o != 0 ? (MyGame.Example.Monster?)(new MyGame.Example.Monster()).__assign(__p.__indirect(__p.__vector(o) + j * 4), ref __p.bb) : null; }
+  public readonly MyGame.Example.Monster? Testarrayoftables(int j) { int o = __p.__offset(26); return o != 0 ? (MyGame.Example.Monster?)(new MyGame.Example.Monster()).__assign(__p.__indirect(__p.__vector(o) + j * 4), ref __p.bb) : null; }
   public int TestarrayoftablesLength { get { int o = __p.__offset(26); return o != 0 ? __p.__vector_len(o) : 0; } }
   public MyGame.Example.Monster? TestarrayoftablesByKey(NativeArray<byte>? key) { int o = __p.__offset(26); return o != 0 ? MyGame.Example.Monster.__lookup_by_key(__p.__vector(o), key, ref __p.bb) : null; }
-  public MyGame.Example.Monster? Enemy { get { int o = __p.__offset(28); return o != 0 ? (MyGame.Example.Monster?)(new MyGame.Example.Monster()).__assign(__p.__indirect(o + __p.bb_pos), ref __p.bb) : null; } }
-  public byte Testnestedflatbuffer(int j) { int o = __p.__offset(30); return o != 0 ? __p.bb.Get(__p.__vector(o) + j * 1) : (byte)0; }
+  public readonly MyGame.Example.Monster? Enemy { get { int o = __p.__offset(28); return o != 0 ? (MyGame.Example.Monster?)(new MyGame.Example.Monster()).__assign(__p.__indirect(o + __p.bb_pos), ref __p.bb) : null; } }
+  public readonly byte Testnestedflatbuffer(int j) { int o = __p.__offset(30); return o != 0 ? __p.bb.Get(__p.__vector(o) + j * 1) : (byte)0; }
   public int TestnestedflatbufferLength { get { int o = __p.__offset(30); return o != 0 ? __p.__vector_len(o) : 0; } }
   public MyGame.Example.Monster? GetTestnestedflatbufferAsMonster() { int o = __p.__offset(30); return o != 0 ? (MyGame.Example.Monster?)(new MyGame.Example.Monster()).__assign(__p.__indirect(__p.__vector(o)), ref __p.bb) : null; }
   public bool MutateTestnestedflatbuffer(int j, byte testnestedflatbuffer) { int o = __p.__offset(30); if (o != 0) { __p.bb.PutByte(__p.__vector(o) + j * 1, testnestedflatbuffer); return true; } else { return false; } }
-  public MyGame.Example.Stat? Testempty { get { int o = __p.__offset(32); return o != 0 ? (MyGame.Example.Stat?)(new MyGame.Example.Stat()).__assign(__p.__indirect(o + __p.bb_pos), ref __p.bb) : null; } }
-  public bool Testbool { get { int o = __p.__offset(34); return o != 0 ? 0!=__p.bb.Get(o + __p.bb_pos) : (bool)false; } }
+  public readonly MyGame.Example.Stat? Testempty { get { int o = __p.__offset(32); return o != 0 ? (MyGame.Example.Stat?)(new MyGame.Example.Stat()).__assign(__p.__indirect(o + __p.bb_pos), ref __p.bb) : null; } }
+  public readonly bool Testbool { get { int o = __p.__offset(34); return o != 0 ? 0!=__p.bb.Get(o + __p.bb_pos) : (bool)false; } }
   public bool MutateTestbool(bool testbool) { int o = __p.__offset(34); if (o != 0) { __p.bb.PutByte(o + __p.bb_pos, (byte)(testbool ? 1 : 0)); return true; } else { return false; } }
-  public int Testhashs32Fnv1 { get { int o = __p.__offset(36); return o != 0 ? __p.bb.GetInt(o + __p.bb_pos) : (int)0; } }
+  public readonly int Testhashs32Fnv1 { get { int o = __p.__offset(36); return o != 0 ? __p.bb.GetInt(o + __p.bb_pos) : (int)0; } }
   public bool MutateTesthashs32Fnv1(int testhashs32_fnv1) { int o = __p.__offset(36); if (o != 0) { __p.bb.PutInt(o + __p.bb_pos, testhashs32_fnv1); return true; } else { return false; } }
-  public uint Testhashu32Fnv1 { get { int o = __p.__offset(38); return o != 0 ? __p.bb.GetUint(o + __p.bb_pos) : (uint)0; } }
+  public readonly uint Testhashu32Fnv1 { get { int o = __p.__offset(38); return o != 0 ? __p.bb.GetUint(o + __p.bb_pos) : (uint)0; } }
   public bool MutateTesthashu32Fnv1(uint testhashu32_fnv1) { int o = __p.__offset(38); if (o != 0) { __p.bb.PutUint(o + __p.bb_pos, testhashu32_fnv1); return true; } else { return false; } }
-  public long Testhashs64Fnv1 { get { int o = __p.__offset(40); return o != 0 ? __p.bb.GetLong(o + __p.bb_pos) : (long)0; } }
+  public readonly long Testhashs64Fnv1 { get { int o = __p.__offset(40); return o != 0 ? __p.bb.GetLong(o + __p.bb_pos) : (long)0; } }
   public bool MutateTesthashs64Fnv1(long testhashs64_fnv1) { int o = __p.__offset(40); if (o != 0) { __p.bb.PutLong(o + __p.bb_pos, testhashs64_fnv1); return true; } else { return false; } }
-  public ulong Testhashu64Fnv1 { get { int o = __p.__offset(42); return o != 0 ? __p.bb.GetUlong(o + __p.bb_pos) : (ulong)0; } }
+  public readonly ulong Testhashu64Fnv1 { get { int o = __p.__offset(42); return o != 0 ? __p.bb.GetUlong(o + __p.bb_pos) : (ulong)0; } }
   public bool MutateTesthashu64Fnv1(ulong testhashu64_fnv1) { int o = __p.__offset(42); if (o != 0) { __p.bb.PutUlong(o + __p.bb_pos, testhashu64_fnv1); return true; } else { return false; } }
-  public int Testhashs32Fnv1a { get { int o = __p.__offset(44); return o != 0 ? __p.bb.GetInt(o + __p.bb_pos) : (int)0; } }
+  public readonly int Testhashs32Fnv1a { get { int o = __p.__offset(44); return o != 0 ? __p.bb.GetInt(o + __p.bb_pos) : (int)0; } }
   public bool MutateTesthashs32Fnv1a(int testhashs32_fnv1a) { int o = __p.__offset(44); if (o != 0) { __p.bb.PutInt(o + __p.bb_pos, testhashs32_fnv1a); return true; } else { return false; } }
-  public uint Testhashu32Fnv1a { get { int o = __p.__offset(46); return o != 0 ? __p.bb.GetUint(o + __p.bb_pos) : (uint)0; } }
+  public readonly uint Testhashu32Fnv1a { get { int o = __p.__offset(46); return o != 0 ? __p.bb.GetUint(o + __p.bb_pos) : (uint)0; } }
   public bool MutateTesthashu32Fnv1a(uint testhashu32_fnv1a) { int o = __p.__offset(46); if (o != 0) { __p.bb.PutUint(o + __p.bb_pos, testhashu32_fnv1a); return true; } else { return false; } }
-  public long Testhashs64Fnv1a { get { int o = __p.__offset(48); return o != 0 ? __p.bb.GetLong(o + __p.bb_pos) : (long)0; } }
+  public readonly long Testhashs64Fnv1a { get { int o = __p.__offset(48); return o != 0 ? __p.bb.GetLong(o + __p.bb_pos) : (long)0; } }
   public bool MutateTesthashs64Fnv1a(long testhashs64_fnv1a) { int o = __p.__offset(48); if (o != 0) { __p.bb.PutLong(o + __p.bb_pos, testhashs64_fnv1a); return true; } else { return false; } }
-  public ulong Testhashu64Fnv1a { get { int o = __p.__offset(50); return o != 0 ? __p.bb.GetUlong(o + __p.bb_pos) : (ulong)0; } }
+  public readonly ulong Testhashu64Fnv1a { get { int o = __p.__offset(50); return o != 0 ? __p.bb.GetUlong(o + __p.bb_pos) : (ulong)0; } }
   public bool MutateTesthashu64Fnv1a(ulong testhashu64_fnv1a) { int o = __p.__offset(50); if (o != 0) { __p.bb.PutUlong(o + __p.bb_pos, testhashu64_fnv1a); return true; } else { return false; } }
-  public bool Testarrayofbools(int j) { int o = __p.__offset(52); return o != 0 ? 0!=__p.bb.Get(__p.__vector(o) + j * 1) : false; }
+  public readonly bool Testarrayofbools(int j) { int o = __p.__offset(52); return o != 0 ? 0!=__p.bb.Get(__p.__vector(o) + j * 1) : false; }
   public int TestarrayofboolsLength { get { int o = __p.__offset(52); return o != 0 ? __p.__vector_len(o) : 0; } }
   public bool MutateTestarrayofbools(int j, bool testarrayofbools) { int o = __p.__offset(52); if (o != 0) { __p.bb.PutByte(__p.__vector(o) + j * 1, (byte)(testarrayofbools ? 1 : 0)); return true; } else { return false; } }
-  public float Testf { get { int o = __p.__offset(54); return o != 0 ? __p.bb.GetFloat(o + __p.bb_pos) : (float)3.14159f; } }
+  public readonly float Testf { get { int o = __p.__offset(54); return o != 0 ? __p.bb.GetFloat(o + __p.bb_pos) : (float)3.14159f; } }
   public bool MutateTestf(float testf) { int o = __p.__offset(54); if (o != 0) { __p.bb.PutFloat(o + __p.bb_pos, testf); return true; } else { return false; } }
-  public float Testf2 { get { int o = __p.__offset(56); return o != 0 ? __p.bb.GetFloat(o + __p.bb_pos) : (float)3.0f; } }
+  public readonly float Testf2 { get { int o = __p.__offset(56); return o != 0 ? __p.bb.GetFloat(o + __p.bb_pos) : (float)3.0f; } }
   public bool MutateTestf2(float testf2) { int o = __p.__offset(56); if (o != 0) { __p.bb.PutFloat(o + __p.bb_pos, testf2); return true; } else { return false; } }
-  public float Testf3 { get { int o = __p.__offset(58); return o != 0 ? __p.bb.GetFloat(o + __p.bb_pos) : (float)0.0f; } }
+  public readonly float Testf3 { get { int o = __p.__offset(58); return o != 0 ? __p.bb.GetFloat(o + __p.bb_pos) : (float)0.0f; } }
   public bool MutateTestf3(float testf3) { int o = __p.__offset(58); if (o != 0) { __p.bb.PutFloat(o + __p.bb_pos, testf3); return true; } else { return false; } }
-  public NativeArray<byte>? Testarrayofstring2(int j) { int o = __p.__offset(60); return o != 0 ? __p.__string(__p.__vector(o) + j * 4) : null; }
+  public readonly NativeArray<byte>? Testarrayofstring2(int j) { int o = __p.__offset(60); return o != 0 ? __p.__string(__p.__vector(o) + j * 4) : null; }
   public int Testarrayofstring2Length { get { int o = __p.__offset(60); return o != 0 ? __p.__vector_len(o) : 0; } }
-  public MyGame.Example.Ability? Testarrayofsortedstruct(int j) { int o = __p.__offset(62); return o != 0 ? (MyGame.Example.Ability?)(new MyGame.Example.Ability()).__assign(__p.__vector(o) + j * 8, ref __p.bb) : null; }
+  public readonly MyGame.Example.Ability? Testarrayofsortedstruct(int j) { int o = __p.__offset(62); return o != 0 ? (MyGame.Example.Ability?)(new MyGame.Example.Ability()).__assign(__p.__vector(o) + j * 8, ref __p.bb) : null; }
   public int TestarrayofsortedstructLength { get { int o = __p.__offset(62); return o != 0 ? __p.__vector_len(o) : 0; } }
-  public byte Flex(int j) { int o = __p.__offset(64); return o != 0 ? __p.bb.Get(__p.__vector(o) + j * 1) : (byte)0; }
+  public readonly byte Flex(int j) { int o = __p.__offset(64); return o != 0 ? __p.bb.Get(__p.__vector(o) + j * 1) : (byte)0; }
   public int FlexLength { get { int o = __p.__offset(64); return o != 0 ? __p.__vector_len(o) : 0; } }
   public bool MutateFlex(int j, byte flex) { int o = __p.__offset(64); if (o != 0) { __p.bb.PutByte(__p.__vector(o) + j * 1, flex); return true; } else { return false; } }
-  public MyGame.Example.Test? Test5(int j) { int o = __p.__offset(66); return o != 0 ? (MyGame.Example.Test?)(new MyGame.Example.Test()).__assign(__p.__vector(o) + j * 4, ref __p.bb) : null; }
+  public readonly MyGame.Example.Test? Test5(int j) { int o = __p.__offset(66); return o != 0 ? (MyGame.Example.Test?)(new MyGame.Example.Test()).__assign(__p.__vector(o) + j * 4, ref __p.bb) : null; }
   public int Test5Length { get { int o = __p.__offset(66); return o != 0 ? __p.__vector_len(o) : 0; } }
-  public long VectorOfLongs(int j) { int o = __p.__offset(68); return o != 0 ? __p.bb.GetLong(__p.__vector(o) + j * 8) : (long)0; }
+  public readonly long VectorOfLongs(int j) { int o = __p.__offset(68); return o != 0 ? __p.bb.GetLong(__p.__vector(o) + j * 8) : (long)0; }
   public int VectorOfLongsLength { get { int o = __p.__offset(68); return o != 0 ? __p.__vector_len(o) : 0; } }
   public bool MutateVectorOfLongs(int j, long vector_of_longs) { int o = __p.__offset(68); if (o != 0) { __p.bb.PutLong(__p.__vector(o) + j * 8, vector_of_longs); return true; } else { return false; } }
-  public double VectorOfDoubles(int j) { int o = __p.__offset(70); return o != 0 ? __p.bb.GetDouble(__p.__vector(o) + j * 8) : (double)0; }
+  public readonly double VectorOfDoubles(int j) { int o = __p.__offset(70); return o != 0 ? __p.bb.GetDouble(__p.__vector(o) + j * 8) : (double)0; }
   public int VectorOfDoublesLength { get { int o = __p.__offset(70); return o != 0 ? __p.__vector_len(o) : 0; } }
   public bool MutateVectorOfDoubles(int j, double vector_of_doubles) { int o = __p.__offset(70); if (o != 0) { __p.bb.PutDouble(__p.__vector(o) + j * 8, vector_of_doubles); return true; } else { return false; } }
-  public MyGame.InParentNamespace? ParentNamespaceTest { get { int o = __p.__offset(72); return o != 0 ? (MyGame.InParentNamespace?)(new MyGame.InParentNamespace()).__assign(__p.__indirect(o + __p.bb_pos), ref __p.bb) : null; } }
-  public MyGame.Example.Referrable? VectorOfReferrables(int j) { int o = __p.__offset(74); return o != 0 ? (MyGame.Example.Referrable?)(new MyGame.Example.Referrable()).__assign(__p.__indirect(__p.__vector(o) + j * 4), ref __p.bb) : null; }
+  public readonly MyGame.InParentNamespace? ParentNamespaceTest { get { int o = __p.__offset(72); return o != 0 ? (MyGame.InParentNamespace?)(new MyGame.InParentNamespace()).__assign(__p.__indirect(o + __p.bb_pos), ref __p.bb) : null; } }
+  public readonly MyGame.Example.Referrable? VectorOfReferrables(int j) { int o = __p.__offset(74); return o != 0 ? (MyGame.Example.Referrable?)(new MyGame.Example.Referrable()).__assign(__p.__indirect(__p.__vector(o) + j * 4), ref __p.bb) : null; }
   public int VectorOfReferrablesLength { get { int o = __p.__offset(74); return o != 0 ? __p.__vector_len(o) : 0; } }
   public MyGame.Example.Referrable? VectorOfReferrablesByKey(ulong key) { int o = __p.__offset(74); return o != 0 ? MyGame.Example.Referrable.__lookup_by_key(__p.__vector(o), key, ref __p.bb) : null; }
-  public ulong SingleWeakReference { get { int o = __p.__offset(76); return o != 0 ? __p.bb.GetUlong(o + __p.bb_pos) : (ulong)0; } }
+  public readonly ulong SingleWeakReference { get { int o = __p.__offset(76); return o != 0 ? __p.bb.GetUlong(o + __p.bb_pos) : (ulong)0; } }
   public bool MutateSingleWeakReference(ulong single_weak_reference) { int o = __p.__offset(76); if (o != 0) { __p.bb.PutUlong(o + __p.bb_pos, single_weak_reference); return true; } else { return false; } }
-  public ulong VectorOfWeakReferences(int j) { int o = __p.__offset(78); return o != 0 ? __p.bb.GetUlong(__p.__vector(o) + j * 8) : (ulong)0; }
+  public readonly ulong VectorOfWeakReferences(int j) { int o = __p.__offset(78); return o != 0 ? __p.bb.GetUlong(__p.__vector(o) + j * 8) : (ulong)0; }
   public int VectorOfWeakReferencesLength { get { int o = __p.__offset(78); return o != 0 ? __p.__vector_len(o) : 0; } }
   public bool MutateVectorOfWeakReferences(int j, ulong vector_of_weak_references) { int o = __p.__offset(78); if (o != 0) { __p.bb.PutUlong(__p.__vector(o) + j * 8, vector_of_weak_references); return true; } else { return false; } }
-  public MyGame.Example.Referrable? VectorOfStrongReferrables(int j) { int o = __p.__offset(80); return o != 0 ? (MyGame.Example.Referrable?)(new MyGame.Example.Referrable()).__assign(__p.__indirect(__p.__vector(o) + j * 4), ref __p.bb) : null; }
+  public readonly MyGame.Example.Referrable? VectorOfStrongReferrables(int j) { int o = __p.__offset(80); return o != 0 ? (MyGame.Example.Referrable?)(new MyGame.Example.Referrable()).__assign(__p.__indirect(__p.__vector(o) + j * 4), ref __p.bb) : null; }
   public int VectorOfStrongReferrablesLength { get { int o = __p.__offset(80); return o != 0 ? __p.__vector_len(o) : 0; } }
   public MyGame.Example.Referrable? VectorOfStrongReferrablesByKey(ulong key) { int o = __p.__offset(80); return o != 0 ? MyGame.Example.Referrable.__lookup_by_key(__p.__vector(o), key, ref __p.bb) : null; }
-  public ulong CoOwningReference { get { int o = __p.__offset(82); return o != 0 ? __p.bb.GetUlong(o + __p.bb_pos) : (ulong)0; } }
+  public readonly ulong CoOwningReference { get { int o = __p.__offset(82); return o != 0 ? __p.bb.GetUlong(o + __p.bb_pos) : (ulong)0; } }
   public bool MutateCoOwningReference(ulong co_owning_reference) { int o = __p.__offset(82); if (o != 0) { __p.bb.PutUlong(o + __p.bb_pos, co_owning_reference); return true; } else { return false; } }
-  public ulong VectorOfCoOwningReferences(int j) { int o = __p.__offset(84); return o != 0 ? __p.bb.GetUlong(__p.__vector(o) + j * 8) : (ulong)0; }
+  public readonly ulong VectorOfCoOwningReferences(int j) { int o = __p.__offset(84); return o != 0 ? __p.bb.GetUlong(__p.__vector(o) + j * 8) : (ulong)0; }
   public int VectorOfCoOwningReferencesLength { get { int o = __p.__offset(84); return o != 0 ? __p.__vector_len(o) : 0; } }
   public bool MutateVectorOfCoOwningReferences(int j, ulong vector_of_co_owning_references) { int o = __p.__offset(84); if (o != 0) { __p.bb.PutUlong(__p.__vector(o) + j * 8, vector_of_co_owning_references); return true; } else { return false; } }
-  public ulong NonOwningReference { get { int o = __p.__offset(86); return o != 0 ? __p.bb.GetUlong(o + __p.bb_pos) : (ulong)0; } }
+  public readonly ulong NonOwningReference { get { int o = __p.__offset(86); return o != 0 ? __p.bb.GetUlong(o + __p.bb_pos) : (ulong)0; } }
   public bool MutateNonOwningReference(ulong non_owning_reference) { int o = __p.__offset(86); if (o != 0) { __p.bb.PutUlong(o + __p.bb_pos, non_owning_reference); return true; } else { return false; } }
-  public ulong VectorOfNonOwningReferences(int j) { int o = __p.__offset(88); return o != 0 ? __p.bb.GetUlong(__p.__vector(o) + j * 8) : (ulong)0; }
+  public readonly ulong VectorOfNonOwningReferences(int j) { int o = __p.__offset(88); return o != 0 ? __p.bb.GetUlong(__p.__vector(o) + j * 8) : (ulong)0; }
   public int VectorOfNonOwningReferencesLength { get { int o = __p.__offset(88); return o != 0 ? __p.__vector_len(o) : 0; } }
   public bool MutateVectorOfNonOwningReferences(int j, ulong vector_of_non_owning_references) { int o = __p.__offset(88); if (o != 0) { __p.bb.PutUlong(__p.__vector(o) + j * 8, vector_of_non_owning_references); return true; } else { return false; } }
-  public MyGame.Example.AnyUniqueAliases AnyUniqueType { get { int o = __p.__offset(90); return o != 0 ? (MyGame.Example.AnyUniqueAliases)__p.bb.Get(o + __p.bb_pos) : MyGame.Example.AnyUniqueAliases.NONE; } }
-  public TTable? AnyUnique<TTable>() where TTable : struct, IFlatBufferObject { int o = __p.__offset(92); return o != 0 ? (TTable?)__p.__union<TTable>(o + __p.bb_pos) : null; }
-  public MyGame.Example.Monster AnyUniqueAsM() { return AnyUnique<MyGame.Example.Monster>().Value; }
-  internal MyGame.Example.TestSimpleTableWithEnum AnyUniqueAsTS() { return AnyUnique<MyGame.Example.TestSimpleTableWithEnum>().Value; }
-  public MyGame.Example2.Monster AnyUniqueAsM2() { return AnyUnique<MyGame.Example2.Monster>().Value; }
-  public MyGame.Example.AnyAmbiguousAliases AnyAmbiguousType { get { int o = __p.__offset(94); return o != 0 ? (MyGame.Example.AnyAmbiguousAliases)__p.bb.Get(o + __p.bb_pos) : MyGame.Example.AnyAmbiguousAliases.NONE; } }
-  public TTable? AnyAmbiguous<TTable>() where TTable : struct, IFlatBufferObject { int o = __p.__offset(96); return o != 0 ? (TTable?)__p.__union<TTable>(o + __p.bb_pos) : null; }
-  public MyGame.Example.Monster AnyAmbiguousAsM1() { return AnyAmbiguous<MyGame.Example.Monster>().Value; }
-  public MyGame.Example.Monster AnyAmbiguousAsM2() { return AnyAmbiguous<MyGame.Example.Monster>().Value; }
-  public MyGame.Example.Monster AnyAmbiguousAsM3() { return AnyAmbiguous<MyGame.Example.Monster>().Value; }
-  public MyGame.Example.Color VectorOfEnums(int j) { int o = __p.__offset(98); return o != 0 ? (MyGame.Example.Color)__p.bb.Get(__p.__vector(o) + j * 1) : (MyGame.Example.Color)0; }
+  public readonly MyGame.Example.AnyUniqueAliases AnyUniqueType { get { int o = __p.__offset(90); return o != 0 ? (MyGame.Example.AnyUniqueAliases)__p.bb.Get(o + __p.bb_pos) : MyGame.Example.AnyUniqueAliases.NONE; } }
+  public readonly Union<MyGame.Example.AnyUniqueAliases> AnyUnique { get { int o = __p.__offset(92); return o != 0 ? __p.__union<MyGame.Example.AnyUniqueAliases>(AnyUniqueType, o + __p.bb_pos) : __p.__union_none<MyGame.Example.AnyUniqueAliases>(); } }
+  public readonly TTable? AnyUniqueAs<TTable>() where TTable : struct, IFlatBufferObject { int o = __p.__offset(92); return o != 0 ? (TTable?)__p.__union_as<TTable>(o + __p.bb_pos) : null; }
+  public MyGame.Example.Monster AnyUniqueAsM() { return AnyUniqueAs<MyGame.Example.Monster>().Value; }
+  internal MyGame.Example.TestSimpleTableWithEnum AnyUniqueAsTS() { return AnyUniqueAs<MyGame.Example.TestSimpleTableWithEnum>().Value; }
+  public MyGame.Example2.Monster AnyUniqueAsM2() { return AnyUniqueAs<MyGame.Example2.Monster>().Value; }
+  public readonly MyGame.Example.AnyAmbiguousAliases AnyAmbiguousType { get { int o = __p.__offset(94); return o != 0 ? (MyGame.Example.AnyAmbiguousAliases)__p.bb.Get(o + __p.bb_pos) : MyGame.Example.AnyAmbiguousAliases.NONE; } }
+  public readonly Union<MyGame.Example.AnyAmbiguousAliases> AnyAmbiguous { get { int o = __p.__offset(96); return o != 0 ? __p.__union<MyGame.Example.AnyAmbiguousAliases>(AnyAmbiguousType, o + __p.bb_pos) : __p.__union_none<MyGame.Example.AnyAmbiguousAliases>(); } }
+  public readonly TTable? AnyAmbiguousAs<TTable>() where TTable : struct, IFlatBufferObject { int o = __p.__offset(96); return o != 0 ? (TTable?)__p.__union_as<TTable>(o + __p.bb_pos) : null; }
+  public MyGame.Example.Monster AnyAmbiguousAsM1() { return AnyAmbiguousAs<MyGame.Example.Monster>().Value; }
+  public MyGame.Example.Monster AnyAmbiguousAsM2() { return AnyAmbiguousAs<MyGame.Example.Monster>().Value; }
+  public MyGame.Example.Monster AnyAmbiguousAsM3() { return AnyAmbiguousAs<MyGame.Example.Monster>().Value; }
+  public readonly MyGame.Example.Color VectorOfEnums(int j) { int o = __p.__offset(98); return o != 0 ? (MyGame.Example.Color)__p.bb.Get(__p.__vector(o) + j * 1) : (MyGame.Example.Color)0; }
   public int VectorOfEnumsLength { get { int o = __p.__offset(98); return o != 0 ? __p.__vector_len(o) : 0; } }
   public bool MutateVectorOfEnums(int j, MyGame.Example.Color vector_of_enums) { int o = __p.__offset(98); if (o != 0) { __p.bb.PutByte(__p.__vector(o) + j * 1, (byte)vector_of_enums); return true; } else { return false; } }
-  public MyGame.Example.Race SignedEnum { get { int o = __p.__offset(100); return o != 0 ? (MyGame.Example.Race)__p.bb.GetSbyte(o + __p.bb_pos) : MyGame.Example.Race.None; } }
+  public readonly MyGame.Example.Race SignedEnum { get { int o = __p.__offset(100); return o != 0 ? (MyGame.Example.Race)__p.bb.GetSbyte(o + __p.bb_pos) : MyGame.Example.Race.None; } }
   public bool MutateSignedEnum(MyGame.Example.Race signed_enum) { int o = __p.__offset(100); if (o != 0) { __p.bb.PutSbyte(o + __p.bb_pos, (sbyte)signed_enum); return true; } else { return false; } }
-  public byte Testrequirednestedflatbuffer(int j) { int o = __p.__offset(102); return o != 0 ? __p.bb.Get(__p.__vector(o) + j * 1) : (byte)0; }
+  public readonly byte Testrequirednestedflatbuffer(int j) { int o = __p.__offset(102); return o != 0 ? __p.bb.Get(__p.__vector(o) + j * 1) : (byte)0; }
   public int TestrequirednestedflatbufferLength { get { int o = __p.__offset(102); return o != 0 ? __p.__vector_len(o) : 0; } }
   public MyGame.Example.Monster? GetTestrequirednestedflatbufferAsMonster() { int o = __p.__offset(102); return o != 0 ? (MyGame.Example.Monster?)(new MyGame.Example.Monster()).__assign(__p.__indirect(__p.__vector(o)), ref __p.bb) : null; }
   public bool MutateTestrequirednestedflatbuffer(int j, byte testrequirednestedflatbuffer) { int o = __p.__offset(102); if (o != 0) { __p.bb.PutByte(__p.__vector(o) + j * 1, testrequirednestedflatbuffer); return true; } else { return false; } }
-  public MyGame.Example.Stat? ScalarKeySortedTables(int j) { int o = __p.__offset(104); return o != 0 ? (MyGame.Example.Stat?)(new MyGame.Example.Stat()).__assign(__p.__indirect(__p.__vector(o) + j * 4), ref __p.bb) : null; }
+  public readonly MyGame.Example.Stat? ScalarKeySortedTables(int j) { int o = __p.__offset(104); return o != 0 ? (MyGame.Example.Stat?)(new MyGame.Example.Stat()).__assign(__p.__indirect(__p.__vector(o) + j * 4), ref __p.bb) : null; }
   public int ScalarKeySortedTablesLength { get { int o = __p.__offset(104); return o != 0 ? __p.__vector_len(o) : 0; } }
   public MyGame.Example.Stat? ScalarKeySortedTablesByKey(ushort key) { int o = __p.__offset(104); return o != 0 ? MyGame.Example.Stat.__lookup_by_key(__p.__vector(o), key, ref __p.bb) : null; }
-  public MyGame.Example.Test? NativeInline { get { int o = __p.__offset(106); return o != 0 ? (MyGame.Example.Test?)(new MyGame.Example.Test()).__assign(o + __p.bb_pos, ref __p.bb) : null; } }
-  public MyGame.Example.LongEnum LongEnumNonEnumDefault { get { int o = __p.__offset(108); return o != 0 ? (MyGame.Example.LongEnum)__p.bb.GetUlong(o + __p.bb_pos) : 0; } }
+  public readonly MyGame.Example.Test? NativeInline { get { int o = __p.__offset(106); return o != 0 ? (MyGame.Example.Test?)(new MyGame.Example.Test()).__assign(o + __p.bb_pos, ref __p.bb) : null; } }
+  public readonly MyGame.Example.LongEnum LongEnumNonEnumDefault { get { int o = __p.__offset(108); return o != 0 ? (MyGame.Example.LongEnum)__p.bb.GetUlong(o + __p.bb_pos) : 0; } }
   public bool MutateLongEnumNonEnumDefault(MyGame.Example.LongEnum long_enum_non_enum_default) { int o = __p.__offset(108); if (o != 0) { __p.bb.PutUlong(o + __p.bb_pos, (ulong)long_enum_non_enum_default); return true; } else { return false; } }
-  public MyGame.Example.LongEnum LongEnumNormalDefault { get { int o = __p.__offset(110); return o != 0 ? (MyGame.Example.LongEnum)__p.bb.GetUlong(o + __p.bb_pos) : MyGame.Example.LongEnum.LongOne; } }
+  public readonly MyGame.Example.LongEnum LongEnumNormalDefault { get { int o = __p.__offset(110); return o != 0 ? (MyGame.Example.LongEnum)__p.bb.GetUlong(o + __p.bb_pos) : MyGame.Example.LongEnum.LongOne; } }
   public bool MutateLongEnumNormalDefault(MyGame.Example.LongEnum long_enum_normal_default) { int o = __p.__offset(110); if (o != 0) { __p.bb.PutUlong(o + __p.bb_pos, (ulong)long_enum_normal_default); return true; } else { return false; } }
-  public float NanDefault { get { int o = __p.__offset(112); return o != 0 ? __p.bb.GetFloat(o + __p.bb_pos) : (float)Single.NaN; } }
+  public readonly float NanDefault { get { int o = __p.__offset(112); return o != 0 ? __p.bb.GetFloat(o + __p.bb_pos) : (float)Single.NaN; } }
   public bool MutateNanDefault(float nan_default) { int o = __p.__offset(112); if (o != 0) { __p.bb.PutFloat(o + __p.bb_pos, nan_default); return true; } else { return false; } }
-  public float InfDefault { get { int o = __p.__offset(114); return o != 0 ? __p.bb.GetFloat(o + __p.bb_pos) : (float)Single.PositiveInfinity; } }
+  public readonly float InfDefault { get { int o = __p.__offset(114); return o != 0 ? __p.bb.GetFloat(o + __p.bb_pos) : (float)Single.PositiveInfinity; } }
   public bool MutateInfDefault(float inf_default) { int o = __p.__offset(114); if (o != 0) { __p.bb.PutFloat(o + __p.bb_pos, inf_default); return true; } else { return false; } }
-  public float PositiveInfDefault { get { int o = __p.__offset(116); return o != 0 ? __p.bb.GetFloat(o + __p.bb_pos) : (float)Single.PositiveInfinity; } }
+  public readonly float PositiveInfDefault { get { int o = __p.__offset(116); return o != 0 ? __p.bb.GetFloat(o + __p.bb_pos) : (float)Single.PositiveInfinity; } }
   public bool MutatePositiveInfDefault(float positive_inf_default) { int o = __p.__offset(116); if (o != 0) { __p.bb.PutFloat(o + __p.bb_pos, positive_inf_default); return true; } else { return false; } }
-  public float InfinityDefault { get { int o = __p.__offset(118); return o != 0 ? __p.bb.GetFloat(o + __p.bb_pos) : (float)Single.PositiveInfinity; } }
+  public readonly float InfinityDefault { get { int o = __p.__offset(118); return o != 0 ? __p.bb.GetFloat(o + __p.bb_pos) : (float)Single.PositiveInfinity; } }
   public bool MutateInfinityDefault(float infinity_default) { int o = __p.__offset(118); if (o != 0) { __p.bb.PutFloat(o + __p.bb_pos, infinity_default); return true; } else { return false; } }
-  public float PositiveInfinityDefault { get { int o = __p.__offset(120); return o != 0 ? __p.bb.GetFloat(o + __p.bb_pos) : (float)Single.PositiveInfinity; } }
+  public readonly float PositiveInfinityDefault { get { int o = __p.__offset(120); return o != 0 ? __p.bb.GetFloat(o + __p.bb_pos) : (float)Single.PositiveInfinity; } }
   public bool MutatePositiveInfinityDefault(float positive_infinity_default) { int o = __p.__offset(120); if (o != 0) { __p.bb.PutFloat(o + __p.bb_pos, positive_infinity_default); return true; } else { return false; } }
-  public float NegativeInfDefault { get { int o = __p.__offset(122); return o != 0 ? __p.bb.GetFloat(o + __p.bb_pos) : (float)Single.NegativeInfinity; } }
+  public readonly float NegativeInfDefault { get { int o = __p.__offset(122); return o != 0 ? __p.bb.GetFloat(o + __p.bb_pos) : (float)Single.NegativeInfinity; } }
   public bool MutateNegativeInfDefault(float negative_inf_default) { int o = __p.__offset(122); if (o != 0) { __p.bb.PutFloat(o + __p.bb_pos, negative_inf_default); return true; } else { return false; } }
-  public float NegativeInfinityDefault { get { int o = __p.__offset(124); return o != 0 ? __p.bb.GetFloat(o + __p.bb_pos) : (float)Single.NegativeInfinity; } }
+  public readonly float NegativeInfinityDefault { get { int o = __p.__offset(124); return o != 0 ? __p.bb.GetFloat(o + __p.bb_pos) : (float)Single.NegativeInfinity; } }
   public bool MutateNegativeInfinityDefault(float negative_infinity_default) { int o = __p.__offset(124); if (o != 0) { __p.bb.PutFloat(o + __p.bb_pos, negative_infinity_default); return true; } else { return false; } }
-  public double DoubleInfDefault { get { int o = __p.__offset(126); return o != 0 ? __p.bb.GetDouble(o + __p.bb_pos) : (double)Double.PositiveInfinity; } }
+  public readonly double DoubleInfDefault { get { int o = __p.__offset(126); return o != 0 ? __p.bb.GetDouble(o + __p.bb_pos) : (double)Double.PositiveInfinity; } }
   public bool MutateDoubleInfDefault(double double_inf_default) { int o = __p.__offset(126); if (o != 0) { __p.bb.PutDouble(o + __p.bb_pos, double_inf_default); return true; } else { return false; } }
 
   public static Offset<MyGame.Example.Monster> CreateMonster(ref FlatBufferBuilder builder,
@@ -439,13 +442,13 @@ public struct Monster : IFlatBufferObject
     switch (this.TestType) {
       default: break;
       case MyGame.Example.Any.Monster:
-        _o.Test.Value = this.Test<MyGame.Example.Monster>().HasValue ? this.Test<MyGame.Example.Monster>().Value.UnPack() : null;
+        _o.Test.Value = this.TestAs<MyGame.Example.Monster>().HasValue ? this.TestAs<MyGame.Example.Monster>().Value.UnPack() : null;
         break;
       case MyGame.Example.Any.TestSimpleTableWithEnum:
-        _o.Test.Value = this.Test<MyGame.Example.TestSimpleTableWithEnum>().HasValue ? this.Test<MyGame.Example.TestSimpleTableWithEnum>().Value.UnPack() : null;
+        _o.Test.Value = this.TestAs<MyGame.Example.TestSimpleTableWithEnum>().HasValue ? this.TestAs<MyGame.Example.TestSimpleTableWithEnum>().Value.UnPack() : null;
         break;
       case MyGame.Example.Any.MyGame_Example2_Monster:
-        _o.Test.Value = this.Test<MyGame.Example2.Monster>().HasValue ? this.Test<MyGame.Example2.Monster>().Value.UnPack() : null;
+        _o.Test.Value = this.TestAs<MyGame.Example2.Monster>().HasValue ? this.TestAs<MyGame.Example2.Monster>().Value.UnPack() : null;
         break;
     }
     _o.Test4 = new List<MyGame.Example.TestT>();
@@ -503,13 +506,13 @@ public struct Monster : IFlatBufferObject
     switch (this.AnyUniqueType) {
       default: break;
       case MyGame.Example.AnyUniqueAliases.M:
-        _o.AnyUnique.Value = this.AnyUnique<MyGame.Example.Monster>().HasValue ? this.AnyUnique<MyGame.Example.Monster>().Value.UnPack() : null;
+        _o.AnyUnique.Value = this.AnyUniqueAs<MyGame.Example.Monster>().HasValue ? this.AnyUniqueAs<MyGame.Example.Monster>().Value.UnPack() : null;
         break;
       case MyGame.Example.AnyUniqueAliases.TS:
-        _o.AnyUnique.Value = this.AnyUnique<MyGame.Example.TestSimpleTableWithEnum>().HasValue ? this.AnyUnique<MyGame.Example.TestSimpleTableWithEnum>().Value.UnPack() : null;
+        _o.AnyUnique.Value = this.AnyUniqueAs<MyGame.Example.TestSimpleTableWithEnum>().HasValue ? this.AnyUniqueAs<MyGame.Example.TestSimpleTableWithEnum>().Value.UnPack() : null;
         break;
       case MyGame.Example.AnyUniqueAliases.M2:
-        _o.AnyUnique.Value = this.AnyUnique<MyGame.Example2.Monster>().HasValue ? this.AnyUnique<MyGame.Example2.Monster>().Value.UnPack() : null;
+        _o.AnyUnique.Value = this.AnyUniqueAs<MyGame.Example2.Monster>().HasValue ? this.AnyUniqueAs<MyGame.Example2.Monster>().Value.UnPack() : null;
         break;
     }
     _o.AnyAmbiguous = new MyGame.Example.AnyAmbiguousAliasesUnion();
@@ -517,13 +520,13 @@ public struct Monster : IFlatBufferObject
     switch (this.AnyAmbiguousType) {
       default: break;
       case MyGame.Example.AnyAmbiguousAliases.M1:
-        _o.AnyAmbiguous.Value = this.AnyAmbiguous<MyGame.Example.Monster>().HasValue ? this.AnyAmbiguous<MyGame.Example.Monster>().Value.UnPack() : null;
+        _o.AnyAmbiguous.Value = this.AnyAmbiguousAs<MyGame.Example.Monster>().HasValue ? this.AnyAmbiguousAs<MyGame.Example.Monster>().Value.UnPack() : null;
         break;
       case MyGame.Example.AnyAmbiguousAliases.M2:
-        _o.AnyAmbiguous.Value = this.AnyAmbiguous<MyGame.Example.Monster>().HasValue ? this.AnyAmbiguous<MyGame.Example.Monster>().Value.UnPack() : null;
+        _o.AnyAmbiguous.Value = this.AnyAmbiguousAs<MyGame.Example.Monster>().HasValue ? this.AnyAmbiguousAs<MyGame.Example.Monster>().Value.UnPack() : null;
         break;
       case MyGame.Example.AnyAmbiguousAliases.M3:
-        _o.AnyAmbiguous.Value = this.AnyAmbiguous<MyGame.Example.Monster>().HasValue ? this.AnyAmbiguous<MyGame.Example.Monster>().Value.UnPack() : null;
+        _o.AnyAmbiguous.Value = this.AnyAmbiguousAs<MyGame.Example.Monster>().HasValue ? this.AnyAmbiguousAs<MyGame.Example.Monster>().Value.UnPack() : null;
         break;
     }
     _o.VectorOfEnums = new List<MyGame.Example.Color>();

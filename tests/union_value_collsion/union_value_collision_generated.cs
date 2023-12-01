@@ -190,13 +190,13 @@ public struct IntValue : IFlatBufferObject
 {
   private Table __p;
   public ref ByteBuffer ByteBuffer { get { return ref __p.bb; } }
-  public static void ValidateVersion() { FlatBufferConstants.FIVE_FLAT_23_11_29(); }
+  public static void ValidateVersion() { FlatBufferConstants.FIVE_FLAT_23_12_01(); }
   public static IntValue GetRootAsIntValue(ref ByteBuffer _bb) { return GetRootAsIntValue(ref _bb, new IntValue()); }
   public static IntValue GetRootAsIntValue(ref ByteBuffer _bb, IntValue obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, ref _bb)); }
   public void __init(int _i, ref ByteBuffer _bb) { __p = new Table(_i, ref _bb); }
   public IntValue __assign(int _i, ref ByteBuffer _bb) { __init(_i, ref _bb); return this; }
 
-  public int Value { get { int o = __p.__offset(4); return o != 0 ? __p.bb.GetInt(o + __p.bb_pos) : (int)0; } }
+  public readonly int Value { get { int o = __p.__offset(4); return o != 0 ? __p.bb.GetInt(o + __p.bb_pos) : (int)0; } }
 
   public static Offset<union_value_collsion.IntValue> CreateIntValue(ref FlatBufferBuilder builder,
       int value = 0) {
@@ -251,14 +251,14 @@ public struct Collide : IFlatBufferObject
 {
   private Table __p;
   public ref ByteBuffer ByteBuffer { get { return ref __p.bb; } }
-  public static void ValidateVersion() { FlatBufferConstants.FIVE_FLAT_23_11_29(); }
+  public static void ValidateVersion() { FlatBufferConstants.FIVE_FLAT_23_12_01(); }
   public static Collide GetRootAsCollide(ref ByteBuffer _bb) { return GetRootAsCollide(ref _bb, new Collide()); }
   public static Collide GetRootAsCollide(ref ByteBuffer _bb, Collide obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, ref _bb)); }
   public void __init(int _i, ref ByteBuffer _bb) { __p = new Table(_i, ref _bb); }
   public Collide __assign(int _i, ref ByteBuffer _bb) { __init(_i, ref _bb); return this; }
 
-  public NativeArray<byte>? Collide_ { get { int o = __p.__offset(4); return o != 0 ? __p.__string(o + __p.bb_pos) : null; } }
-  public NativeArray<byte>? Value { get { int o = __p.__offset(6); return o != 0 ? __p.__string(o + __p.bb_pos) : null; } }
+  public readonly NativeArray<byte>? Collide_ { get { int o = __p.__offset(4); return o != 0 ? __p.__string(o + __p.bb_pos) : null; } }
+  public readonly NativeArray<byte>? Value { get { int o = __p.__offset(6); return o != 0 ? __p.__string(o + __p.bb_pos) : null; } }
 
   public static Offset<union_value_collsion.Collide> CreateCollide(ref FlatBufferBuilder builder,
       StringOffset collideOffset = default(StringOffset),
@@ -351,20 +351,22 @@ public struct Collision : IFlatBufferObject
 {
   private Table __p;
   public ref ByteBuffer ByteBuffer { get { return ref __p.bb; } }
-  public static void ValidateVersion() { FlatBufferConstants.FIVE_FLAT_23_11_29(); }
+  public static void ValidateVersion() { FlatBufferConstants.FIVE_FLAT_23_12_01(); }
   public static Collision GetRootAsCollision(ref ByteBuffer _bb) { return GetRootAsCollision(ref _bb, new Collision()); }
   public static Collision GetRootAsCollision(ref ByteBuffer _bb, Collision obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, ref _bb)); }
   public static bool VerifyCollision(ByteBuffer _bb) {Fivemid.FiveFlat.Verifier verifier = new Fivemid.FiveFlat.Verifier(_bb); return verifier.VerifyBuffer("", false, CollisionVerify.Verify); }
   public void __init(int _i, ref ByteBuffer _bb) { __p = new Table(_i, ref _bb); }
   public Collision __assign(int _i, ref ByteBuffer _bb) { __init(_i, ref _bb); return this; }
 
-  public union_value_collsion.Value SomeValueType { get { int o = __p.__offset(4); return o != 0 ? (union_value_collsion.Value)__p.bb.Get(o + __p.bb_pos) : union_value_collsion.Value.NONE; } }
-  public TTable? SomeValue<TTable>() where TTable : struct, IFlatBufferObject { int o = __p.__offset(6); return o != 0 ? (TTable?)__p.__union<TTable>(o + __p.bb_pos) : null; }
-  public union_value_collsion.IntValue SomeValueAsIntValue() { return SomeValue<union_value_collsion.IntValue>().Value; }
-  public union_value_collsion.Other ValueType { get { int o = __p.__offset(8); return o != 0 ? (union_value_collsion.Other)__p.bb.Get(o + __p.bb_pos) : union_value_collsion.Other.NONE; } }
-  public TTable? Value<TTable>() where TTable : struct, IFlatBufferObject { int o = __p.__offset(10); return o != 0 ? (TTable?)__p.__union<TTable>(o + __p.bb_pos) : null; }
-  public union_value_collsion.IntValue ValueAsIntValue() { return Value<union_value_collsion.IntValue>().Value; }
-  public union_value_collsion.Collision? Collide(int j) { int o = __p.__offset(12); return o != 0 ? (union_value_collsion.Collision?)(new union_value_collsion.Collision()).__assign(__p.__indirect(__p.__vector(o) + j * 4), ref __p.bb) : null; }
+  public readonly union_value_collsion.Value SomeValueType { get { int o = __p.__offset(4); return o != 0 ? (union_value_collsion.Value)__p.bb.Get(o + __p.bb_pos) : union_value_collsion.Value.NONE; } }
+  public readonly Union<union_value_collsion.Value> SomeValue { get { int o = __p.__offset(6); return o != 0 ? __p.__union<union_value_collsion.Value>(SomeValueType, o + __p.bb_pos) : __p.__union_none<union_value_collsion.Value>(); } }
+  public readonly TTable? SomeValueAs<TTable>() where TTable : struct, IFlatBufferObject { int o = __p.__offset(6); return o != 0 ? (TTable?)__p.__union_as<TTable>(o + __p.bb_pos) : null; }
+  public union_value_collsion.IntValue SomeValueAsIntValue() { return SomeValueAs<union_value_collsion.IntValue>().Value; }
+  public readonly union_value_collsion.Other ValueType { get { int o = __p.__offset(8); return o != 0 ? (union_value_collsion.Other)__p.bb.Get(o + __p.bb_pos) : union_value_collsion.Other.NONE; } }
+  public readonly Union<union_value_collsion.Other> Value { get { int o = __p.__offset(10); return o != 0 ? __p.__union<union_value_collsion.Other>(ValueType, o + __p.bb_pos) : __p.__union_none<union_value_collsion.Other>(); } }
+  public readonly TTable? ValueAs<TTable>() where TTable : struct, IFlatBufferObject { int o = __p.__offset(10); return o != 0 ? (TTable?)__p.__union_as<TTable>(o + __p.bb_pos) : null; }
+  public union_value_collsion.IntValue ValueAsIntValue() { return ValueAs<union_value_collsion.IntValue>().Value; }
+  public readonly union_value_collsion.Collision? Collide(int j) { int o = __p.__offset(12); return o != 0 ? (union_value_collsion.Collision?)(new union_value_collsion.Collision()).__assign(__p.__indirect(__p.__vector(o) + j * 4), ref __p.bb) : null; }
   public int CollideLength { get { int o = __p.__offset(12); return o != 0 ? __p.__vector_len(o) : 0; } }
 
   public static Offset<union_value_collsion.Collision> CreateCollision(ref FlatBufferBuilder builder,
@@ -407,7 +409,7 @@ public struct Collision : IFlatBufferObject
     switch (this.SomeValueType) {
       default: break;
       case union_value_collsion.Value.IntValue:
-        _o.SomeValue.Value_ = this.SomeValue<union_value_collsion.IntValue>().HasValue ? this.SomeValue<union_value_collsion.IntValue>().Value.UnPack() : null;
+        _o.SomeValue.Value_ = this.SomeValueAs<union_value_collsion.IntValue>().HasValue ? this.SomeValueAs<union_value_collsion.IntValue>().Value.UnPack() : null;
         break;
     }
     _o.Value = new union_value_collsion.OtherUnion();
@@ -415,7 +417,7 @@ public struct Collision : IFlatBufferObject
     switch (this.ValueType) {
       default: break;
       case union_value_collsion.Other.IntValue:
-        _o.Value.Value = this.Value<union_value_collsion.IntValue>().HasValue ? this.Value<union_value_collsion.IntValue>().Value.UnPack() : null;
+        _o.Value.Value = this.ValueAs<union_value_collsion.IntValue>().HasValue ? this.ValueAs<union_value_collsion.IntValue>().Value.UnPack() : null;
         break;
     }
     _o.Collide = new List<union_value_collsion.CollisionT>();

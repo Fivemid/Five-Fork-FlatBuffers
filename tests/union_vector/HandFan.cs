@@ -11,13 +11,13 @@ public struct HandFan : IFlatBufferObject
 {
   private Table __p;
   public ref ByteBuffer ByteBuffer { get { return ref __p.bb; } }
-  public static void ValidateVersion() { FlatBufferConstants.FIVE_FLAT_23_11_29(); }
+  public static void ValidateVersion() { FlatBufferConstants.FIVE_FLAT_23_12_01(); }
   public static HandFan GetRootAsHandFan(ref ByteBuffer _bb) { return GetRootAsHandFan(ref _bb, new HandFan()); }
   public static HandFan GetRootAsHandFan(ref ByteBuffer _bb, HandFan obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, ref _bb)); }
   public void __init(int _i, ref ByteBuffer _bb) { __p = new Table(_i, ref _bb); }
   public HandFan __assign(int _i, ref ByteBuffer _bb) { __init(_i, ref _bb); return this; }
 
-  public int Length { get { int o = __p.__offset(4); return o != 0 ? __p.bb.GetInt(o + __p.bb_pos) : (int)0; } }
+  public readonly int Length { get { int o = __p.__offset(4); return o != 0 ? __p.bb.GetInt(o + __p.bb_pos) : (int)0; } }
   public bool MutateLength(int length) { int o = __p.__offset(4); if (o != 0) { __p.bb.PutInt(o + __p.bb_pos, length); return true; } else { return false; } }
 
   public static Offset<HandFan> CreateHandFan(ref FlatBufferBuilder builder,

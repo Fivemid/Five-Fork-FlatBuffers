@@ -17,17 +17,17 @@ public struct Vec3 : IFlatBufferObject
   public void __init(int _i, ref ByteBuffer _bb) { __p = new Struct(_i, ref _bb); }
   public Vec3 __assign(int _i, ref ByteBuffer _bb) { __init(_i, ref _bb); return this; }
 
-  public float X { get { return __p.bb.GetFloat(__p.bb_pos + 0); } }
+  public readonly float X { get { return __p.bb.GetFloat(__p.bb_pos + 0); } }
   public void MutateX(float x) { __p.bb.PutFloat(__p.bb_pos + 0, x); }
-  public float Y { get { return __p.bb.GetFloat(__p.bb_pos + 4); } }
+  public readonly float Y { get { return __p.bb.GetFloat(__p.bb_pos + 4); } }
   public void MutateY(float y) { __p.bb.PutFloat(__p.bb_pos + 4, y); }
-  public float Z { get { return __p.bb.GetFloat(__p.bb_pos + 8); } }
+  public readonly float Z { get { return __p.bb.GetFloat(__p.bb_pos + 8); } }
   public void MutateZ(float z) { __p.bb.PutFloat(__p.bb_pos + 8, z); }
-  public double Test1 { get { return __p.bb.GetDouble(__p.bb_pos + 16); } }
+  public readonly double Test1 { get { return __p.bb.GetDouble(__p.bb_pos + 16); } }
   public void MutateTest1(double test1) { __p.bb.PutDouble(__p.bb_pos + 16, test1); }
-  public MyGame.Example.Color Test2 { get { return (MyGame.Example.Color)__p.bb.Get(__p.bb_pos + 24); } }
+  public readonly MyGame.Example.Color Test2 { get { return (MyGame.Example.Color)__p.bb.Get(__p.bb_pos + 24); } }
   public void MutateTest2(MyGame.Example.Color test2) { __p.bb.PutByte(__p.bb_pos + 24, (byte)test2); }
-  public MyGame.Example.Test Test3 { get { return (new MyGame.Example.Test()).__assign(__p.bb_pos + 26, ref __p.bb); } }
+  public readonly MyGame.Example.Test Test3 { get { return (new MyGame.Example.Test()).__assign(__p.bb_pos + 26, ref __p.bb); } }
 
   public static Offset<MyGame.Example.Vec3> CreateVec3(ref FlatBufferBuilder builder, float X, float Y, float Z, double Test1, MyGame.Example.Color Test2, short test3_A, sbyte test3_B) {
     builder.Prep(8, 32);

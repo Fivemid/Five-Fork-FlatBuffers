@@ -33,7 +33,7 @@ namespace Fivemid.FiveFlat
         public ref ByteBuffer bb { get { return ref *_bb; } }
 
         // Re-init the internal state with an external buffer {@code ByteBuffer} and an offset within.
-        public Table(int _i, ref ByteBuffer _bb) : this()
+        public Table(int _i, ref ByteBuffer _bb)
         {
             this._bb = (ByteBuffer*)UnsafeUtility.AddressOf(ref _bb);
             bb_pos = _i;
@@ -92,11 +92,21 @@ namespace Fivemid.FiveFlat
         }
 
         // Initialize any Table-derived type to point to the union at the given offset.
-        public T __union<T>(int offset) where T : struct, IFlatBufferObject
+        public T __union_as<T>(int offset) where T : struct, IFlatBufferObject
         {
             T t = new T();
             t.__init(__indirect(offset), ref bb);
             return t;
+        }
+
+        public Union<TType> __union<TType>(TType type, int offsetValue) where TType : unmanaged
+        {
+            return new Union<TType>(type, __indirect(offsetValue), ref bb);
+        }
+
+        public Union<TType> __union_none<TType>() where TType : unmanaged
+        {
+            return new Union<TType>(default(TType), 0, ref bb);
         }
 
         public static bool __has_identifier(ByteBuffer bb, string ident)

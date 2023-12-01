@@ -14,16 +14,16 @@ public struct Stat : IFlatBufferObject
 {
   private Table __p;
   public ref ByteBuffer ByteBuffer { get { return ref __p.bb; } }
-  public static void ValidateVersion() { FlatBufferConstants.FIVE_FLAT_23_11_29(); }
+  public static void ValidateVersion() { FlatBufferConstants.FIVE_FLAT_23_12_01(); }
   public static Stat GetRootAsStat(ref ByteBuffer _bb) { return GetRootAsStat(ref _bb, new Stat()); }
   public static Stat GetRootAsStat(ref ByteBuffer _bb, Stat obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, ref _bb)); }
   public void __init(int _i, ref ByteBuffer _bb) { __p = new Table(_i, ref _bb); }
   public Stat __assign(int _i, ref ByteBuffer _bb) { __init(_i, ref _bb); return this; }
 
-  public NativeArray<byte>? Id { get { int o = __p.__offset(4); return o != 0 ? __p.__string(o + __p.bb_pos) : null; } }
-  public long Val { get { int o = __p.__offset(6); return o != 0 ? __p.bb.GetLong(o + __p.bb_pos) : (long)0; } }
+  public readonly NativeArray<byte>? Id { get { int o = __p.__offset(4); return o != 0 ? __p.__string(o + __p.bb_pos) : null; } }
+  public readonly long Val { get { int o = __p.__offset(6); return o != 0 ? __p.bb.GetLong(o + __p.bb_pos) : (long)0; } }
   public bool MutateVal(long val) { int o = __p.__offset(6); if (o != 0) { __p.bb.PutLong(o + __p.bb_pos, val); return true; } else { return false; } }
-  public ushort Count { get { int o = __p.__offset(8); return o != 0 ? __p.bb.GetUshort(o + __p.bb_pos) : (ushort)0; } }
+  public readonly ushort Count { get { int o = __p.__offset(8); return o != 0 ? __p.bb.GetUshort(o + __p.bb_pos) : (ushort)0; } }
   public bool MutateCount(ushort count) { int o = __p.__offset(8); if (o != 0) { __p.bb.PutUshort(o + __p.bb_pos, count); return true; } else { return false; } }
 
   public static Offset<MyGame.Example.Stat> CreateStat(ref FlatBufferBuilder builder,

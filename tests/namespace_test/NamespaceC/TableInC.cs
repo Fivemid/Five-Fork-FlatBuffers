@@ -14,14 +14,14 @@ public struct TableInC : IFlatBufferObject
 {
   private Table __p;
   public ref ByteBuffer ByteBuffer { get { return ref __p.bb; } }
-  public static void ValidateVersion() { FlatBufferConstants.FIVE_FLAT_23_11_29(); }
+  public static void ValidateVersion() { FlatBufferConstants.FIVE_FLAT_23_12_01(); }
   public static TableInC GetRootAsTableInC(ref ByteBuffer _bb) { return GetRootAsTableInC(ref _bb, new TableInC()); }
   public static TableInC GetRootAsTableInC(ref ByteBuffer _bb, TableInC obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, ref _bb)); }
   public void __init(int _i, ref ByteBuffer _bb) { __p = new Table(_i, ref _bb); }
   public TableInC __assign(int _i, ref ByteBuffer _bb) { __init(_i, ref _bb); return this; }
 
-  public NamespaceA.TableInFirstNS? ReferToA1 { get { int o = __p.__offset(4); return o != 0 ? (NamespaceA.TableInFirstNS?)(new NamespaceA.TableInFirstNS()).__assign(__p.__indirect(o + __p.bb_pos), ref __p.bb) : null; } }
-  public NamespaceA.SecondTableInA? ReferToA2 { get { int o = __p.__offset(6); return o != 0 ? (NamespaceA.SecondTableInA?)(new NamespaceA.SecondTableInA()).__assign(__p.__indirect(o + __p.bb_pos), ref __p.bb) : null; } }
+  public readonly NamespaceA.TableInFirstNS? ReferToA1 { get { int o = __p.__offset(4); return o != 0 ? (NamespaceA.TableInFirstNS?)(new NamespaceA.TableInFirstNS()).__assign(__p.__indirect(o + __p.bb_pos), ref __p.bb) : null; } }
+  public readonly NamespaceA.SecondTableInA? ReferToA2 { get { int o = __p.__offset(6); return o != 0 ? (NamespaceA.SecondTableInA?)(new NamespaceA.SecondTableInA()).__assign(__p.__indirect(o + __p.bb_pos), ref __p.bb) : null; } }
 
   public static Offset<NamespaceC.TableInC> CreateTableInC(ref FlatBufferBuilder builder,
       Offset<NamespaceA.TableInFirstNS> refer_to_a1Offset = default(Offset<NamespaceA.TableInFirstNS>),

@@ -14,13 +14,13 @@ public struct SecondTableInA : IFlatBufferObject
 {
   private Table __p;
   public ref ByteBuffer ByteBuffer { get { return ref __p.bb; } }
-  public static void ValidateVersion() { FlatBufferConstants.FIVE_FLAT_23_11_29(); }
+  public static void ValidateVersion() { FlatBufferConstants.FIVE_FLAT_23_12_01(); }
   public static SecondTableInA GetRootAsSecondTableInA(ref ByteBuffer _bb) { return GetRootAsSecondTableInA(ref _bb, new SecondTableInA()); }
   public static SecondTableInA GetRootAsSecondTableInA(ref ByteBuffer _bb, SecondTableInA obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, ref _bb)); }
   public void __init(int _i, ref ByteBuffer _bb) { __p = new Table(_i, ref _bb); }
   public SecondTableInA __assign(int _i, ref ByteBuffer _bb) { __init(_i, ref _bb); return this; }
 
-  public NamespaceC.TableInC? ReferToC { get { int o = __p.__offset(4); return o != 0 ? (NamespaceC.TableInC?)(new NamespaceC.TableInC()).__assign(__p.__indirect(o + __p.bb_pos), ref __p.bb) : null; } }
+  public readonly NamespaceC.TableInC? ReferToC { get { int o = __p.__offset(4); return o != 0 ? (NamespaceC.TableInC?)(new NamespaceC.TableInC()).__assign(__p.__indirect(o + __p.bb_pos), ref __p.bb) : null; } }
 
   public static Offset<NamespaceA.SecondTableInA> CreateSecondTableInA(ref FlatBufferBuilder builder,
       Offset<NamespaceC.TableInC> refer_to_cOffset = default(Offset<NamespaceC.TableInC>)) {

@@ -17,9 +17,9 @@ public struct Test : IFlatBufferObject
   public void __init(int _i, ref ByteBuffer _bb) { __p = new Struct(_i, ref _bb); }
   public Test __assign(int _i, ref ByteBuffer _bb) { __init(_i, ref _bb); return this; }
 
-  public short A { get { return __p.bb.GetShort(__p.bb_pos + 0); } }
+  public readonly short A { get { return __p.bb.GetShort(__p.bb_pos + 0); } }
   public void MutateA(short a) { __p.bb.PutShort(__p.bb_pos + 0, a); }
-  public sbyte B { get { return __p.bb.GetSbyte(__p.bb_pos + 2); } }
+  public readonly sbyte B { get { return __p.bb.GetSbyte(__p.bb_pos + 2); } }
   public void MutateB(sbyte b) { __p.bb.PutSbyte(__p.bb_pos + 2, b); }
 
   public static Offset<MyGame.Example.Test> CreateTest(ref FlatBufferBuilder builder, short A, sbyte B) {

@@ -14,19 +14,19 @@ public struct KeywordsInTable : IFlatBufferObject
 {
   private Table __p;
   public ref ByteBuffer ByteBuffer { get { return ref __p.bb; } }
-  public static void ValidateVersion() { FlatBufferConstants.FIVE_FLAT_23_11_29(); }
+  public static void ValidateVersion() { FlatBufferConstants.FIVE_FLAT_23_12_01(); }
   public static KeywordsInTable GetRootAsKeywordsInTable(ref ByteBuffer _bb) { return GetRootAsKeywordsInTable(ref _bb, new KeywordsInTable()); }
   public static KeywordsInTable GetRootAsKeywordsInTable(ref ByteBuffer _bb, KeywordsInTable obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, ref _bb)); }
   public void __init(int _i, ref ByteBuffer _bb) { __p = new Table(_i, ref _bb); }
   public KeywordsInTable __assign(int _i, ref ByteBuffer _bb) { __init(_i, ref _bb); return this; }
 
-  public KeywordTest.ABC Is { get { int o = __p.__offset(4); return o != 0 ? (KeywordTest.ABC)__p.bb.GetInt(o + __p.bb_pos) : KeywordTest.ABC.@void; } }
+  public readonly KeywordTest.ABC Is { get { int o = __p.__offset(4); return o != 0 ? (KeywordTest.ABC)__p.bb.GetInt(o + __p.bb_pos) : KeywordTest.ABC.@void; } }
   public bool MutateIs(KeywordTest.ABC @is) { int o = __p.__offset(4); if (o != 0) { __p.bb.PutInt(o + __p.bb_pos, (int)@is); return true; } else { return false; } }
-  public KeywordTest.@public Private { get { int o = __p.__offset(6); return o != 0 ? (KeywordTest.@public)__p.bb.GetInt(o + __p.bb_pos) : KeywordTest.@public.NONE; } }
+  public readonly KeywordTest.@public Private { get { int o = __p.__offset(6); return o != 0 ? (KeywordTest.@public)__p.bb.GetInt(o + __p.bb_pos) : KeywordTest.@public.NONE; } }
   public bool MutatePrivate(KeywordTest.@public @private) { int o = __p.__offset(6); if (o != 0) { __p.bb.PutInt(o + __p.bb_pos, (int)@private); return true; } else { return false; } }
-  public int Type { get { int o = __p.__offset(8); return o != 0 ? __p.bb.GetInt(o + __p.bb_pos) : (int)0; } }
+  public readonly int Type { get { int o = __p.__offset(8); return o != 0 ? __p.bb.GetInt(o + __p.bb_pos) : (int)0; } }
   public bool MutateType(int type) { int o = __p.__offset(8); if (o != 0) { __p.bb.PutInt(o + __p.bb_pos, type); return true; } else { return false; } }
-  public bool Default { get { int o = __p.__offset(10); return o != 0 ? 0!=__p.bb.Get(o + __p.bb_pos) : (bool)false; } }
+  public readonly bool Default { get { int o = __p.__offset(10); return o != 0 ? 0!=__p.bb.Get(o + __p.bb_pos) : (bool)false; } }
   public bool MutateDefault(bool @default) { int o = __p.__offset(10); if (o != 0) { __p.bb.PutByte(o + __p.bb_pos, (byte)(@default ? 1 : 0)); return true; } else { return false; } }
 
   public static Offset<KeywordTest.KeywordsInTable> CreateKeywordsInTable(ref FlatBufferBuilder builder,

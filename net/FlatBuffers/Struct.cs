@@ -29,7 +29,7 @@ namespace Fivemid.FiveFlat
         public ref ByteBuffer bb { get { return ref *_bb; } }
 
         // Re-init the internal state with an external buffer {@code ByteBuffer} and an offset within.
-        public Struct(int _i, ref ByteBuffer _bb) : this()
+        public Struct(int _i, ref ByteBuffer _bb)
         {
             this._bb = (ByteBuffer*)UnsafeUtility.AddressOf(ref _bb);
             bb_pos = _i;

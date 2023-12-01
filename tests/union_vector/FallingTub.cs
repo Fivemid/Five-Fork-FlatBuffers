@@ -14,7 +14,7 @@ public struct FallingTub : IFlatBufferObject
   public void __init(int _i, ref ByteBuffer _bb) { __p = new Struct(_i, ref _bb); }
   public FallingTub __assign(int _i, ref ByteBuffer _bb) { __init(_i, ref _bb); return this; }
 
-  public int Weight { get { return __p.bb.GetInt(__p.bb_pos + 0); } }
+  public readonly int Weight { get { return __p.bb.GetInt(__p.bb_pos + 0); } }
   public void MutateWeight(int weight) { __p.bb.PutInt(__p.bb_pos + 0, weight); }
 
   public static Offset<FallingTub> CreateFallingTub(ref FlatBufferBuilder builder, int Weight) {

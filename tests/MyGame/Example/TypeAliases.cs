@@ -14,36 +14,36 @@ public struct TypeAliases : IFlatBufferObject
 {
   private Table __p;
   public ref ByteBuffer ByteBuffer { get { return ref __p.bb; } }
-  public static void ValidateVersion() { FlatBufferConstants.FIVE_FLAT_23_11_29(); }
+  public static void ValidateVersion() { FlatBufferConstants.FIVE_FLAT_23_12_01(); }
   public static TypeAliases GetRootAsTypeAliases(ref ByteBuffer _bb) { return GetRootAsTypeAliases(ref _bb, new TypeAliases()); }
   public static TypeAliases GetRootAsTypeAliases(ref ByteBuffer _bb, TypeAliases obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, ref _bb)); }
   public void __init(int _i, ref ByteBuffer _bb) { __p = new Table(_i, ref _bb); }
   public TypeAliases __assign(int _i, ref ByteBuffer _bb) { __init(_i, ref _bb); return this; }
 
-  public sbyte I8 { get { int o = __p.__offset(4); return o != 0 ? __p.bb.GetSbyte(o + __p.bb_pos) : (sbyte)0; } }
+  public readonly sbyte I8 { get { int o = __p.__offset(4); return o != 0 ? __p.bb.GetSbyte(o + __p.bb_pos) : (sbyte)0; } }
   public bool MutateI8(sbyte i8) { int o = __p.__offset(4); if (o != 0) { __p.bb.PutSbyte(o + __p.bb_pos, i8); return true; } else { return false; } }
-  public byte U8 { get { int o = __p.__offset(6); return o != 0 ? __p.bb.Get(o + __p.bb_pos) : (byte)0; } }
+  public readonly byte U8 { get { int o = __p.__offset(6); return o != 0 ? __p.bb.Get(o + __p.bb_pos) : (byte)0; } }
   public bool MutateU8(byte u8) { int o = __p.__offset(6); if (o != 0) { __p.bb.PutByte(o + __p.bb_pos, u8); return true; } else { return false; } }
-  public short I16 { get { int o = __p.__offset(8); return o != 0 ? __p.bb.GetShort(o + __p.bb_pos) : (short)0; } }
+  public readonly short I16 { get { int o = __p.__offset(8); return o != 0 ? __p.bb.GetShort(o + __p.bb_pos) : (short)0; } }
   public bool MutateI16(short i16) { int o = __p.__offset(8); if (o != 0) { __p.bb.PutShort(o + __p.bb_pos, i16); return true; } else { return false; } }
-  public ushort U16 { get { int o = __p.__offset(10); return o != 0 ? __p.bb.GetUshort(o + __p.bb_pos) : (ushort)0; } }
+  public readonly ushort U16 { get { int o = __p.__offset(10); return o != 0 ? __p.bb.GetUshort(o + __p.bb_pos) : (ushort)0; } }
   public bool MutateU16(ushort u16) { int o = __p.__offset(10); if (o != 0) { __p.bb.PutUshort(o + __p.bb_pos, u16); return true; } else { return false; } }
-  public int I32 { get { int o = __p.__offset(12); return o != 0 ? __p.bb.GetInt(o + __p.bb_pos) : (int)0; } }
+  public readonly int I32 { get { int o = __p.__offset(12); return o != 0 ? __p.bb.GetInt(o + __p.bb_pos) : (int)0; } }
   public bool MutateI32(int i32) { int o = __p.__offset(12); if (o != 0) { __p.bb.PutInt(o + __p.bb_pos, i32); return true; } else { return false; } }
-  public uint U32 { get { int o = __p.__offset(14); return o != 0 ? __p.bb.GetUint(o + __p.bb_pos) : (uint)0; } }
+  public readonly uint U32 { get { int o = __p.__offset(14); return o != 0 ? __p.bb.GetUint(o + __p.bb_pos) : (uint)0; } }
   public bool MutateU32(uint u32) { int o = __p.__offset(14); if (o != 0) { __p.bb.PutUint(o + __p.bb_pos, u32); return true; } else { return false; } }
-  public long I64 { get { int o = __p.__offset(16); return o != 0 ? __p.bb.GetLong(o + __p.bb_pos) : (long)0; } }
+  public readonly long I64 { get { int o = __p.__offset(16); return o != 0 ? __p.bb.GetLong(o + __p.bb_pos) : (long)0; } }
   public bool MutateI64(long i64) { int o = __p.__offset(16); if (o != 0) { __p.bb.PutLong(o + __p.bb_pos, i64); return true; } else { return false; } }
-  public ulong U64 { get { int o = __p.__offset(18); return o != 0 ? __p.bb.GetUlong(o + __p.bb_pos) : (ulong)0; } }
+  public readonly ulong U64 { get { int o = __p.__offset(18); return o != 0 ? __p.bb.GetUlong(o + __p.bb_pos) : (ulong)0; } }
   public bool MutateU64(ulong u64) { int o = __p.__offset(18); if (o != 0) { __p.bb.PutUlong(o + __p.bb_pos, u64); return true; } else { return false; } }
-  public float F32 { get { int o = __p.__offset(20); return o != 0 ? __p.bb.GetFloat(o + __p.bb_pos) : (float)0.0f; } }
+  public readonly float F32 { get { int o = __p.__offset(20); return o != 0 ? __p.bb.GetFloat(o + __p.bb_pos) : (float)0.0f; } }
   public bool MutateF32(float f32) { int o = __p.__offset(20); if (o != 0) { __p.bb.PutFloat(o + __p.bb_pos, f32); return true; } else { return false; } }
-  public double F64 { get { int o = __p.__offset(22); return o != 0 ? __p.bb.GetDouble(o + __p.bb_pos) : (double)0.0; } }
+  public readonly double F64 { get { int o = __p.__offset(22); return o != 0 ? __p.bb.GetDouble(o + __p.bb_pos) : (double)0.0; } }
   public bool MutateF64(double f64) { int o = __p.__offset(22); if (o != 0) { __p.bb.PutDouble(o + __p.bb_pos, f64); return true; } else { return false; } }
-  public sbyte V8(int j) { int o = __p.__offset(24); return o != 0 ? __p.bb.GetSbyte(__p.__vector(o) + j * 1) : (sbyte)0; }
+  public readonly sbyte V8(int j) { int o = __p.__offset(24); return o != 0 ? __p.bb.GetSbyte(__p.__vector(o) + j * 1) : (sbyte)0; }
   public int V8Length { get { int o = __p.__offset(24); return o != 0 ? __p.__vector_len(o) : 0; } }
   public bool MutateV8(int j, sbyte v8) { int o = __p.__offset(24); if (o != 0) { __p.bb.PutSbyte(__p.__vector(o) + j * 1, v8); return true; } else { return false; } }
-  public double Vf64(int j) { int o = __p.__offset(26); return o != 0 ? __p.bb.GetDouble(__p.__vector(o) + j * 8) : (double)0; }
+  public readonly double Vf64(int j) { int o = __p.__offset(26); return o != 0 ? __p.bb.GetDouble(__p.__vector(o) + j * 8) : (double)0; }
   public int Vf64Length { get { int o = __p.__offset(26); return o != 0 ? __p.__vector_len(o) : 0; } }
   public bool MutateVf64(int j, double vf64) { int o = __p.__offset(26); if (o != 0) { __p.bb.PutDouble(__p.__vector(o) + j * 8, vf64); return true; } else { return false; } }
 

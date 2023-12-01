@@ -215,7 +215,7 @@ namespace Fivemid.FiveFlat.Tests.Exported
 
             Assert.AreEqual(Any.Monster, monster.TestType);
 
-            var monster2 = monster.Test<Monster>().Value;
+            var monster2 = monster.TestAs<Monster>().Value;
             Assert.StringEqual("Fred", monster2.Name);
 
 
@@ -450,13 +450,13 @@ namespace Fivemid.FiveFlat.Tests.Exported
 
             var movie = Movie.GetRootAsMovie(ref fbb._bb);
             Assert.AreEqual(Character.Rapunzel, movie.MainCharacterType);
-            Assert.AreEqual(40, movie.MainCharacter<Rapunzel>().Value.HairLength);
+            Assert.AreEqual(40, movie.MainCharacterAs<Rapunzel>().Value.HairLength);
 
             Assert.AreEqual(3, movie.CharactersLength);
             Assert.AreEqual(Character.MuLan, movie.CharactersType(0));
-            Assert.AreEqual(10, movie.Characters<Attacker>(0).Value.SwordAttackDamage);
+            Assert.AreEqual(10, movie.CharactersAs<Attacker>(0).Value.SwordAttackDamage);
             Assert.AreEqual(Character.Belle, movie.CharactersType(1));
-            Assert.AreEqual(20, movie.Characters<BookReader>(1).Value.BooksRead);
+            Assert.AreEqual(20, movie.CharactersAs<BookReader>(1).Value.BooksRead);
             Assert.AreEqual(Character.Other, movie.CharactersType(2));
             Assert.StringEqual("Chip", movie.CharactersAsString(2));
 
@@ -508,7 +508,7 @@ namespace Fivemid.FiveFlat.Tests.Exported
             Assert.AreEqual(a.TestType, b.Test.Type);
             if (a.TestType == Any.Monster)
             {
-                var monster2A = a.Test<Monster>().Value;
+                var monster2A = a.TestAs<Monster>().Value;
                 var monster2B = b.Test.AsMonster();
                 Assert.StringEqual(monster2A.Name, monster2B.Name);
             }
@@ -586,8 +586,8 @@ namespace Fivemid.FiveFlat.Tests.Exported
             Assert.AreEqual(a.TestType, b.TestType);
             if (a.TestType == Any.Monster)
             {
-                var monster2A = a.Test<Monster>().Value;
-                var monster2B = b.Test<Monster>().Value;
+                var monster2A = a.TestAs<Monster>().Value;
+                var monster2B = b.TestAs<Monster>().Value;
                 Assert.StringEqual(monster2A.Name, monster2B.Name);
             }
 
@@ -766,13 +766,13 @@ namespace Fivemid.FiveFlat.Tests.Exported
         private void AreEqual(Movie a, MovieT b)
         {
             Assert.AreEqual(a.MainCharacterType, b.MainCharacter.Type);
-            Assert.AreEqual(a.MainCharacter<Rapunzel>().Value.HairLength, b.MainCharacter.AsRapunzel().HairLength);
+            Assert.AreEqual(a.MainCharacterAs<Rapunzel>().Value.HairLength, b.MainCharacter.AsRapunzel().HairLength);
 
             Assert.AreEqual(a.CharactersLength, b.Characters.Count);
             Assert.AreEqual(a.CharactersType(0), b.Characters[0].Type);
-            Assert.AreEqual(a.Characters<Attacker>(0).Value.SwordAttackDamage, b.Characters[0].AsMuLan().SwordAttackDamage);
+            Assert.AreEqual(a.CharactersAs<Attacker>(0).Value.SwordAttackDamage, b.Characters[0].AsMuLan().SwordAttackDamage);
             Assert.AreEqual(a.CharactersType(1), b.Characters[1].Type);
-            Assert.AreEqual(a.Characters<BookReader>(1).Value.BooksRead, b.Characters[1].AsBelle().BooksRead);
+            Assert.AreEqual(a.CharactersAs<BookReader>(1).Value.BooksRead, b.Characters[1].AsBelle().BooksRead);
             Assert.AreEqual(a.CharactersType(2), b.Characters[2].Type);
             Assert.StringEqual(a.CharactersAsString(2), b.Characters[2].AsOther());
         }
@@ -780,13 +780,13 @@ namespace Fivemid.FiveFlat.Tests.Exported
         private void AreEqual(Movie a, Movie b)
         {
             Assert.AreEqual(a.MainCharacterType, b.MainCharacterType);
-            Assert.AreEqual(a.MainCharacter<Rapunzel>().Value.HairLength, b.MainCharacter<Rapunzel>().Value.HairLength);
+            Assert.AreEqual(a.MainCharacterAs<Rapunzel>().Value.HairLength, b.MainCharacterAs<Rapunzel>().Value.HairLength);
 
             Assert.AreEqual(a.CharactersLength, b.CharactersLength);
             Assert.AreEqual(a.CharactersType(0), b.CharactersType(0));
-            Assert.AreEqual(a.Characters<Attacker>(0).Value.SwordAttackDamage, b.Characters<Attacker>(0).Value.SwordAttackDamage);
+            Assert.AreEqual(a.CharactersAs<Attacker>(0).Value.SwordAttackDamage, b.CharactersAs<Attacker>(0).Value.SwordAttackDamage);
             Assert.AreEqual(a.CharactersType(1), b.CharactersType(1));
-            Assert.AreEqual(a.Characters<BookReader>(1).Value.BooksRead, b.Characters<BookReader>(1).Value.BooksRead);
+            Assert.AreEqual(a.CharactersAs<BookReader>(1).Value.BooksRead, b.CharactersAs<BookReader>(1).Value.BooksRead);
             Assert.AreEqual(a.CharactersType(2), b.CharactersType(2));
             Assert.StringEqual(a.CharactersAsString(2), b.CharactersAsString(2));
         }

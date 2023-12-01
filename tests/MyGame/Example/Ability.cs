@@ -17,9 +17,9 @@ public struct Ability : IFlatBufferObject
   public void __init(int _i, ref ByteBuffer _bb) { __p = new Struct(_i, ref _bb); }
   public Ability __assign(int _i, ref ByteBuffer _bb) { __init(_i, ref _bb); return this; }
 
-  public uint Id { get { return __p.bb.GetUint(__p.bb_pos + 0); } }
+  public readonly uint Id { get { return __p.bb.GetUint(__p.bb_pos + 0); } }
   public void MutateId(uint id) { __p.bb.PutUint(__p.bb_pos + 0, id); }
-  public uint Distance { get { return __p.bb.GetUint(__p.bb_pos + 4); } }
+  public readonly uint Distance { get { return __p.bb.GetUint(__p.bb_pos + 4); } }
   public void MutateDistance(uint distance) { __p.bb.PutUint(__p.bb_pos + 4, distance); }
 
   public static Offset<MyGame.Example.Ability> CreateAbility(ref FlatBufferBuilder builder, uint Id, uint Distance) {

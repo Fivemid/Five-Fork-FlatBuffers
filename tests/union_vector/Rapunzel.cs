@@ -14,7 +14,7 @@ public struct Rapunzel : IFlatBufferObject
   public void __init(int _i, ref ByteBuffer _bb) { __p = new Struct(_i, ref _bb); }
   public Rapunzel __assign(int _i, ref ByteBuffer _bb) { __init(_i, ref _bb); return this; }
 
-  public int HairLength { get { return __p.bb.GetInt(__p.bb_pos + 0); } }
+  public readonly int HairLength { get { return __p.bb.GetInt(__p.bb_pos + 0); } }
   public void MutateHairLength(int hair_length) { __p.bb.PutInt(__p.bb_pos + 0, hair_length); }
 
   public static Offset<Rapunzel> CreateRapunzel(ref FlatBufferBuilder builder, int HairLength) {

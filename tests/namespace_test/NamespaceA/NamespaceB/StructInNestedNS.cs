@@ -17,9 +17,9 @@ public struct StructInNestedNS : IFlatBufferObject
   public void __init(int _i, ref ByteBuffer _bb) { __p = new Struct(_i, ref _bb); }
   public StructInNestedNS __assign(int _i, ref ByteBuffer _bb) { __init(_i, ref _bb); return this; }
 
-  public int A { get { return __p.bb.GetInt(__p.bb_pos + 0); } }
+  public readonly int A { get { return __p.bb.GetInt(__p.bb_pos + 0); } }
   public void MutateA(int a) { __p.bb.PutInt(__p.bb_pos + 0, a); }
-  public int B { get { return __p.bb.GetInt(__p.bb_pos + 4); } }
+  public readonly int B { get { return __p.bb.GetInt(__p.bb_pos + 4); } }
   public void MutateB(int b) { __p.bb.PutInt(__p.bb_pos + 4, b); }
 
   public static Offset<NamespaceA.NamespaceB.StructInNestedNS> CreateStructInNestedNS(ref FlatBufferBuilder builder, int A, int B) {

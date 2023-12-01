@@ -14,19 +14,20 @@ public struct TableInFirstNS : IFlatBufferObject
 {
   private Table __p;
   public ref ByteBuffer ByteBuffer { get { return ref __p.bb; } }
-  public static void ValidateVersion() { FlatBufferConstants.FIVE_FLAT_23_11_29(); }
+  public static void ValidateVersion() { FlatBufferConstants.FIVE_FLAT_23_12_01(); }
   public static TableInFirstNS GetRootAsTableInFirstNS(ref ByteBuffer _bb) { return GetRootAsTableInFirstNS(ref _bb, new TableInFirstNS()); }
   public static TableInFirstNS GetRootAsTableInFirstNS(ref ByteBuffer _bb, TableInFirstNS obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, ref _bb)); }
   public void __init(int _i, ref ByteBuffer _bb) { __p = new Table(_i, ref _bb); }
   public TableInFirstNS __assign(int _i, ref ByteBuffer _bb) { __init(_i, ref _bb); return this; }
 
-  public NamespaceA.NamespaceB.TableInNestedNS? FooTable { get { int o = __p.__offset(4); return o != 0 ? (NamespaceA.NamespaceB.TableInNestedNS?)(new NamespaceA.NamespaceB.TableInNestedNS()).__assign(__p.__indirect(o + __p.bb_pos), ref __p.bb) : null; } }
-  public NamespaceA.NamespaceB.EnumInNestedNS FooEnum { get { int o = __p.__offset(6); return o != 0 ? (NamespaceA.NamespaceB.EnumInNestedNS)__p.bb.GetSbyte(o + __p.bb_pos) : NamespaceA.NamespaceB.EnumInNestedNS.A; } }
+  public readonly NamespaceA.NamespaceB.TableInNestedNS? FooTable { get { int o = __p.__offset(4); return o != 0 ? (NamespaceA.NamespaceB.TableInNestedNS?)(new NamespaceA.NamespaceB.TableInNestedNS()).__assign(__p.__indirect(o + __p.bb_pos), ref __p.bb) : null; } }
+  public readonly NamespaceA.NamespaceB.EnumInNestedNS FooEnum { get { int o = __p.__offset(6); return o != 0 ? (NamespaceA.NamespaceB.EnumInNestedNS)__p.bb.GetSbyte(o + __p.bb_pos) : NamespaceA.NamespaceB.EnumInNestedNS.A; } }
   public bool MutateFooEnum(NamespaceA.NamespaceB.EnumInNestedNS foo_enum) { int o = __p.__offset(6); if (o != 0) { __p.bb.PutSbyte(o + __p.bb_pos, (sbyte)foo_enum); return true; } else { return false; } }
-  public NamespaceA.NamespaceB.UnionInNestedNS FooUnionType { get { int o = __p.__offset(8); return o != 0 ? (NamespaceA.NamespaceB.UnionInNestedNS)__p.bb.Get(o + __p.bb_pos) : NamespaceA.NamespaceB.UnionInNestedNS.NONE; } }
-  public TTable? FooUnion<TTable>() where TTable : struct, IFlatBufferObject { int o = __p.__offset(10); return o != 0 ? (TTable?)__p.__union<TTable>(o + __p.bb_pos) : null; }
-  public NamespaceA.NamespaceB.TableInNestedNS FooUnionAsTableInNestedNS() { return FooUnion<NamespaceA.NamespaceB.TableInNestedNS>().Value; }
-  public NamespaceA.NamespaceB.StructInNestedNS? FooStruct { get { int o = __p.__offset(12); return o != 0 ? (NamespaceA.NamespaceB.StructInNestedNS?)(new NamespaceA.NamespaceB.StructInNestedNS()).__assign(o + __p.bb_pos, ref __p.bb) : null; } }
+  public readonly NamespaceA.NamespaceB.UnionInNestedNS FooUnionType { get { int o = __p.__offset(8); return o != 0 ? (NamespaceA.NamespaceB.UnionInNestedNS)__p.bb.Get(o + __p.bb_pos) : NamespaceA.NamespaceB.UnionInNestedNS.NONE; } }
+  public readonly Union<NamespaceA.NamespaceB.UnionInNestedNS> FooUnion { get { int o = __p.__offset(10); return o != 0 ? __p.__union<NamespaceA.NamespaceB.UnionInNestedNS>(FooUnionType, o + __p.bb_pos) : __p.__union_none<NamespaceA.NamespaceB.UnionInNestedNS>(); } }
+  public readonly TTable? FooUnionAs<TTable>() where TTable : struct, IFlatBufferObject { int o = __p.__offset(10); return o != 0 ? (TTable?)__p.__union_as<TTable>(o + __p.bb_pos) : null; }
+  public NamespaceA.NamespaceB.TableInNestedNS FooUnionAsTableInNestedNS() { return FooUnionAs<NamespaceA.NamespaceB.TableInNestedNS>().Value; }
+  public readonly NamespaceA.NamespaceB.StructInNestedNS? FooStruct { get { int o = __p.__offset(12); return o != 0 ? (NamespaceA.NamespaceB.StructInNestedNS?)(new NamespaceA.NamespaceB.StructInNestedNS()).__assign(o + __p.bb_pos, ref __p.bb) : null; } }
 
   public static Offset<NamespaceA.TableInFirstNS> CreateTableInFirstNS(ref FlatBufferBuilder builder,
       Offset<NamespaceA.NamespaceB.TableInNestedNS> foo_tableOffset = default(Offset<NamespaceA.NamespaceB.TableInNestedNS>),
@@ -66,7 +67,7 @@ public struct TableInFirstNS : IFlatBufferObject
     switch (this.FooUnionType) {
       default: break;
       case NamespaceA.NamespaceB.UnionInNestedNS.TableInNestedNS:
-        _o.FooUnion.Value = this.FooUnion<NamespaceA.NamespaceB.TableInNestedNS>().HasValue ? this.FooUnion<NamespaceA.NamespaceB.TableInNestedNS>().Value.UnPack() : null;
+        _o.FooUnion.Value = this.FooUnionAs<NamespaceA.NamespaceB.TableInNestedNS>().HasValue ? this.FooUnionAs<NamespaceA.NamespaceB.TableInNestedNS>().Value.UnPack() : null;
         break;
     }
     _o.FooStruct = this.FooStruct.HasValue ? this.FooStruct.Value.UnPack() : null;

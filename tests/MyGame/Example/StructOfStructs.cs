@@ -17,9 +17,9 @@ public struct StructOfStructs : IFlatBufferObject
   public void __init(int _i, ref ByteBuffer _bb) { __p = new Struct(_i, ref _bb); }
   public StructOfStructs __assign(int _i, ref ByteBuffer _bb) { __init(_i, ref _bb); return this; }
 
-  public MyGame.Example.Ability A { get { return (new MyGame.Example.Ability()).__assign(__p.bb_pos + 0, ref __p.bb); } }
-  public MyGame.Example.Test B { get { return (new MyGame.Example.Test()).__assign(__p.bb_pos + 8, ref __p.bb); } }
-  public MyGame.Example.Ability C { get { return (new MyGame.Example.Ability()).__assign(__p.bb_pos + 12, ref __p.bb); } }
+  public readonly MyGame.Example.Ability A { get { return (new MyGame.Example.Ability()).__assign(__p.bb_pos + 0, ref __p.bb); } }
+  public readonly MyGame.Example.Test B { get { return (new MyGame.Example.Test()).__assign(__p.bb_pos + 8, ref __p.bb); } }
+  public readonly MyGame.Example.Ability C { get { return (new MyGame.Example.Ability()).__assign(__p.bb_pos + 12, ref __p.bb); } }
 
   public static Offset<MyGame.Example.StructOfStructs> CreateStructOfStructs(ref FlatBufferBuilder builder, uint a_Id, uint a_Distance, short b_A, sbyte b_B, uint c_Id, uint c_Distance) {
     builder.Prep(4, 20);

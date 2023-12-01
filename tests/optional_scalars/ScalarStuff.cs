@@ -14,7 +14,7 @@ public struct ScalarStuff : IFlatBufferObject
 {
   private Table __p;
   public ref ByteBuffer ByteBuffer { get { return ref __p.bb; } }
-  public static void ValidateVersion() { FlatBufferConstants.FIVE_FLAT_23_11_29(); }
+  public static void ValidateVersion() { FlatBufferConstants.FIVE_FLAT_23_12_01(); }
   public static ScalarStuff GetRootAsScalarStuff(ref ByteBuffer _bb) { return GetRootAsScalarStuff(ref _bb, new ScalarStuff()); }
   public static ScalarStuff GetRootAsScalarStuff(ref ByteBuffer _bb, ScalarStuff obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, ref _bb)); }
   public static bool ScalarStuffBufferHasIdentifier(ByteBuffer _bb) { return Table.__has_identifier(_bb, "NULL"); }
@@ -22,42 +22,42 @@ public struct ScalarStuff : IFlatBufferObject
   public void __init(int _i, ref ByteBuffer _bb) { __p = new Table(_i, ref _bb); }
   public ScalarStuff __assign(int _i, ref ByteBuffer _bb) { __init(_i, ref _bb); return this; }
 
-  public sbyte JustI8 { get { int o = __p.__offset(4); return o != 0 ? __p.bb.GetSbyte(o + __p.bb_pos) : (sbyte)0; } }
-  public sbyte? MaybeI8 { get { int o = __p.__offset(6); return o != 0 ? __p.bb.GetSbyte(o + __p.bb_pos) : (sbyte?)null; } }
-  public sbyte DefaultI8 { get { int o = __p.__offset(8); return o != 0 ? __p.bb.GetSbyte(o + __p.bb_pos) : (sbyte)42; } }
-  public byte JustU8 { get { int o = __p.__offset(10); return o != 0 ? __p.bb.Get(o + __p.bb_pos) : (byte)0; } }
-  public byte? MaybeU8 { get { int o = __p.__offset(12); return o != 0 ? __p.bb.Get(o + __p.bb_pos) : (byte?)null; } }
-  public byte DefaultU8 { get { int o = __p.__offset(14); return o != 0 ? __p.bb.Get(o + __p.bb_pos) : (byte)42; } }
-  public short JustI16 { get { int o = __p.__offset(16); return o != 0 ? __p.bb.GetShort(o + __p.bb_pos) : (short)0; } }
-  public short? MaybeI16 { get { int o = __p.__offset(18); return o != 0 ? __p.bb.GetShort(o + __p.bb_pos) : (short?)null; } }
-  public short DefaultI16 { get { int o = __p.__offset(20); return o != 0 ? __p.bb.GetShort(o + __p.bb_pos) : (short)42; } }
-  public ushort JustU16 { get { int o = __p.__offset(22); return o != 0 ? __p.bb.GetUshort(o + __p.bb_pos) : (ushort)0; } }
-  public ushort? MaybeU16 { get { int o = __p.__offset(24); return o != 0 ? __p.bb.GetUshort(o + __p.bb_pos) : (ushort?)null; } }
-  public ushort DefaultU16 { get { int o = __p.__offset(26); return o != 0 ? __p.bb.GetUshort(o + __p.bb_pos) : (ushort)42; } }
-  public int JustI32 { get { int o = __p.__offset(28); return o != 0 ? __p.bb.GetInt(o + __p.bb_pos) : (int)0; } }
-  public int? MaybeI32 { get { int o = __p.__offset(30); return o != 0 ? __p.bb.GetInt(o + __p.bb_pos) : (int?)null; } }
-  public int DefaultI32 { get { int o = __p.__offset(32); return o != 0 ? __p.bb.GetInt(o + __p.bb_pos) : (int)42; } }
-  public uint JustU32 { get { int o = __p.__offset(34); return o != 0 ? __p.bb.GetUint(o + __p.bb_pos) : (uint)0; } }
-  public uint? MaybeU32 { get { int o = __p.__offset(36); return o != 0 ? __p.bb.GetUint(o + __p.bb_pos) : (uint?)null; } }
-  public uint DefaultU32 { get { int o = __p.__offset(38); return o != 0 ? __p.bb.GetUint(o + __p.bb_pos) : (uint)42; } }
-  public long JustI64 { get { int o = __p.__offset(40); return o != 0 ? __p.bb.GetLong(o + __p.bb_pos) : (long)0; } }
-  public long? MaybeI64 { get { int o = __p.__offset(42); return o != 0 ? __p.bb.GetLong(o + __p.bb_pos) : (long?)null; } }
-  public long DefaultI64 { get { int o = __p.__offset(44); return o != 0 ? __p.bb.GetLong(o + __p.bb_pos) : (long)42; } }
-  public ulong JustU64 { get { int o = __p.__offset(46); return o != 0 ? __p.bb.GetUlong(o + __p.bb_pos) : (ulong)0; } }
-  public ulong? MaybeU64 { get { int o = __p.__offset(48); return o != 0 ? __p.bb.GetUlong(o + __p.bb_pos) : (ulong?)null; } }
-  public ulong DefaultU64 { get { int o = __p.__offset(50); return o != 0 ? __p.bb.GetUlong(o + __p.bb_pos) : (ulong)42; } }
-  public float JustF32 { get { int o = __p.__offset(52); return o != 0 ? __p.bb.GetFloat(o + __p.bb_pos) : (float)0.0f; } }
-  public float? MaybeF32 { get { int o = __p.__offset(54); return o != 0 ? __p.bb.GetFloat(o + __p.bb_pos) : (float?)null; } }
-  public float DefaultF32 { get { int o = __p.__offset(56); return o != 0 ? __p.bb.GetFloat(o + __p.bb_pos) : (float)42.0f; } }
-  public double JustF64 { get { int o = __p.__offset(58); return o != 0 ? __p.bb.GetDouble(o + __p.bb_pos) : (double)0.0; } }
-  public double? MaybeF64 { get { int o = __p.__offset(60); return o != 0 ? __p.bb.GetDouble(o + __p.bb_pos) : (double?)null; } }
-  public double DefaultF64 { get { int o = __p.__offset(62); return o != 0 ? __p.bb.GetDouble(o + __p.bb_pos) : (double)42.0; } }
-  public bool JustBool { get { int o = __p.__offset(64); return o != 0 ? 0!=__p.bb.Get(o + __p.bb_pos) : (bool)false; } }
-  public bool? MaybeBool { get { int o = __p.__offset(66); return o != 0 ? 0!=__p.bb.Get(o + __p.bb_pos) : (bool?)null; } }
-  public bool DefaultBool { get { int o = __p.__offset(68); return o != 0 ? 0!=__p.bb.Get(o + __p.bb_pos) : (bool)true; } }
-  public optional_scalars.OptionalByte JustEnum { get { int o = __p.__offset(70); return o != 0 ? (optional_scalars.OptionalByte)__p.bb.GetSbyte(o + __p.bb_pos) : optional_scalars.OptionalByte.None; } }
-  public optional_scalars.OptionalByte? MaybeEnum { get { int o = __p.__offset(72); return o != 0 ? (optional_scalars.OptionalByte)__p.bb.GetSbyte(o + __p.bb_pos) : (optional_scalars.OptionalByte?)null; } }
-  public optional_scalars.OptionalByte DefaultEnum { get { int o = __p.__offset(74); return o != 0 ? (optional_scalars.OptionalByte)__p.bb.GetSbyte(o + __p.bb_pos) : optional_scalars.OptionalByte.One; } }
+  public readonly sbyte JustI8 { get { int o = __p.__offset(4); return o != 0 ? __p.bb.GetSbyte(o + __p.bb_pos) : (sbyte)0; } }
+  public readonly sbyte? MaybeI8 { get { int o = __p.__offset(6); return o != 0 ? __p.bb.GetSbyte(o + __p.bb_pos) : (sbyte?)null; } }
+  public readonly sbyte DefaultI8 { get { int o = __p.__offset(8); return o != 0 ? __p.bb.GetSbyte(o + __p.bb_pos) : (sbyte)42; } }
+  public readonly byte JustU8 { get { int o = __p.__offset(10); return o != 0 ? __p.bb.Get(o + __p.bb_pos) : (byte)0; } }
+  public readonly byte? MaybeU8 { get { int o = __p.__offset(12); return o != 0 ? __p.bb.Get(o + __p.bb_pos) : (byte?)null; } }
+  public readonly byte DefaultU8 { get { int o = __p.__offset(14); return o != 0 ? __p.bb.Get(o + __p.bb_pos) : (byte)42; } }
+  public readonly short JustI16 { get { int o = __p.__offset(16); return o != 0 ? __p.bb.GetShort(o + __p.bb_pos) : (short)0; } }
+  public readonly short? MaybeI16 { get { int o = __p.__offset(18); return o != 0 ? __p.bb.GetShort(o + __p.bb_pos) : (short?)null; } }
+  public readonly short DefaultI16 { get { int o = __p.__offset(20); return o != 0 ? __p.bb.GetShort(o + __p.bb_pos) : (short)42; } }
+  public readonly ushort JustU16 { get { int o = __p.__offset(22); return o != 0 ? __p.bb.GetUshort(o + __p.bb_pos) : (ushort)0; } }
+  public readonly ushort? MaybeU16 { get { int o = __p.__offset(24); return o != 0 ? __p.bb.GetUshort(o + __p.bb_pos) : (ushort?)null; } }
+  public readonly ushort DefaultU16 { get { int o = __p.__offset(26); return o != 0 ? __p.bb.GetUshort(o + __p.bb_pos) : (ushort)42; } }
+  public readonly int JustI32 { get { int o = __p.__offset(28); return o != 0 ? __p.bb.GetInt(o + __p.bb_pos) : (int)0; } }
+  public readonly int? MaybeI32 { get { int o = __p.__offset(30); return o != 0 ? __p.bb.GetInt(o + __p.bb_pos) : (int?)null; } }
+  public readonly int DefaultI32 { get { int o = __p.__offset(32); return o != 0 ? __p.bb.GetInt(o + __p.bb_pos) : (int)42; } }
+  public readonly uint JustU32 { get { int o = __p.__offset(34); return o != 0 ? __p.bb.GetUint(o + __p.bb_pos) : (uint)0; } }
+  public readonly uint? MaybeU32 { get { int o = __p.__offset(36); return o != 0 ? __p.bb.GetUint(o + __p.bb_pos) : (uint?)null; } }
+  public readonly uint DefaultU32 { get { int o = __p.__offset(38); return o != 0 ? __p.bb.GetUint(o + __p.bb_pos) : (uint)42; } }
+  public readonly long JustI64 { get { int o = __p.__offset(40); return o != 0 ? __p.bb.GetLong(o + __p.bb_pos) : (long)0; } }
+  public readonly long? MaybeI64 { get { int o = __p.__offset(42); return o != 0 ? __p.bb.GetLong(o + __p.bb_pos) : (long?)null; } }
+  public readonly long DefaultI64 { get { int o = __p.__offset(44); return o != 0 ? __p.bb.GetLong(o + __p.bb_pos) : (long)42; } }
+  public readonly ulong JustU64 { get { int o = __p.__offset(46); return o != 0 ? __p.bb.GetUlong(o + __p.bb_pos) : (ulong)0; } }
+  public readonly ulong? MaybeU64 { get { int o = __p.__offset(48); return o != 0 ? __p.bb.GetUlong(o + __p.bb_pos) : (ulong?)null; } }
+  public readonly ulong DefaultU64 { get { int o = __p.__offset(50); return o != 0 ? __p.bb.GetUlong(o + __p.bb_pos) : (ulong)42; } }
+  public readonly float JustF32 { get { int o = __p.__offset(52); return o != 0 ? __p.bb.GetFloat(o + __p.bb_pos) : (float)0.0f; } }
+  public readonly float? MaybeF32 { get { int o = __p.__offset(54); return o != 0 ? __p.bb.GetFloat(o + __p.bb_pos) : (float?)null; } }
+  public readonly float DefaultF32 { get { int o = __p.__offset(56); return o != 0 ? __p.bb.GetFloat(o + __p.bb_pos) : (float)42.0f; } }
+  public readonly double JustF64 { get { int o = __p.__offset(58); return o != 0 ? __p.bb.GetDouble(o + __p.bb_pos) : (double)0.0; } }
+  public readonly double? MaybeF64 { get { int o = __p.__offset(60); return o != 0 ? __p.bb.GetDouble(o + __p.bb_pos) : (double?)null; } }
+  public readonly double DefaultF64 { get { int o = __p.__offset(62); return o != 0 ? __p.bb.GetDouble(o + __p.bb_pos) : (double)42.0; } }
+  public readonly bool JustBool { get { int o = __p.__offset(64); return o != 0 ? 0!=__p.bb.Get(o + __p.bb_pos) : (bool)false; } }
+  public readonly bool? MaybeBool { get { int o = __p.__offset(66); return o != 0 ? 0!=__p.bb.Get(o + __p.bb_pos) : (bool?)null; } }
+  public readonly bool DefaultBool { get { int o = __p.__offset(68); return o != 0 ? 0!=__p.bb.Get(o + __p.bb_pos) : (bool)true; } }
+  public readonly optional_scalars.OptionalByte JustEnum { get { int o = __p.__offset(70); return o != 0 ? (optional_scalars.OptionalByte)__p.bb.GetSbyte(o + __p.bb_pos) : optional_scalars.OptionalByte.None; } }
+  public readonly optional_scalars.OptionalByte? MaybeEnum { get { int o = __p.__offset(72); return o != 0 ? (optional_scalars.OptionalByte)__p.bb.GetSbyte(o + __p.bb_pos) : (optional_scalars.OptionalByte?)null; } }
+  public readonly optional_scalars.OptionalByte DefaultEnum { get { int o = __p.__offset(74); return o != 0 ? (optional_scalars.OptionalByte)__p.bb.GetSbyte(o + __p.bb_pos) : optional_scalars.OptionalByte.One; } }
 
   public static Offset<optional_scalars.ScalarStuff> CreateScalarStuff(ref FlatBufferBuilder builder,
       sbyte just_i8 = 0,

@@ -14,13 +14,13 @@ public struct Referrable : IFlatBufferObject
 {
   private Table __p;
   public ref ByteBuffer ByteBuffer { get { return ref __p.bb; } }
-  public static void ValidateVersion() { FlatBufferConstants.FIVE_FLAT_23_11_29(); }
+  public static void ValidateVersion() { FlatBufferConstants.FIVE_FLAT_23_12_01(); }
   public static Referrable GetRootAsReferrable(ref ByteBuffer _bb) { return GetRootAsReferrable(ref _bb, new Referrable()); }
   public static Referrable GetRootAsReferrable(ref ByteBuffer _bb, Referrable obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, ref _bb)); }
   public void __init(int _i, ref ByteBuffer _bb) { __p = new Table(_i, ref _bb); }
   public Referrable __assign(int _i, ref ByteBuffer _bb) { __init(_i, ref _bb); return this; }
 
-  public ulong Id { get { int o = __p.__offset(4); return o != 0 ? __p.bb.GetUlong(o + __p.bb_pos) : (ulong)0; } }
+  public readonly ulong Id { get { int o = __p.__offset(4); return o != 0 ? __p.bb.GetUlong(o + __p.bb_pos) : (ulong)0; } }
   public bool MutateId(ulong id) { int o = __p.__offset(4); if (o != 0) { __p.bb.PutUlong(o + __p.bb_pos, id); return true; } else { return false; } }
 
   public static Offset<MyGame.Example.Referrable> CreateReferrable(ref FlatBufferBuilder builder,

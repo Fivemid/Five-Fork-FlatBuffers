@@ -272,7 +272,7 @@ class CSharpGenerator : public BaseGenerator {
       case BASE_TYPE_STRING: return "NativeArray<byte>?";
       case BASE_TYPE_VECTOR: return GenTypeGet(type.VectorType());
       case BASE_TYPE_STRUCT: return NamespacedName(*type.struct_def);
-      case BASE_TYPE_UNION: return "TTable";
+      case BASE_TYPE_UNION: return "Union<" + NamespacedName(*type.enum_def) + ">";
       default: return "Table";
     }
   }
@@ -852,7 +852,7 @@ class CSharpGenerator : public BaseGenerator {
       // Force compile time error if not using the same version runtime.
       code += "  public static void ValidateVersion() {";
       code += " FlatBufferConstants.";
-      code += "FIVE_FLAT_23_11_29(); ";
+      code += "FIVE_FLAT_23_12_01(); ";
       code += "}\n";
 
       // Generate a special accessor for the table that when used as the root
@@ -918,10 +918,8 @@ class CSharpGenerator : public BaseGenerator {
       std::string optional = "";
       if (!struct_def.fixed &&
           (field.value.type.base_type == BASE_TYPE_STRUCT ||
-           field.value.type.base_type == BASE_TYPE_UNION ||
            (IsVector(field.value.type) &&
-            (field.value.type.element == BASE_TYPE_STRUCT ||
-             field.value.type.element == BASE_TYPE_UNION)))) {
+            (field.value.type.element == BASE_TYPE_STRUCT)))) {
         optional = "?";
         conditional_cast = "(" + type_name_dest + optional + ")";
       }
@@ -932,7 +930,7 @@ class CSharpGenerator : public BaseGenerator {
       std::string field_name_camel = Name(field);
       if (field_name_camel == struct_def.name) { field_name_camel += "_"; }
       std::string method_start =
-          "  public " + type_name_dest + optional + " " + field_name_camel;
+          "  public readonly " + type_name_dest + optional + " " + field_name_camel;
       std::string obj = "(new " + type_name + "())";
 
       // Most field accessors need to retrieve and test the field offset first,
@@ -949,7 +947,6 @@ class CSharpGenerator : public BaseGenerator {
       } else if (field.value.type.base_type == BASE_TYPE_UNION ||
                  (IsVector(field.value.type) &&
                   field.value.type.VectorType().base_type == BASE_TYPE_UNION)) {
-        method_start += "<TTable>";
         type_name = type_name_dest;
       }
       std::string getter = dest_cast + GenGetter(field.value.type);
@@ -1014,8 +1011,7 @@ class CSharpGenerator : public BaseGenerator {
           case BASE_TYPE_VECTOR: {
             auto vectortype = field.value.type.VectorType();
             if (vectortype.base_type == BASE_TYPE_UNION) {
-              conditional_cast = "(TTable?)";
-              getter += "<TTable>";
+              getter += "<" + NamespacedName(*vectortype.enum_def) + ">";
             }
             code += "(";
             if (vectortype.base_type == BASE_TYPE_STRUCT) {
@@ -1025,7 +1021,7 @@ class CSharpGenerator : public BaseGenerator {
             code += "int j)";
             const auto body = offset_prefix + conditional_cast + getter + "(";
             if (vectortype.base_type == BASE_TYPE_UNION) {
-              code += " where TTable : struct, IFlatBufferObject" + body;
+              code += body + Name(field) + "Type(j), ";
             } else {
               code += body;
             }
@@ -1050,54 +1046,38 @@ class CSharpGenerator : public BaseGenerator {
               code +=
                   field.value.type.element == BASE_TYPE_BOOL
                       ? "false"
-                      : (IsScalar(field.value.type.element) ? default_cast + "0"
-                                                            : "null");
+                      : (IsScalar(field.value.type.element)
+                             ? default_cast + "0"
+                             : (field.value.type.element == BASE_TYPE_UNION
+                                ? "__p.__union_none<" + NamespacedName(*vectortype.enum_def) + ">()"
+                                : "null"
+                                ));
             }
-            if (vectortype.base_type == BASE_TYPE_UNION &&
-                HasUnionStringValue(*vectortype.enum_def)) {
+            if (vectortype.base_type == BASE_TYPE_UNION) {
+              if (HasUnionStringValue(*vectortype.enum_def)) {
+                code += member_suffix;
+                code += "}\n";
+                code += "  public readonly NativeArray<byte>? " + Name(field) + "AsString(int j)";
+                code += offset_prefix + GenGetter(Type(BASE_TYPE_STRING));
+                code += "(" + index + ") : null";
+              }
+              // As<> generic accessor
               code += member_suffix;
               code += "}\n";
-              code += "  public NativeArray<byte>? " + Name(field) + "AsString(int j)";
-              code += offset_prefix + GenGetter(Type(BASE_TYPE_STRING));
-              code += "(" + index + ") : null";
+              code += "  public readonly TTable? " + Name(field) + "As<TTable>";
+              code += "(int j) where TTable : struct, IFlatBufferObject";
+              code += offset_prefix + "(TTable?)__p.__union_as";
+              code += "<TTable>(" + index + ") : null";
             }
             break;
           }
           case BASE_TYPE_UNION:
-            code += "() where TTable : struct, IFlatBufferObject";
-            code += offset_prefix + "(TTable?)" + getter;
-            code += "<TTable>(o + __p.bb_pos) : null";
-            if (HasUnionStringValue(*field.value.type.enum_def)) {
-              code += member_suffix;
-              code += "}\n";
-              code += "  public NativeArray<byte>? " + Name(field) + "AsString()";
-              code += offset_prefix + GenGetter(Type(BASE_TYPE_STRING));
-              code += "(o + __p.bb_pos) : null";
-            }
-            // As<> accesors for Unions
-            // Loop through all the possible union types and generate an As
-            // accessor that casts to the correct type.
-            for (auto uit = field.value.type.enum_def->Vals().begin();
-                 uit != field.value.type.enum_def->Vals().end(); ++uit) {
-              auto val = *uit;
-              if (val->union_type.base_type == BASE_TYPE_NONE) { continue; }
-              auto union_field_type_name = GenTypeGet(val->union_type);
-              code += member_suffix + "}\n";
-              if (val->union_type.base_type == BASE_TYPE_STRUCT &&
-                  val->union_type.struct_def->attributes.Lookup("private")) {
-                code += "  internal ";
-              } else {
-                code += "  public ";
-              }
-              code += union_field_type_name + " ";
-              code += field_name_camel + "As" + val->name + "() { return ";
-              code += field_name_camel;
-              if (IsString(val->union_type)) {
-                code += "AsString()";
-              } else {
-                code += "<" + union_field_type_name + ">().Value";
-              }
-            }
+            code += " { get";
+            member_suffix += "} ";
+            code += offset_prefix + getter;
+            code += "<" + NamespacedName(*field.value.type.enum_def) + ">"
+                    "(" + Name(field) + "Type, o + __p.bb_pos) "
+                    ": __p.__union_none<" + NamespacedName(*field.value.type.enum_def) + ">()";
             break;
           default: FLATBUFFERS_ASSERT(0);
         }
@@ -1134,6 +1114,44 @@ class CSharpGenerator : public BaseGenerator {
               break;
             }
           }
+        }
+      }
+      if (field.value.type.base_type == BASE_TYPE_UNION) {
+        if (HasUnionStringValue(*field.value.type.enum_def)) {
+          code += "  public readonly NativeArray<byte>? " + Name(field) + "AsString()";
+          code += offset_prefix + GenGetter(Type(BASE_TYPE_STRING));
+          code += "(o + __p.bb_pos) : null";
+          code += "; }\n";
+        }
+        // As<> generic accessor
+        code += "  public readonly TTable? " + Name(field) + "As<TTable>";
+        code += "() where TTable : struct, IFlatBufferObject";
+        code += offset_prefix + "(TTable?)__p.__union_as";
+        code += "<TTable>(o + __p.bb_pos) : null";
+        code += "; }\n";
+        // As<> accesors for Unions
+        // Loop through all the possible union types and generate an As
+        // accessor that casts to the correct type.
+        for (auto uit = field.value.type.enum_def->Vals().begin();
+             uit != field.value.type.enum_def->Vals().end(); ++uit) {
+          auto val = *uit;
+          if (val->union_type.base_type == BASE_TYPE_NONE) { continue; }
+          auto union_field_type_name = GenTypeGet(val->union_type);
+          if (val->union_type.base_type == BASE_TYPE_STRUCT &&
+              val->union_type.struct_def->attributes.Lookup("private")) {
+            code += "  internal ";
+          } else {
+            code += "  public ";
+          }
+          code += union_field_type_name + " ";
+          code += field_name_camel + "As" + val->name + "() { return ";
+          code += field_name_camel;
+          if (IsString(val->union_type)) {
+            code += "AsString()";
+          } else {
+            code += "As<" + union_field_type_name + ">().Value";
+          }
+          code += "; }\n";
         }
       }
       // generate object accessors if is nested_flatbuffer
@@ -1799,9 +1817,9 @@ class CSharpGenerator : public BaseGenerator {
           code += "FlatBufferBuilder.DecodeString(this." + camel_name + "AsString" + func_suffix + ");\n";
         } else {
           code += "this." + camel_name;
-          code += "<" + GenTypeGet(ev.union_type) + ">" + func_suffix;
+          code += "As<" + GenTypeGet(ev.union_type) + ">" + func_suffix;
           code += ".HasValue ? this." + camel_name;
-          code += "<" + GenTypeGet(ev.union_type) + ">" + func_suffix +
+          code += "As<" + GenTypeGet(ev.union_type) + ">" + func_suffix +
                   ".Value.UnPack() : null;\n";
         }
         code += indent + "    break;\n";

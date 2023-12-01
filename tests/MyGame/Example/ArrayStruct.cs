@@ -17,16 +17,16 @@ public struct ArrayStruct : IFlatBufferObject
   public void __init(int _i, ref ByteBuffer _bb) { __p = new Struct(_i, ref _bb); }
   public ArrayStruct __assign(int _i, ref ByteBuffer _bb) { __init(_i, ref _bb); return this; }
 
-  public float A { get { return __p.bb.GetFloat(__p.bb_pos + 0); } }
+  public readonly float A { get { return __p.bb.GetFloat(__p.bb_pos + 0); } }
   public void MutateA(float a) { __p.bb.PutFloat(__p.bb_pos + 0, a); }
-  public int B(int j) { return __p.bb.GetInt(__p.bb_pos + 4 + j * 4); }
+  public readonly int B(int j) { return __p.bb.GetInt(__p.bb_pos + 4 + j * 4); }
   public void MutateB(int j, int b) { __p.bb.PutInt(__p.bb_pos + 4 + j * 4, b); }
-  public sbyte C { get { return __p.bb.GetSbyte(__p.bb_pos + 64); } }
+  public readonly sbyte C { get { return __p.bb.GetSbyte(__p.bb_pos + 64); } }
   public void MutateC(sbyte c) { __p.bb.PutSbyte(__p.bb_pos + 64, c); }
-  public MyGame.Example.NestedStruct D(int j) { return (new MyGame.Example.NestedStruct()).__assign(__p.bb_pos + 72 + j * 32, ref __p.bb); }
-  public int E { get { return __p.bb.GetInt(__p.bb_pos + 136); } }
+  public readonly MyGame.Example.NestedStruct D(int j) { return (new MyGame.Example.NestedStruct()).__assign(__p.bb_pos + 72 + j * 32, ref __p.bb); }
+  public readonly int E { get { return __p.bb.GetInt(__p.bb_pos + 136); } }
   public void MutateE(int e) { __p.bb.PutInt(__p.bb_pos + 136, e); }
-  public long F(int j) { return __p.bb.GetLong(__p.bb_pos + 144 + j * 8); }
+  public readonly long F(int j) { return __p.bb.GetLong(__p.bb_pos + 144 + j * 8); }
   public void MutateF(int j, long f) { __p.bb.PutLong(__p.bb_pos + 144 + j * 8, f); }
 
   public static Offset<MyGame.Example.ArrayStruct> CreateArrayStruct(ref FlatBufferBuilder builder, float A, int[] B, sbyte C, int[,] d_A, MyGame.Example.TestEnum[] d_B, MyGame.Example.TestEnum[,] d_C, long[,] d_D, int E, long[] F) {

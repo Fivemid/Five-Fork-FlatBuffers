@@ -14,13 +14,13 @@ public struct ColorTestTable : IFlatBufferObject
 {
   private Table __p;
   public ref ByteBuffer ByteBuffer { get { return ref __p.bb; } }
-  public static void ValidateVersion() { FlatBufferConstants.FIVE_FLAT_23_11_29(); }
+  public static void ValidateVersion() { FlatBufferConstants.FIVE_FLAT_23_12_01(); }
   public static ColorTestTable GetRootAsColorTestTable(ref ByteBuffer _bb) { return GetRootAsColorTestTable(ref _bb, new ColorTestTable()); }
   public static ColorTestTable GetRootAsColorTestTable(ref ByteBuffer _bb, ColorTestTable obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, ref _bb)); }
   public void __init(int _i, ref ByteBuffer _bb) { __p = new Table(_i, ref _bb); }
   public ColorTestTable __assign(int _i, ref ByteBuffer _bb) { __init(_i, ref _bb); return this; }
 
-  public global::NamespaceB.Color Color { get { int o = __p.__offset(4); return o != 0 ? (global::NamespaceB.Color)__p.bb.GetSbyte(o + __p.bb_pos) : global::NamespaceB.Color.Blue; } }
+  public readonly global::NamespaceB.Color Color { get { int o = __p.__offset(4); return o != 0 ? (global::NamespaceB.Color)__p.bb.GetSbyte(o + __p.bb_pos) : global::NamespaceB.Color.Blue; } }
   public bool MutateColor(global::NamespaceB.Color color) { int o = __p.__offset(4); if (o != 0) { __p.bb.PutSbyte(o + __p.bb_pos, (sbyte)color); return true; } else { return false; } }
 
   public static Offset<global::NamespaceA.NamespaceB.ColorTestTable> CreateColorTestTable(ref FlatBufferBuilder builder,

@@ -11,7 +11,7 @@ public struct Movie : IFlatBufferObject
 {
   private Table __p;
   public ref ByteBuffer ByteBuffer { get { return ref __p.bb; } }
-  public static void ValidateVersion() { FlatBufferConstants.FIVE_FLAT_23_11_29(); }
+  public static void ValidateVersion() { FlatBufferConstants.FIVE_FLAT_23_12_01(); }
   public static Movie GetRootAsMovie(ref ByteBuffer _bb) { return GetRootAsMovie(ref _bb, new Movie()); }
   public static Movie GetRootAsMovie(ref ByteBuffer _bb, Movie obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, ref _bb)); }
   public static bool MovieBufferHasIdentifier(ByteBuffer _bb) { return Table.__has_identifier(_bb, "MOVI"); }
@@ -19,19 +19,21 @@ public struct Movie : IFlatBufferObject
   public void __init(int _i, ref ByteBuffer _bb) { __p = new Table(_i, ref _bb); }
   public Movie __assign(int _i, ref ByteBuffer _bb) { __init(_i, ref _bb); return this; }
 
-  public Character MainCharacterType { get { int o = __p.__offset(4); return o != 0 ? (Character)__p.bb.Get(o + __p.bb_pos) : Character.NONE; } }
-  public TTable? MainCharacter<TTable>() where TTable : struct, IFlatBufferObject { int o = __p.__offset(6); return o != 0 ? (TTable?)__p.__union<TTable>(o + __p.bb_pos) : null; }
-  public NativeArray<byte>? MainCharacterAsString() { int o = __p.__offset(6); return o != 0 ? __p.__string(o + __p.bb_pos) : null; }
-  public Attacker MainCharacterAsMuLan() { return MainCharacter<Attacker>().Value; }
-  public Rapunzel MainCharacterAsRapunzel() { return MainCharacter<Rapunzel>().Value; }
-  public BookReader MainCharacterAsBelle() { return MainCharacter<BookReader>().Value; }
-  public BookReader MainCharacterAsBookFan() { return MainCharacter<BookReader>().Value; }
+  public readonly Character MainCharacterType { get { int o = __p.__offset(4); return o != 0 ? (Character)__p.bb.Get(o + __p.bb_pos) : Character.NONE; } }
+  public readonly Union<Character> MainCharacter { get { int o = __p.__offset(6); return o != 0 ? __p.__union<Character>(MainCharacterType, o + __p.bb_pos) : __p.__union_none<Character>(); } }
+  public readonly NativeArray<byte>? MainCharacterAsString() { int o = __p.__offset(6); return o != 0 ? __p.__string(o + __p.bb_pos) : null; }
+  public readonly TTable? MainCharacterAs<TTable>() where TTable : struct, IFlatBufferObject { int o = __p.__offset(6); return o != 0 ? (TTable?)__p.__union_as<TTable>(o + __p.bb_pos) : null; }
+  public Attacker MainCharacterAsMuLan() { return MainCharacterAs<Attacker>().Value; }
+  public Rapunzel MainCharacterAsRapunzel() { return MainCharacterAs<Rapunzel>().Value; }
+  public BookReader MainCharacterAsBelle() { return MainCharacterAs<BookReader>().Value; }
+  public BookReader MainCharacterAsBookFan() { return MainCharacterAs<BookReader>().Value; }
   public NativeArray<byte>? MainCharacterAsOther() { return MainCharacterAsString(); }
   public NativeArray<byte>? MainCharacterAsUnused() { return MainCharacterAsString(); }
-  public Character CharactersType(int j) { int o = __p.__offset(8); return o != 0 ? (Character)__p.bb.Get(__p.__vector(o) + j * 1) : (Character)0; }
+  public readonly Character CharactersType(int j) { int o = __p.__offset(8); return o != 0 ? (Character)__p.bb.Get(__p.__vector(o) + j * 1) : (Character)0; }
   public int CharactersTypeLength { get { int o = __p.__offset(8); return o != 0 ? __p.__vector_len(o) : 0; } }
-  public TTable? Characters<TTable>(int j) where TTable : struct, IFlatBufferObject { int o = __p.__offset(10); return o != 0 ? (TTable?)__p.__union<TTable>(__p.__vector(o) + j * 4) : null; }
-  public NativeArray<byte>? CharactersAsString(int j) { int o = __p.__offset(10); return o != 0 ? __p.__string(__p.__vector(o) + j * 4) : null; }
+  public readonly Union<Character> Characters(int j) { int o = __p.__offset(10); return o != 0 ? __p.__union<Character>(CharactersType(j), __p.__vector(o) + j * 4) : __p.__union_none<Character>(); }
+  public readonly NativeArray<byte>? CharactersAsString(int j) { int o = __p.__offset(10); return o != 0 ? __p.__string(__p.__vector(o) + j * 4) : null; }
+  public readonly TTable? CharactersAs<TTable>(int j) where TTable : struct, IFlatBufferObject { int o = __p.__offset(10); return o != 0 ? (TTable?)__p.__union_as<TTable>(__p.__vector(o) + j * 4) : null; }
   public int CharactersLength { get { int o = __p.__offset(10); return o != 0 ? __p.__vector_len(o) : 0; } }
 
   public static Offset<Movie> CreateMovie(ref FlatBufferBuilder builder,
@@ -73,16 +75,16 @@ public struct Movie : IFlatBufferObject
     switch (this.MainCharacterType) {
       default: break;
       case Character.MuLan:
-        _o.MainCharacter.Value = this.MainCharacter<Attacker>().HasValue ? this.MainCharacter<Attacker>().Value.UnPack() : null;
+        _o.MainCharacter.Value = this.MainCharacterAs<Attacker>().HasValue ? this.MainCharacterAs<Attacker>().Value.UnPack() : null;
         break;
       case Character.Rapunzel:
-        _o.MainCharacter.Value = this.MainCharacter<Rapunzel>().HasValue ? this.MainCharacter<Rapunzel>().Value.UnPack() : null;
+        _o.MainCharacter.Value = this.MainCharacterAs<Rapunzel>().HasValue ? this.MainCharacterAs<Rapunzel>().Value.UnPack() : null;
         break;
       case Character.Belle:
-        _o.MainCharacter.Value = this.MainCharacter<BookReader>().HasValue ? this.MainCharacter<BookReader>().Value.UnPack() : null;
+        _o.MainCharacter.Value = this.MainCharacterAs<BookReader>().HasValue ? this.MainCharacterAs<BookReader>().Value.UnPack() : null;
         break;
       case Character.BookFan:
-        _o.MainCharacter.Value = this.MainCharacter<BookReader>().HasValue ? this.MainCharacter<BookReader>().Value.UnPack() : null;
+        _o.MainCharacter.Value = this.MainCharacterAs<BookReader>().HasValue ? this.MainCharacterAs<BookReader>().Value.UnPack() : null;
         break;
       case Character.Other:
         _o.MainCharacter.Value = FlatBufferBuilder.DecodeString(this.MainCharacterAsString());
@@ -98,16 +100,16 @@ public struct Movie : IFlatBufferObject
       switch (this.CharactersType(_j)) {
         default: break;
         case Character.MuLan:
-          _o_Characters.Value = this.Characters<Attacker>(_j).HasValue ? this.Characters<Attacker>(_j).Value.UnPack() : null;
+          _o_Characters.Value = this.CharactersAs<Attacker>(_j).HasValue ? this.CharactersAs<Attacker>(_j).Value.UnPack() : null;
           break;
         case Character.Rapunzel:
-          _o_Characters.Value = this.Characters<Rapunzel>(_j).HasValue ? this.Characters<Rapunzel>(_j).Value.UnPack() : null;
+          _o_Characters.Value = this.CharactersAs<Rapunzel>(_j).HasValue ? this.CharactersAs<Rapunzel>(_j).Value.UnPack() : null;
           break;
         case Character.Belle:
-          _o_Characters.Value = this.Characters<BookReader>(_j).HasValue ? this.Characters<BookReader>(_j).Value.UnPack() : null;
+          _o_Characters.Value = this.CharactersAs<BookReader>(_j).HasValue ? this.CharactersAs<BookReader>(_j).Value.UnPack() : null;
           break;
         case Character.BookFan:
-          _o_Characters.Value = this.Characters<BookReader>(_j).HasValue ? this.Characters<BookReader>(_j).Value.UnPack() : null;
+          _o_Characters.Value = this.CharactersAs<BookReader>(_j).HasValue ? this.CharactersAs<BookReader>(_j).Value.UnPack() : null;
           break;
         case Character.Other:
           _o_Characters.Value = FlatBufferBuilder.DecodeString(this.CharactersAsString(_j));

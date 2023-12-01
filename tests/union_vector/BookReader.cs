@@ -14,7 +14,7 @@ public struct BookReader : IFlatBufferObject
   public void __init(int _i, ref ByteBuffer _bb) { __p = new Struct(_i, ref _bb); }
   public BookReader __assign(int _i, ref ByteBuffer _bb) { __init(_i, ref _bb); return this; }
 
-  public int BooksRead { get { return __p.bb.GetInt(__p.bb_pos + 0); } }
+  public readonly int BooksRead { get { return __p.bb.GetInt(__p.bb_pos + 0); } }
   public void MutateBooksRead(int books_read) { __p.bb.PutInt(__p.bb_pos + 0, books_read); }
 
   public static Offset<BookReader> CreateBookReader(ref FlatBufferBuilder builder, int BooksRead) {
