@@ -14,11 +14,11 @@ public struct ArrayTable : IFlatBufferObject
 {
   private Table __p;
   public ref ByteBuffer ByteBuffer { get { return ref __p.bb; } }
-  public static void ValidateVersion() { FlatBufferConstants.FIVE_FLAT_23_12_01(); }
+  public static void ValidateVersion() { FlatBufferConstants.FIVE_FLAT_23_12_04(); }
   public static ArrayTable GetRootAsArrayTable(ref ByteBuffer _bb) { return GetRootAsArrayTable(ref _bb, new ArrayTable()); }
   public static ArrayTable GetRootAsArrayTable(ref ByteBuffer _bb, ArrayTable obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, ref _bb)); }
-  public static bool ArrayTableBufferHasIdentifier(ByteBuffer _bb) { return Table.__has_identifier(_bb, "ARRT"); }
-  public static bool VerifyArrayTable(ByteBuffer _bb) {Fivemid.FiveFlat.Verifier verifier = new Fivemid.FiveFlat.Verifier(_bb); return verifier.VerifyBuffer("ARRT", false, ArrayTableVerify.Verify); }
+  public static bool ArrayTableBufferHasIdentifier(ByteBuffer _bb) { return Table.__has_identifier(_bb, stackalloc char[] { 'A', 'R', 'R', 'T' }); }
+  public static bool VerifyArrayTable(ByteBuffer _bb) {Fivemid.FiveFlat.Verifier verifier = new Fivemid.FiveFlat.Verifier(_bb); return verifier.VerifyBuffer(stackalloc char[] { 'A', 'R', 'R', 'T' }, false, ArrayTableVerify.Verify); }
   public void __init(int _i, ref ByteBuffer _bb) { __p = new Table(_i, ref _bb); }
   public ArrayTable __assign(int _i, ref ByteBuffer _bb) { __init(_i, ref _bb); return this; }
 
@@ -30,8 +30,8 @@ public struct ArrayTable : IFlatBufferObject
     int o = builder.EndTable();
     return new Offset<MyGame.Example.ArrayTable>(o);
   }
-  public static void FinishArrayTableBuffer(ref FlatBufferBuilder builder, Offset<MyGame.Example.ArrayTable> offset) { builder.Finish(offset.Value, "ARRT"); }
-  public static void FinishSizePrefixedArrayTableBuffer(ref FlatBufferBuilder builder, Offset<MyGame.Example.ArrayTable> offset) { builder.FinishSizePrefixed(offset.Value, "ARRT"); }
+  public static void FinishArrayTableBuffer(ref FlatBufferBuilder builder, Offset<MyGame.Example.ArrayTable> offset) { builder.Finish(offset.Value, stackalloc char[] { 'A', 'R', 'R', 'T' }); }
+  public static void FinishSizePrefixedArrayTableBuffer(ref FlatBufferBuilder builder, Offset<MyGame.Example.ArrayTable> offset) { builder.FinishSizePrefixed(offset.Value, stackalloc char[] { 'A', 'R', 'R', 'T' }); }
   public ArrayTableT UnPack() {
     var _o = new ArrayTableT();
     this.UnPackTo(_o);

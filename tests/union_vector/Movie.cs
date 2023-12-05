@@ -11,11 +11,11 @@ public struct Movie : IFlatBufferObject
 {
   private Table __p;
   public ref ByteBuffer ByteBuffer { get { return ref __p.bb; } }
-  public static void ValidateVersion() { FlatBufferConstants.FIVE_FLAT_23_12_01(); }
+  public static void ValidateVersion() { FlatBufferConstants.FIVE_FLAT_23_12_04(); }
   public static Movie GetRootAsMovie(ref ByteBuffer _bb) { return GetRootAsMovie(ref _bb, new Movie()); }
   public static Movie GetRootAsMovie(ref ByteBuffer _bb, Movie obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, ref _bb)); }
-  public static bool MovieBufferHasIdentifier(ByteBuffer _bb) { return Table.__has_identifier(_bb, "MOVI"); }
-  public static bool VerifyMovie(ByteBuffer _bb) {Fivemid.FiveFlat.Verifier verifier = new Fivemid.FiveFlat.Verifier(_bb); return verifier.VerifyBuffer("MOVI", false, MovieVerify.Verify); }
+  public static bool MovieBufferHasIdentifier(ByteBuffer _bb) { return Table.__has_identifier(_bb, stackalloc char[] { 'M', 'O', 'V', 'I' }); }
+  public static bool VerifyMovie(ByteBuffer _bb) {Fivemid.FiveFlat.Verifier verifier = new Fivemid.FiveFlat.Verifier(_bb); return verifier.VerifyBuffer(stackalloc char[] { 'M', 'O', 'V', 'I' }, false, MovieVerify.Verify); }
   public void __init(int _i, ref ByteBuffer _bb) { __p = new Table(_i, ref _bb); }
   public Movie __assign(int _i, ref ByteBuffer _bb) { __init(_i, ref _bb); return this; }
 
@@ -23,12 +23,12 @@ public struct Movie : IFlatBufferObject
   public readonly Union<Character> MainCharacter { get { int o = __p.__offset(6); return o != 0 ? __p.__union<Character>(MainCharacterType, o + __p.bb_pos) : __p.__union_none<Character>(); } }
   public readonly NativeArray<byte>? MainCharacterAsString() { int o = __p.__offset(6); return o != 0 ? __p.__string(o + __p.bb_pos) : null; }
   public readonly TTable? MainCharacterAs<TTable>() where TTable : struct, IFlatBufferObject { int o = __p.__offset(6); return o != 0 ? (TTable?)__p.__union_as<TTable>(o + __p.bb_pos) : null; }
-  public Attacker MainCharacterAsMuLan() { return MainCharacterAs<Attacker>().Value; }
-  public Rapunzel MainCharacterAsRapunzel() { return MainCharacterAs<Rapunzel>().Value; }
-  public BookReader MainCharacterAsBelle() { return MainCharacterAs<BookReader>().Value; }
-  public BookReader MainCharacterAsBookFan() { return MainCharacterAs<BookReader>().Value; }
-  public NativeArray<byte>? MainCharacterAsOther() { return MainCharacterAsString(); }
-  public NativeArray<byte>? MainCharacterAsUnused() { return MainCharacterAsString(); }
+  public readonly Attacker MainCharacterAsMuLan() { return MainCharacterAs<Attacker>().Value; }
+  public readonly Rapunzel MainCharacterAsRapunzel() { return MainCharacterAs<Rapunzel>().Value; }
+  public readonly BookReader MainCharacterAsBelle() { return MainCharacterAs<BookReader>().Value; }
+  public readonly BookReader MainCharacterAsBookFan() { return MainCharacterAs<BookReader>().Value; }
+  public readonly NativeArray<byte>? MainCharacterAsOther() { return MainCharacterAsString(); }
+  public readonly NativeArray<byte>? MainCharacterAsUnused() { return MainCharacterAsString(); }
   public readonly Character CharactersType(int j) { int o = __p.__offset(8); return o != 0 ? (Character)__p.bb.Get(__p.__vector(o) + j * 1) : (Character)0; }
   public int CharactersTypeLength { get { int o = __p.__offset(8); return o != 0 ? __p.__vector_len(o) : 0; } }
   public readonly Union<Character> Characters(int j) { int o = __p.__offset(10); return o != 0 ? __p.__union<Character>(CharactersType(j), __p.__vector(o) + j * 4) : __p.__union_none<Character>(); }
@@ -62,8 +62,8 @@ public struct Movie : IFlatBufferObject
     int o = builder.EndTable();
     return new Offset<Movie>(o);
   }
-  public static void FinishMovieBuffer(ref FlatBufferBuilder builder, Offset<Movie> offset) { builder.Finish(offset.Value, "MOVI"); }
-  public static void FinishSizePrefixedMovieBuffer(ref FlatBufferBuilder builder, Offset<Movie> offset) { builder.FinishSizePrefixed(offset.Value, "MOVI"); }
+  public static void FinishMovieBuffer(ref FlatBufferBuilder builder, Offset<Movie> offset) { builder.Finish(offset.Value, stackalloc char[] { 'M', 'O', 'V', 'I' }); }
+  public static void FinishSizePrefixedMovieBuffer(ref FlatBufferBuilder builder, Offset<Movie> offset) { builder.FinishSizePrefixed(offset.Value, stackalloc char[] { 'M', 'O', 'V', 'I' }); }
   public MovieT UnPack() {
     var _o = new MovieT();
     this.UnPackTo(_o);

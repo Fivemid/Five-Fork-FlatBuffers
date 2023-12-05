@@ -14,7 +14,7 @@ public struct Stat : IFlatBufferObject
 {
   private Table __p;
   public ref ByteBuffer ByteBuffer { get { return ref __p.bb; } }
-  public static void ValidateVersion() { FlatBufferConstants.FIVE_FLAT_23_12_01(); }
+  public static void ValidateVersion() { FlatBufferConstants.FIVE_FLAT_23_12_04(); }
   public static Stat GetRootAsStat(ref ByteBuffer _bb) { return GetRootAsStat(ref _bb, new Stat()); }
   public static Stat GetRootAsStat(ref ByteBuffer _bb, Stat obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, ref _bb)); }
   public void __init(int _i, ref ByteBuffer _bb) { __p = new Table(_i, ref _bb); }

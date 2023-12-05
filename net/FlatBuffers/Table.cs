@@ -109,7 +109,7 @@ namespace Fivemid.FiveFlat
             return new Union<TType>(default(TType), 0, ref bb);
         }
 
-        public static bool __has_identifier(ByteBuffer bb, string ident)
+        public static bool __has_identifier(ByteBuffer bb, Span<char> ident)
         {
             if (ident.Length != FlatBufferConstants.FileIdentifierLength)
                 throw new ArgumentException("FlatBuffers: file identifier must be length " + FlatBufferConstants.FileIdentifierLength, "ident");

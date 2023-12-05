@@ -15,11 +15,11 @@ public struct Monster : IFlatBufferObject
 {
   private Table __p;
   public ref ByteBuffer ByteBuffer { get { return ref __p.bb; } }
-  public static void ValidateVersion() { FlatBufferConstants.FIVE_FLAT_23_12_01(); }
+  public static void ValidateVersion() { FlatBufferConstants.FIVE_FLAT_23_12_04(); }
   public static Monster GetRootAsMonster(ref ByteBuffer _bb) { return GetRootAsMonster(ref _bb, new Monster()); }
   public static Monster GetRootAsMonster(ref ByteBuffer _bb, Monster obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, ref _bb)); }
-  public static bool MonsterBufferHasIdentifier(ByteBuffer _bb) { return Table.__has_identifier(_bb, "MONS"); }
-  public static bool VerifyMonster(ByteBuffer _bb) {Fivemid.FiveFlat.Verifier verifier = new Fivemid.FiveFlat.Verifier(_bb); return verifier.VerifyBuffer("MONS", false, MonsterVerify.Verify); }
+  public static bool MonsterBufferHasIdentifier(ByteBuffer _bb) { return Table.__has_identifier(_bb, stackalloc char[] { 'M', 'O', 'N', 'S' }); }
+  public static bool VerifyMonster(ByteBuffer _bb) {Fivemid.FiveFlat.Verifier verifier = new Fivemid.FiveFlat.Verifier(_bb); return verifier.VerifyBuffer(stackalloc char[] { 'M', 'O', 'N', 'S' }, false, MonsterVerify.Verify); }
   public void __init(int _i, ref ByteBuffer _bb) { __p = new Table(_i, ref _bb); }
   public Monster __assign(int _i, ref ByteBuffer _bb) { __init(_i, ref _bb); return this; }
 
@@ -37,9 +37,9 @@ public struct Monster : IFlatBufferObject
   public readonly MyGame.Example.Any TestType { get { int o = __p.__offset(18); return o != 0 ? (MyGame.Example.Any)__p.bb.Get(o + __p.bb_pos) : MyGame.Example.Any.NONE; } }
   public readonly Union<MyGame.Example.Any> Test { get { int o = __p.__offset(20); return o != 0 ? __p.__union<MyGame.Example.Any>(TestType, o + __p.bb_pos) : __p.__union_none<MyGame.Example.Any>(); } }
   public readonly TTable? TestAs<TTable>() where TTable : struct, IFlatBufferObject { int o = __p.__offset(20); return o != 0 ? (TTable?)__p.__union_as<TTable>(o + __p.bb_pos) : null; }
-  public MyGame.Example.Monster TestAsMonster() { return TestAs<MyGame.Example.Monster>().Value; }
-  internal MyGame.Example.TestSimpleTableWithEnum TestAsTestSimpleTableWithEnum() { return TestAs<MyGame.Example.TestSimpleTableWithEnum>().Value; }
-  public MyGame.Example2.Monster TestAsMyGame_Example2_Monster() { return TestAs<MyGame.Example2.Monster>().Value; }
+  public readonly MyGame.Example.Monster TestAsMonster() { return TestAs<MyGame.Example.Monster>().Value; }
+  internal readonly MyGame.Example.TestSimpleTableWithEnum TestAsTestSimpleTableWithEnum() { return TestAs<MyGame.Example.TestSimpleTableWithEnum>().Value; }
+  public readonly MyGame.Example2.Monster TestAsMyGame_Example2_Monster() { return TestAs<MyGame.Example2.Monster>().Value; }
   public readonly MyGame.Example.Test? Test4(int j) { int o = __p.__offset(22); return o != 0 ? (MyGame.Example.Test?)(new MyGame.Example.Test()).__assign(__p.__vector(o) + j * 4, ref __p.bb) : null; }
   public int Test4Length { get { int o = __p.__offset(22); return o != 0 ? __p.__vector_len(o) : 0; } }
   public readonly NativeArray<byte>? Testarrayofstring(int j) { int o = __p.__offset(24); return o != 0 ? __p.__string(__p.__vector(o) + j * 4) : null; }
@@ -122,15 +122,15 @@ public struct Monster : IFlatBufferObject
   public readonly MyGame.Example.AnyUniqueAliases AnyUniqueType { get { int o = __p.__offset(90); return o != 0 ? (MyGame.Example.AnyUniqueAliases)__p.bb.Get(o + __p.bb_pos) : MyGame.Example.AnyUniqueAliases.NONE; } }
   public readonly Union<MyGame.Example.AnyUniqueAliases> AnyUnique { get { int o = __p.__offset(92); return o != 0 ? __p.__union<MyGame.Example.AnyUniqueAliases>(AnyUniqueType, o + __p.bb_pos) : __p.__union_none<MyGame.Example.AnyUniqueAliases>(); } }
   public readonly TTable? AnyUniqueAs<TTable>() where TTable : struct, IFlatBufferObject { int o = __p.__offset(92); return o != 0 ? (TTable?)__p.__union_as<TTable>(o + __p.bb_pos) : null; }
-  public MyGame.Example.Monster AnyUniqueAsM() { return AnyUniqueAs<MyGame.Example.Monster>().Value; }
-  internal MyGame.Example.TestSimpleTableWithEnum AnyUniqueAsTS() { return AnyUniqueAs<MyGame.Example.TestSimpleTableWithEnum>().Value; }
-  public MyGame.Example2.Monster AnyUniqueAsM2() { return AnyUniqueAs<MyGame.Example2.Monster>().Value; }
+  public readonly MyGame.Example.Monster AnyUniqueAsM() { return AnyUniqueAs<MyGame.Example.Monster>().Value; }
+  internal readonly MyGame.Example.TestSimpleTableWithEnum AnyUniqueAsTS() { return AnyUniqueAs<MyGame.Example.TestSimpleTableWithEnum>().Value; }
+  public readonly MyGame.Example2.Monster AnyUniqueAsM2() { return AnyUniqueAs<MyGame.Example2.Monster>().Value; }
   public readonly MyGame.Example.AnyAmbiguousAliases AnyAmbiguousType { get { int o = __p.__offset(94); return o != 0 ? (MyGame.Example.AnyAmbiguousAliases)__p.bb.Get(o + __p.bb_pos) : MyGame.Example.AnyAmbiguousAliases.NONE; } }
   public readonly Union<MyGame.Example.AnyAmbiguousAliases> AnyAmbiguous { get { int o = __p.__offset(96); return o != 0 ? __p.__union<MyGame.Example.AnyAmbiguousAliases>(AnyAmbiguousType, o + __p.bb_pos) : __p.__union_none<MyGame.Example.AnyAmbiguousAliases>(); } }
   public readonly TTable? AnyAmbiguousAs<TTable>() where TTable : struct, IFlatBufferObject { int o = __p.__offset(96); return o != 0 ? (TTable?)__p.__union_as<TTable>(o + __p.bb_pos) : null; }
-  public MyGame.Example.Monster AnyAmbiguousAsM1() { return AnyAmbiguousAs<MyGame.Example.Monster>().Value; }
-  public MyGame.Example.Monster AnyAmbiguousAsM2() { return AnyAmbiguousAs<MyGame.Example.Monster>().Value; }
-  public MyGame.Example.Monster AnyAmbiguousAsM3() { return AnyAmbiguousAs<MyGame.Example.Monster>().Value; }
+  public readonly MyGame.Example.Monster AnyAmbiguousAsM1() { return AnyAmbiguousAs<MyGame.Example.Monster>().Value; }
+  public readonly MyGame.Example.Monster AnyAmbiguousAsM2() { return AnyAmbiguousAs<MyGame.Example.Monster>().Value; }
+  public readonly MyGame.Example.Monster AnyAmbiguousAsM3() { return AnyAmbiguousAs<MyGame.Example.Monster>().Value; }
   public readonly MyGame.Example.Color VectorOfEnums(int j) { int o = __p.__offset(98); return o != 0 ? (MyGame.Example.Color)__p.bb.Get(__p.__vector(o) + j * 1) : (MyGame.Example.Color)0; }
   public int VectorOfEnumsLength { get { int o = __p.__offset(98); return o != 0 ? __p.__vector_len(o) : 0; } }
   public bool MutateVectorOfEnums(int j, MyGame.Example.Color vector_of_enums) { int o = __p.__offset(98); if (o != 0) { __p.bb.PutByte(__p.__vector(o) + j * 1, (byte)vector_of_enums); return true; } else { return false; } }
@@ -396,8 +396,8 @@ public struct Monster : IFlatBufferObject
     builder.Required(o, 10);  // name
     return new Offset<MyGame.Example.Monster>(o);
   }
-  public static void FinishMonsterBuffer(ref FlatBufferBuilder builder, Offset<MyGame.Example.Monster> offset) { builder.Finish(offset.Value, "MONS"); }
-  public static void FinishSizePrefixedMonsterBuffer(ref FlatBufferBuilder builder, Offset<MyGame.Example.Monster> offset) { builder.FinishSizePrefixed(offset.Value, "MONS"); }
+  public static void FinishMonsterBuffer(ref FlatBufferBuilder builder, Offset<MyGame.Example.Monster> offset) { builder.Finish(offset.Value, stackalloc char[] { 'M', 'O', 'N', 'S' }); }
+  public static void FinishSizePrefixedMonsterBuffer(ref FlatBufferBuilder builder, Offset<MyGame.Example.Monster> offset) { builder.FinishSizePrefixed(offset.Value, stackalloc char[] { 'M', 'O', 'N', 'S' }); }
 
   public static int CompareMonster(ref FlatBufferBuilder builder, Offset<Monster> o1, Offset<Monster> o2) {
     return new Monster().__assign(builder._bb.Length - o1.Value, ref builder._bb).Name.CompareTo(new Monster().__assign(builder._bb.Length - o2.Value, ref builder._bb).Name);

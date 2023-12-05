@@ -11,7 +11,7 @@ public struct Attacker : IFlatBufferObject
 {
   private Table __p;
   public ref ByteBuffer ByteBuffer { get { return ref __p.bb; } }
-  public static void ValidateVersion() { FlatBufferConstants.FIVE_FLAT_23_12_01(); }
+  public static void ValidateVersion() { FlatBufferConstants.FIVE_FLAT_23_12_04(); }
   public static Attacker GetRootAsAttacker(ref ByteBuffer _bb) { return GetRootAsAttacker(ref _bb, new Attacker()); }
   public static Attacker GetRootAsAttacker(ref ByteBuffer _bb, Attacker obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, ref _bb)); }
   public void __init(int _i, ref ByteBuffer _bb) { __p = new Table(_i, ref _bb); }

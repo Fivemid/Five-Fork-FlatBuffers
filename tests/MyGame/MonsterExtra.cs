@@ -14,11 +14,11 @@ public struct MonsterExtra : IFlatBufferObject
 {
   private Table __p;
   public ref ByteBuffer ByteBuffer { get { return ref __p.bb; } }
-  public static void ValidateVersion() { FlatBufferConstants.FIVE_FLAT_23_12_01(); }
+  public static void ValidateVersion() { FlatBufferConstants.FIVE_FLAT_23_12_04(); }
   public static MonsterExtra GetRootAsMonsterExtra(ref ByteBuffer _bb) { return GetRootAsMonsterExtra(ref _bb, new MonsterExtra()); }
   public static MonsterExtra GetRootAsMonsterExtra(ref ByteBuffer _bb, MonsterExtra obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, ref _bb)); }
-  public static bool MonsterExtraBufferHasIdentifier(ByteBuffer _bb) { return Table.__has_identifier(_bb, "MONE"); }
-  public static bool VerifyMonsterExtra(ByteBuffer _bb) {Fivemid.FiveFlat.Verifier verifier = new Fivemid.FiveFlat.Verifier(_bb); return verifier.VerifyBuffer("MONE", false, MonsterExtraVerify.Verify); }
+  public static bool MonsterExtraBufferHasIdentifier(ByteBuffer _bb) { return Table.__has_identifier(_bb, stackalloc char[] { 'M', 'O', 'N', 'E' }); }
+  public static bool VerifyMonsterExtra(ByteBuffer _bb) {Fivemid.FiveFlat.Verifier verifier = new Fivemid.FiveFlat.Verifier(_bb); return verifier.VerifyBuffer(stackalloc char[] { 'M', 'O', 'N', 'E' }, false, MonsterExtraVerify.Verify); }
   public void __init(int _i, ref ByteBuffer _bb) { __p = new Table(_i, ref _bb); }
   public MonsterExtra __assign(int _i, ref ByteBuffer _bb) { __init(_i, ref _bb); return this; }
 
@@ -89,8 +89,8 @@ public struct MonsterExtra : IFlatBufferObject
     int o = builder.EndTable();
     return new Offset<MyGame.MonsterExtra>(o);
   }
-  public static void FinishMonsterExtraBuffer(ref FlatBufferBuilder builder, Offset<MyGame.MonsterExtra> offset) { builder.Finish(offset.Value, "MONE"); }
-  public static void FinishSizePrefixedMonsterExtraBuffer(ref FlatBufferBuilder builder, Offset<MyGame.MonsterExtra> offset) { builder.FinishSizePrefixed(offset.Value, "MONE"); }
+  public static void FinishMonsterExtraBuffer(ref FlatBufferBuilder builder, Offset<MyGame.MonsterExtra> offset) { builder.Finish(offset.Value, stackalloc char[] { 'M', 'O', 'N', 'E' }); }
+  public static void FinishSizePrefixedMonsterExtraBuffer(ref FlatBufferBuilder builder, Offset<MyGame.MonsterExtra> offset) { builder.FinishSizePrefixed(offset.Value, stackalloc char[] { 'M', 'O', 'N', 'E' }); }
   public MonsterExtraT UnPack() {
     var _o = new MonsterExtraT();
     this.UnPackTo(_o);

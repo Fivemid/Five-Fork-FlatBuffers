@@ -16,7 +16,6 @@
 
 
 using System;
-using System.Collections.Generic;
 using System.Text;
 using Unity.Collections;
 
@@ -96,7 +95,7 @@ namespace Fivemid.FiveFlat
         /// In order to save space, fields that are set to their default value
         /// don't get serialized into the buffer.
         /// </summary>
-        public bool ForceDefaults { get; set; }
+        public bool ForceDefaults;
 
         /// @cond FLATBUFFERS_INTERNAL
 
@@ -786,7 +785,7 @@ namespace Fivemid.FiveFlat
         /// <param name="sizePrefix">
         /// Whether to prefix the size to the buffer.
         /// </param>
-        private void Finish(int rootTable, string fileIdentifier, bool sizePrefix)
+        private void Finish(int rootTable, Span<char> fileIdentifier, bool sizePrefix)
         {
             Prep(_minAlign, sizeof(int) + (sizePrefix ? sizeof(int) : 0) +
                             FlatBufferConstants.FileIdentifierLength);
@@ -795,7 +794,7 @@ namespace Fivemid.FiveFlat
                 throw new ArgumentException(
                     "FlatBuffers: file identifier must be length " +
                     FlatBufferConstants.FileIdentifierLength,
-                    "fileIdentifier");
+                    nameof(fileIdentifier));
             for (int i = FlatBufferConstants.FileIdentifierLength - 1; i >= 0;
                  i--)
             {
@@ -814,7 +813,7 @@ namespace Fivemid.FiveFlat
         /// A FlatBuffer file identifier to be added to the buffer before
         /// `root_table`.
         /// </param>
-        public void Finish(int rootTable, string fileIdentifier)
+        public void Finish(int rootTable, Span<char> fileIdentifier)
         {
             Finish(rootTable, fileIdentifier, false);
         }
@@ -829,7 +828,7 @@ namespace Fivemid.FiveFlat
         /// A FlatBuffer file identifier to be added to the buffer before
         /// `root_table`.
         /// </param>
-        public void FinishSizePrefixed(int rootTable, string fileIdentifier)
+        public void FinishSizePrefixed(int rootTable, Span<char> fileIdentifier)
         {
             Finish(rootTable, fileIdentifier, true);
         }

@@ -190,7 +190,7 @@ public struct IntValue : IFlatBufferObject
 {
   private Table __p;
   public ref ByteBuffer ByteBuffer { get { return ref __p.bb; } }
-  public static void ValidateVersion() { FlatBufferConstants.FIVE_FLAT_23_12_01(); }
+  public static void ValidateVersion() { FlatBufferConstants.FIVE_FLAT_23_12_04(); }
   public static IntValue GetRootAsIntValue(ref ByteBuffer _bb) { return GetRootAsIntValue(ref _bb, new IntValue()); }
   public static IntValue GetRootAsIntValue(ref ByteBuffer _bb, IntValue obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, ref _bb)); }
   public void __init(int _i, ref ByteBuffer _bb) { __p = new Table(_i, ref _bb); }
@@ -251,7 +251,7 @@ public struct Collide : IFlatBufferObject
 {
   private Table __p;
   public ref ByteBuffer ByteBuffer { get { return ref __p.bb; } }
-  public static void ValidateVersion() { FlatBufferConstants.FIVE_FLAT_23_12_01(); }
+  public static void ValidateVersion() { FlatBufferConstants.FIVE_FLAT_23_12_04(); }
   public static Collide GetRootAsCollide(ref ByteBuffer _bb) { return GetRootAsCollide(ref _bb, new Collide()); }
   public static Collide GetRootAsCollide(ref ByteBuffer _bb, Collide obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, ref _bb)); }
   public void __init(int _i, ref ByteBuffer _bb) { __p = new Table(_i, ref _bb); }
@@ -351,21 +351,21 @@ public struct Collision : IFlatBufferObject
 {
   private Table __p;
   public ref ByteBuffer ByteBuffer { get { return ref __p.bb; } }
-  public static void ValidateVersion() { FlatBufferConstants.FIVE_FLAT_23_12_01(); }
+  public static void ValidateVersion() { FlatBufferConstants.FIVE_FLAT_23_12_04(); }
   public static Collision GetRootAsCollision(ref ByteBuffer _bb) { return GetRootAsCollision(ref _bb, new Collision()); }
   public static Collision GetRootAsCollision(ref ByteBuffer _bb, Collision obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, ref _bb)); }
-  public static bool VerifyCollision(ByteBuffer _bb) {Fivemid.FiveFlat.Verifier verifier = new Fivemid.FiveFlat.Verifier(_bb); return verifier.VerifyBuffer("", false, CollisionVerify.Verify); }
+  public static bool VerifyCollision(ByteBuffer _bb) {Fivemid.FiveFlat.Verifier verifier = new Fivemid.FiveFlat.Verifier(_bb); return verifier.VerifyBuffer(stackalloc char[] {  }, false, CollisionVerify.Verify); }
   public void __init(int _i, ref ByteBuffer _bb) { __p = new Table(_i, ref _bb); }
   public Collision __assign(int _i, ref ByteBuffer _bb) { __init(_i, ref _bb); return this; }
 
   public readonly union_value_collsion.Value SomeValueType { get { int o = __p.__offset(4); return o != 0 ? (union_value_collsion.Value)__p.bb.Get(o + __p.bb_pos) : union_value_collsion.Value.NONE; } }
   public readonly Union<union_value_collsion.Value> SomeValue { get { int o = __p.__offset(6); return o != 0 ? __p.__union<union_value_collsion.Value>(SomeValueType, o + __p.bb_pos) : __p.__union_none<union_value_collsion.Value>(); } }
   public readonly TTable? SomeValueAs<TTable>() where TTable : struct, IFlatBufferObject { int o = __p.__offset(6); return o != 0 ? (TTable?)__p.__union_as<TTable>(o + __p.bb_pos) : null; }
-  public union_value_collsion.IntValue SomeValueAsIntValue() { return SomeValueAs<union_value_collsion.IntValue>().Value; }
+  public readonly union_value_collsion.IntValue SomeValueAsIntValue() { return SomeValueAs<union_value_collsion.IntValue>().Value; }
   public readonly union_value_collsion.Other ValueType { get { int o = __p.__offset(8); return o != 0 ? (union_value_collsion.Other)__p.bb.Get(o + __p.bb_pos) : union_value_collsion.Other.NONE; } }
   public readonly Union<union_value_collsion.Other> Value { get { int o = __p.__offset(10); return o != 0 ? __p.__union<union_value_collsion.Other>(ValueType, o + __p.bb_pos) : __p.__union_none<union_value_collsion.Other>(); } }
   public readonly TTable? ValueAs<TTable>() where TTable : struct, IFlatBufferObject { int o = __p.__offset(10); return o != 0 ? (TTable?)__p.__union_as<TTable>(o + __p.bb_pos) : null; }
-  public union_value_collsion.IntValue ValueAsIntValue() { return ValueAs<union_value_collsion.IntValue>().Value; }
+  public readonly union_value_collsion.IntValue ValueAsIntValue() { return ValueAs<union_value_collsion.IntValue>().Value; }
   public readonly union_value_collsion.Collision? Collide(int j) { int o = __p.__offset(12); return o != 0 ? (union_value_collsion.Collision?)(new union_value_collsion.Collision()).__assign(__p.__indirect(__p.__vector(o) + j * 4), ref __p.bb) : null; }
   public int CollideLength { get { int o = __p.__offset(12); return o != 0 ? __p.__vector_len(o) : 0; } }
 

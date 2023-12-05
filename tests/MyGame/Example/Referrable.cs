@@ -14,7 +14,7 @@ public struct Referrable : IFlatBufferObject
 {
   private Table __p;
   public ref ByteBuffer ByteBuffer { get { return ref __p.bb; } }
-  public static void ValidateVersion() { FlatBufferConstants.FIVE_FLAT_23_12_01(); }
+  public static void ValidateVersion() { FlatBufferConstants.FIVE_FLAT_23_12_04(); }
   public static Referrable GetRootAsReferrable(ref ByteBuffer _bb) { return GetRootAsReferrable(ref _bb, new Referrable()); }
   public static Referrable GetRootAsReferrable(ref ByteBuffer _bb, Referrable obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, ref _bb)); }
   public void __init(int _i, ref ByteBuffer _bb) { __p = new Table(_i, ref _bb); }

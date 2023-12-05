@@ -32,6 +32,6 @@ namespace Fivemid.FiveFlat
         Changes to the C# implementation need to be sure to change
         the version here and in the code generator on every possible
         incompatible change */
-        public static void FIVE_FLAT_23_12_01() {}
+        public static void FIVE_FLAT_23_12_04() {}
     }
 }

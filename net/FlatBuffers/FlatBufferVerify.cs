@@ -173,7 +173,7 @@ namespace Fivemid.FiveFlat
     /// <param name="startPos">Start position of data in the Byte Buffer</param>
     /// <param name="identifier"> Identifier for the Byte Buffer</param>
     /// <returns> Return True when the Byte Buffer Identifier is present</returns>
-    private bool BufferHasIdentifier(ByteBuffer buf, uint startPos, string identifier)
+    private bool BufferHasIdentifier(ByteBuffer buf, uint startPos, Span<char> identifier)
     {
       if (identifier.Length != FILE_IDENTIFIER_LENGTH)
       {
@@ -418,7 +418,7 @@ namespace Fivemid.FiveFlat
     }
 
     /// <summary> Check flatbuffer content using generated object verification function </summary>
-    private bool CheckBufferFromStart(string identifier, uint startPos, VerifyTableAction verifyAction)
+    private bool CheckBufferFromStart(Span<char> identifier, uint startPos, VerifyTableAction verifyAction)
     {
       if ((identifier != null) &&
           (identifier.Length == 0) &&
@@ -622,7 +622,7 @@ namespace Fivemid.FiveFlat
         var nestedByteBuffer = new ByteBuffer(verifier_buffer.ToArray(Convert.ToInt32(vecStart), Convert.ToInt32(vecLength)));
         var nestedVerifyier = new Verifier(nestedByteBuffer, options);
         // There is no internal identifier - use empty one
-        if (!nestedVerifyier.CheckBufferFromStart("", 0, verifyAction))
+        if (!nestedVerifyier.CheckBufferFromStart(Span<char>.Empty, 0, verifyAction))
         {
           return false;
         }
@@ -782,7 +782,7 @@ namespace Fivemid.FiveFlat
     /// Example 2. Verify Monster table. Buffer name is 'MONS' and contains data length prefix
     /// <code>  isValid = verifier.VerifyBuffer("MONS", true, MonsterVerify)</code>
     /// </example>
-    public bool VerifyBuffer(string identifier, bool sizePrefixed, VerifyTableAction verifyAction)
+    public bool VerifyBuffer(Span<char> identifier, bool sizePrefixed, VerifyTableAction verifyAction)
     {
       // Reset counters - starting verification from beginning
       depth = 0;

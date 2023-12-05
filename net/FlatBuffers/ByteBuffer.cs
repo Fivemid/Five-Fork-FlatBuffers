@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Buffers.Binary;
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
 
@@ -164,6 +163,12 @@ namespace Fivemid.FiveFlat
             _buffer[offset] = value;
         }
 
+        public unsafe void PutRaw<T>(int offset, T value) where T : unmanaged
+        {
+            AssertOffsetAndLength(offset, sizeof(T));
+            *(T*)((byte*)_buffer.GetUnsafeReadOnlyPtr() + offset) = value;
+        }
+
         public void PutByte(int offset, byte value, int count)
         {
             AssertOffsetAndLength(offset, sizeof(byte) * count);
@@ -187,10 +192,9 @@ namespace Fivemid.FiveFlat
 
         public void PutUshort(int offset, ushort value)
         {
-            AssertOffsetAndLength(offset, sizeof(ushort));
-            Span<byte> span = Span.Slice(offset);
-            BinaryPrimitives.WriteUInt16LittleEndian(span, value);
-
+            if (!BitConverter.IsLittleEndian)
+                value = ReverseBytes(value);
+            PutRaw(offset, value);
         }
 
         public void PutInt(int offset, int value)
@@ -200,9 +204,9 @@ namespace Fivemid.FiveFlat
 
         public void PutUint(int offset, uint value)
         {
-            AssertOffsetAndLength(offset, sizeof(uint));
-            Span<byte> span = Span.Slice(offset);
-            BinaryPrimitives.WriteUInt32LittleEndian(span, value);
+            if (!BitConverter.IsLittleEndian)
+                value = ReverseBytes(value);
+            PutRaw(offset, value);
         }
 
         public void PutLong(int offset, long value)
@@ -212,41 +216,31 @@ namespace Fivemid.FiveFlat
 
         public void PutUlong(int offset, ulong value)
         {
-            AssertOffsetAndLength(offset, sizeof(ulong));
-            Span<byte> span = Span.Slice(offset);
-            BinaryPrimitives.WriteUInt64LittleEndian(span, value);
+            if (!BitConverter.IsLittleEndian)
+                value = ReverseBytes(value);
+            PutRaw(offset, value);
         }
 
         public unsafe void PutFloat(int offset, float value)
         {
-            AssertOffsetAndLength(offset, sizeof(float));
-            byte* ptr = (byte*)_buffer.GetUnsafePtr();
+            if (!BitConverter.IsLittleEndian)
             {
-                if (BitConverter.IsLittleEndian)
-                {
-                    *(float*)(ptr + offset) = value;
-                }
-                else
-                {
-                    *(uint*)(ptr + offset) = ReverseBytes(*(uint*)(&value));
-                }
+                uint integerValue = *(uint*)&value;
+                integerValue = ReverseBytes(integerValue);
+                value = *(float*)&integerValue;
             }
+            PutRaw(offset, value);
         }
 
         public unsafe void PutDouble(int offset, double value)
         {
-            AssertOffsetAndLength(offset, sizeof(double));
-            byte* ptr = (byte*)_buffer.GetUnsafePtr();
+            if (!BitConverter.IsLittleEndian)
             {
-                if (BitConverter.IsLittleEndian)
-                {
-                    *(double*)(ptr + offset) = value;
-                }
-                else
-                {
-                    *(ulong*)(ptr + offset) = ReverseBytes(*(ulong*)(&value));
-                }
+                ulong integerValue = *(ulong*)&value;
+                integerValue = ReverseBytes(integerValue);
+                value = *(double*)&integerValue;
             }
+            PutRaw(offset, value);
         }
 
         public sbyte GetSbyte(int index)
@@ -261,16 +255,23 @@ namespace Fivemid.FiveFlat
             return ReadOnlySpan[index];
         }
 
+        public unsafe T GetRaw<T>(int offset) where T : unmanaged
+        {
+            AssertOffsetAndLength(offset, sizeof(T));
+            return *(T*)((byte*)_buffer.GetUnsafeReadOnlyPtr() + offset);
+        }
+
         public short GetShort(int offset)
         {
             return (short)GetUshort(offset);
         }
 
-        public unsafe ushort GetUshort(int offset)
+        public ushort GetUshort(int offset)
         {
-            AssertOffsetAndLength(offset, sizeof(ushort));
-            ReadOnlySpan<byte> span = ReadOnlySpan.Slice(offset);
-            return BinaryPrimitives.ReadUInt16LittleEndian(span);
+            ushort value = GetRaw<ushort>(offset);
+            if (!BitConverter.IsLittleEndian)
+                value = ReverseBytes(value);
+            return value;
         }
 
         public int GetInt(int offset)
@@ -278,11 +279,12 @@ namespace Fivemid.FiveFlat
             return (int)GetUint(offset);
         }
 
-        public unsafe uint GetUint(int offset)
+        public uint GetUint(int offset)
         {
-            AssertOffsetAndLength(offset, sizeof(uint));
-            ReadOnlySpan<byte> span = ReadOnlySpan.Slice(offset);
-            return BinaryPrimitives.ReadUInt32LittleEndian(span);
+            uint value = GetRaw<uint>(offset);
+            if (!BitConverter.IsLittleEndian)
+                value = ReverseBytes(value);
+            return value;
         }
 
         public long GetLong(int offset)
@@ -290,45 +292,36 @@ namespace Fivemid.FiveFlat
             return (long)GetUlong(offset);
         }
 
-        public unsafe ulong GetUlong(int offset)
+        public ulong GetUlong(int offset)
         {
-            AssertOffsetAndLength(offset, sizeof(ulong));
-            ReadOnlySpan<byte> span = ReadOnlySpan.Slice(offset);
-            return BinaryPrimitives.ReadUInt64LittleEndian(span);
+            ulong value = GetRaw<ulong>(offset);
+            if (!BitConverter.IsLittleEndian)
+                value = ReverseBytes(value);
+            return value;
         }
 
         public unsafe float GetFloat(int offset)
         {
-            AssertOffsetAndLength(offset, sizeof(float));
-            byte* ptr = (byte*)_buffer.GetUnsafeReadOnlyPtr();
+            float value = GetRaw<float>(offset);
+            if (!BitConverter.IsLittleEndian)
             {
-                if (BitConverter.IsLittleEndian)
-                {
-                    return *(float*)(ptr + offset);
-                }
-                else
-                {
-                    uint uvalue = ReverseBytes(*(uint*)(ptr + offset));
-                    return *(float*)(&uvalue);
-                }
+                uint integerValue = *(uint*)&value;
+                integerValue = ReverseBytes(integerValue);
+                value = *(float*)&integerValue;
             }
+            return value;
         }
 
         public unsafe double GetDouble(int offset)
         {
-            AssertOffsetAndLength(offset, sizeof(double));
-            byte* ptr = (byte*)_buffer.GetUnsafeReadOnlyPtr();
+            double value = GetRaw<double>(offset);
+            if (!BitConverter.IsLittleEndian)
             {
-                if (BitConverter.IsLittleEndian)
-                {
-                    return *(double*)(ptr + offset);
-                }
-                else
-                {
-                    ulong uvalue = ReverseBytes(*(ulong*)(ptr + offset));
-                    return *(double*)(&uvalue);
-                }
+                ulong integerValue = *(ulong*)&value;
+                integerValue = ReverseBytes(integerValue);
+                value = *(double*)&integerValue;
             }
+            return value;
         }
     }
 }

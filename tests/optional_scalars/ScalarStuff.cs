@@ -14,11 +14,11 @@ public struct ScalarStuff : IFlatBufferObject
 {
   private Table __p;
   public ref ByteBuffer ByteBuffer { get { return ref __p.bb; } }
-  public static void ValidateVersion() { FlatBufferConstants.FIVE_FLAT_23_12_01(); }
+  public static void ValidateVersion() { FlatBufferConstants.FIVE_FLAT_23_12_04(); }
   public static ScalarStuff GetRootAsScalarStuff(ref ByteBuffer _bb) { return GetRootAsScalarStuff(ref _bb, new ScalarStuff()); }
   public static ScalarStuff GetRootAsScalarStuff(ref ByteBuffer _bb, ScalarStuff obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, ref _bb)); }
-  public static bool ScalarStuffBufferHasIdentifier(ByteBuffer _bb) { return Table.__has_identifier(_bb, "NULL"); }
-  public static bool VerifyScalarStuff(ByteBuffer _bb) {Fivemid.FiveFlat.Verifier verifier = new Fivemid.FiveFlat.Verifier(_bb); return verifier.VerifyBuffer("NULL", false, ScalarStuffVerify.Verify); }
+  public static bool ScalarStuffBufferHasIdentifier(ByteBuffer _bb) { return Table.__has_identifier(_bb, stackalloc char[] { 'N', 'U', 'L', 'L' }); }
+  public static bool VerifyScalarStuff(ByteBuffer _bb) {Fivemid.FiveFlat.Verifier verifier = new Fivemid.FiveFlat.Verifier(_bb); return verifier.VerifyBuffer(stackalloc char[] { 'N', 'U', 'L', 'L' }, false, ScalarStuffVerify.Verify); }
   public void __init(int _i, ref ByteBuffer _bb) { __p = new Table(_i, ref _bb); }
   public ScalarStuff __assign(int _i, ref ByteBuffer _bb) { __init(_i, ref _bb); return this; }
 
@@ -177,8 +177,8 @@ public struct ScalarStuff : IFlatBufferObject
     int o = builder.EndTable();
     return new Offset<optional_scalars.ScalarStuff>(o);
   }
-  public static void FinishScalarStuffBuffer(ref FlatBufferBuilder builder, Offset<optional_scalars.ScalarStuff> offset) { builder.Finish(offset.Value, "NULL"); }
-  public static void FinishSizePrefixedScalarStuffBuffer(ref FlatBufferBuilder builder, Offset<optional_scalars.ScalarStuff> offset) { builder.FinishSizePrefixed(offset.Value, "NULL"); }
+  public static void FinishScalarStuffBuffer(ref FlatBufferBuilder builder, Offset<optional_scalars.ScalarStuff> offset) { builder.Finish(offset.Value, stackalloc char[] { 'N', 'U', 'L', 'L' }); }
+  public static void FinishSizePrefixedScalarStuffBuffer(ref FlatBufferBuilder builder, Offset<optional_scalars.ScalarStuff> offset) { builder.FinishSizePrefixed(offset.Value, stackalloc char[] { 'N', 'U', 'L', 'L' }); }
   public ScalarStuffT UnPack() {
     var _o = new ScalarStuffT();
     this.UnPackTo(_o);

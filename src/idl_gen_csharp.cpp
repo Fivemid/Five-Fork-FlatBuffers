@@ -661,6 +661,20 @@ class CSharpGenerator : public BaseGenerator {
     return name;
   }
 
+  std::string GenFileIdentifier(std::string file_identifier) const {
+    std::string c = "stackalloc char[] { ";
+    for (int i = 0; i < file_identifier.length(); ++i) {
+      c += "'";
+      c += file_identifier[i];
+      c += "'";
+      if (i + 1 < file_identifier.length()) {
+        c += ", ";
+      }
+    }
+    c += " }";
+    return c;
+  }
+
   // Generate the code to call the appropriate Verify function(s) for a field.
   void GenVerifyCall(CodeWriter &code_, const FieldDef &field,
                      const char *prefix) {
@@ -852,7 +866,7 @@ class CSharpGenerator : public BaseGenerator {
       // Force compile time error if not using the same version runtime.
       code += "  public static void ValidateVersion() {";
       code += " FlatBufferConstants.";
-      code += "FIVE_FLAT_23_12_01(); ";
+      code += "FIVE_FLAT_23_12_04(); ";
       code += "}\n";
 
       // Generate a special accessor for the table that when used as the root
@@ -878,9 +892,9 @@ class CSharpGenerator : public BaseGenerator {
           code += "  public static ";
           code += "bool " + struct_def.name;
           code += "BufferHasIdentifier(ByteBuffer _bb) { return ";
-          code += "Table.__has_identifier(_bb, \"";
-          code += parser_.file_identifier_;
-          code += "\"); }\n";
+          code += "Table.__has_identifier(_bb, ";
+          code += GenFileIdentifier(parser_.file_identifier_);
+          code += "); }\n";
         }
 
         // Generate the Verify method that checks if a ByteBuffer is save to
@@ -889,9 +903,9 @@ class CSharpGenerator : public BaseGenerator {
         code += "bool Verify" + struct_def.name + "(ByteBuffer _bb) {";
         code += "Fivemid.FiveFlat.Verifier verifier = new ";
         code += "Fivemid.FiveFlat.Verifier(_bb); ";
-        code += "return verifier.VerifyBuffer(\"";
-        code += parser_.file_identifier_;
-        code += "\", false, " + struct_def.name + "Verify.Verify);";
+        code += "return verifier.VerifyBuffer(";
+        code += GenFileIdentifier(parser_.file_identifier_);
+        code += ", false, " + struct_def.name + "Verify.Verify);";
         code += " }\n";
       }
     }
@@ -1143,7 +1157,7 @@ class CSharpGenerator : public BaseGenerator {
           } else {
             code += "  public ";
           }
-          code += union_field_type_name + " ";
+          code += "readonly " + union_field_type_name + " ";
           code += field_name_camel + "As" + val->name + "() { return ";
           code += field_name_camel;
           if (IsString(val->union_type)) {
@@ -1431,7 +1445,7 @@ class CSharpGenerator : public BaseGenerator {
           code += ".Value";
 
           if (parser_.file_identifier_.length())
-            code += ", \"" + parser_.file_identifier_ + "\"";
+            code += ", " + GenFileIdentifier(parser_.file_identifier_);
           code += "); }\n";
         }
       }
@@ -1810,7 +1824,7 @@ class CSharpGenerator : public BaseGenerator {
       if (ev.union_type.base_type == BASE_TYPE_NONE) {
         code += indent + "  default: break;\n";
       } else {
-        code += indent + "  case " + NamespacedName(enum_def) + "." + ev.name +
+        code += indent + "  case " + NamespacedName(enum_def) + "." + Name(ev) +
                 ":\n";
         code += indent + "    " + varialbe_name + "." + class_member + " = ";
         if (IsString(ev.union_type)) {

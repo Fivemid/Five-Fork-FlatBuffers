@@ -14,7 +14,7 @@ public struct TableInFirstNS : IFlatBufferObject
 {
   private Table __p;
   public ref ByteBuffer ByteBuffer { get { return ref __p.bb; } }
-  public static void ValidateVersion() { FlatBufferConstants.FIVE_FLAT_23_12_01(); }
+  public static void ValidateVersion() { FlatBufferConstants.FIVE_FLAT_23_12_04(); }
   public static TableInFirstNS GetRootAsTableInFirstNS(ref ByteBuffer _bb) { return GetRootAsTableInFirstNS(ref _bb, new TableInFirstNS()); }
   public static TableInFirstNS GetRootAsTableInFirstNS(ref ByteBuffer _bb, TableInFirstNS obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, ref _bb)); }
   public void __init(int _i, ref ByteBuffer _bb) { __p = new Table(_i, ref _bb); }
@@ -26,7 +26,7 @@ public struct TableInFirstNS : IFlatBufferObject
   public readonly NamespaceA.NamespaceB.UnionInNestedNS FooUnionType { get { int o = __p.__offset(8); return o != 0 ? (NamespaceA.NamespaceB.UnionInNestedNS)__p.bb.Get(o + __p.bb_pos) : NamespaceA.NamespaceB.UnionInNestedNS.NONE; } }
   public readonly Union<NamespaceA.NamespaceB.UnionInNestedNS> FooUnion { get { int o = __p.__offset(10); return o != 0 ? __p.__union<NamespaceA.NamespaceB.UnionInNestedNS>(FooUnionType, o + __p.bb_pos) : __p.__union_none<NamespaceA.NamespaceB.UnionInNestedNS>(); } }
   public readonly TTable? FooUnionAs<TTable>() where TTable : struct, IFlatBufferObject { int o = __p.__offset(10); return o != 0 ? (TTable?)__p.__union_as<TTable>(o + __p.bb_pos) : null; }
-  public NamespaceA.NamespaceB.TableInNestedNS FooUnionAsTableInNestedNS() { return FooUnionAs<NamespaceA.NamespaceB.TableInNestedNS>().Value; }
+  public readonly NamespaceA.NamespaceB.TableInNestedNS FooUnionAsTableInNestedNS() { return FooUnionAs<NamespaceA.NamespaceB.TableInNestedNS>().Value; }
   public readonly NamespaceA.NamespaceB.StructInNestedNS? FooStruct { get { int o = __p.__offset(12); return o != 0 ? (NamespaceA.NamespaceB.StructInNestedNS?)(new NamespaceA.NamespaceB.StructInNestedNS()).__assign(o + __p.bb_pos, ref __p.bb) : null; } }
 
   public static Offset<NamespaceA.TableInFirstNS> CreateTableInFirstNS(ref FlatBufferBuilder builder,
